@@ -1,0 +1,33 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.bion.omni.omnimod.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "EntityMixin_Disguise",
+    "ServerPlayNetworkHandlerMixin_Disguiser",
+    "ServerPlayNetworkHandlerMixin_HitCheck",
+    "accessor.EntitiesDestroyS2CPacketAccessor",
+    "accessor.EntityAccessor",
+    "accessor.EntityAttributesS2CPacketAccessor",
+    "accessor.EntityPositionS2CPacketAccessor",
+    "accessor.EntitySetHeadYawS2CPacketAccessor",
+    "accessor.EntitySpawnS2CPacketAccessor",
+    "accessor.EntityTrackerEntryAccessor",
+    "accessor.EntityTrackerUpdateS2CPacketAccessor",
+    "accessor.PlayerEntityAccessor",
+    "accessor.PlayerListS2CPacketAccessor",
+    "accessor.PlayerSpawnS2CPacketAccessor",
+    "accessor.ThreadedAnvilChunkStorageAccessor"
+  ],
+  "server": [
+    "ServerPlayerMixin",
+    "ModEntityDataSaver",
+    "PlayerDamageMultiplier",
+    "PlayerHurtMultiplier",
+    "PlayerManagerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
