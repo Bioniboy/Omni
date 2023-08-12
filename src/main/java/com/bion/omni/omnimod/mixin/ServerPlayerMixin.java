@@ -1,11 +1,8 @@
 package com.bion.omni.omnimod.mixin;
 
-import com.bion.omni.omnimod.elements.Air;
+import com.bion.omni.omnimod.elements.*;
 import com.mojang.authlib.GameProfile;
 import com.bion.omni.omnimod.OmniMod;
-import com.bion.omni.omnimod.elements.Element;
-import com.bion.omni.omnimod.elements.Moon;
-import com.bion.omni.omnimod.elements.Storm;
 import com.bion.omni.omnimod.powers.*;
 import com.bion.omni.omnimod.util.Apprentice;
 import com.bion.omni.omnimod.util.EntityDataInterface;
@@ -57,7 +54,7 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 	public ServerPlayerMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
 		super(world, pos, yaw, gameProfile);
 	}
-	private final Hashtable<String, Double> costs = new Hashtable<String, Double>();
+	private final Hashtable<String, Double> costs = new Hashtable<>();
 	private final ArrayList<ContinuousPower> continuousPowers = new ArrayList<>();
 	private final ArrayList<ImpulsePower> impulsePowers = new ArrayList<>();
 	private final ArrayList<Power> otherPowers = new ArrayList<>();
@@ -79,6 +76,8 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 				yield new Storm();
 			case "Air":
 				yield new Air();
+			case "Clarity":
+				yield new Clarity();
 			default:
 				OmniMod.LOGGER.error("Error: " + elementId + " element not defined" );
 				yield null;

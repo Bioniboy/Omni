@@ -1,6 +1,7 @@
 package com.bion.omni.omnimod.command;
 
 import com.bion.omni.omnimod.elements.Air;
+import com.bion.omni.omnimod.elements.Clarity;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -45,6 +46,9 @@ public class OmniCommand {
                         )
                         .then(CommandManager.literal("air")
                                 .executes(context -> {choose(context.getSource().getPlayer(), "air"); return 1;})
+                        )
+                        .then(CommandManager.literal("clarity")
+                                .executes(context -> {choose(context.getSource().getPlayer(), "clarity"); return 1;})
                         )
                 )
         );
@@ -103,6 +107,15 @@ public class OmniCommand {
                 }
                 starterPowerId = "slowFall";
                 yield new Air();
+            case "clarity":
+                if (!player.getInventory().contains(ModItems.LIBRONOMICON.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.LIBRONOMICON));
+                }
+                if (!player.getInventory().contains(ModItems.STORM_WAND.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.STORM_WAND));
+                }
+                starterPowerId = "astralProject";
+                yield new Clarity();
             default:
                 yield null;
         });

@@ -26,6 +26,7 @@ public class ModItems {
     public static final SimplePolymerItem CYCLONOMICON = new Cyclonomicon(new FabricItemSettings(), Items.BOOK);
     public static final SimplePolymerItem SOLEONOMICON = new Soleonomicon(new FabricItemSettings(), Items.BOOK);
     public static final SimplePolymerItem AERONOMICON = new Aeronomicon(new FabricItemSettings(), Items.BOOK);
+    public static final SimplePolymerItem LIBRONOMICON = new Libronomicon(new FabricItemSettings(), Items.BOOK);
     public static final Item MOON_WAND = new MoonWand(new FabricItemSettings(), Items.STICK);
     public static final Item AIR_WAND = new AirWand(new FabricItemSettings(), Items.STICK);
     public static final Item STORM_WAND = new StormWand(new FabricItemSettings(), Items.STICK);
@@ -38,6 +39,7 @@ public class ModItems {
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "cyclonomicon"), CYCLONOMICON);
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "soleonomicon"), SOLEONOMICON);
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "aeronomicon"), AERONOMICON);
+        Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "libronomicon"), LIBRONOMICON);
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "moon_wand"), MOON_WAND);
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "air_wand"), AIR_WAND);
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "storm_wand"), STORM_WAND);
