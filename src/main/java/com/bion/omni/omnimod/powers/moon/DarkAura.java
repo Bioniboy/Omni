@@ -92,8 +92,8 @@ public class DarkAura extends ImpulsePower {
                     } else {
                         tempState = ModBlocks.SMALL_DARK_BLOCK.getDefaultState();
                     }
-                    user.getWorld().spawnParticles(user, ParticleTypes.SMOKE, true, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 5,0.2, 0, 0.2, 0);
-                    blockList.add(new TempBlock(user.getWorld(), blockPos, tempState, tickCounter));
+                    user.getServerWorld().spawnParticles(user, ParticleTypes.SMOKE, true, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 5,0.2, 0, 0.2, 0);
+                    blockList.add(new TempBlock(user.getServerWorld(), blockPos, tempState, tickCounter));
                 }
             }
 

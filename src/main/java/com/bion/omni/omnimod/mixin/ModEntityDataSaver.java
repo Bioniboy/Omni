@@ -1,5 +1,6 @@
 package com.bion.omni.omnimod.mixin;
 
+import com.bion.omni.omnimod.OmniMod;
 import com.bion.omni.omnimod.powers.Power;
 import com.bion.omni.omnimod.util.Apprentice;
 import com.bion.omni.omnimod.util.EntityDataInterface;

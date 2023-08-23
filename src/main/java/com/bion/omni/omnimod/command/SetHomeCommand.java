@@ -23,7 +23,7 @@ public class SetHomeCommand {
         player.getPersistentData().putIntArray("homepos",
                 new int[] {playerPos.getX(), playerPos.getY(), playerPos.getZ()});
 
-        context.getSource().sendFeedback(Text.literal("Set home"), false);
+        context.getSource().sendFeedback(() -> Text.literal("Set home"), false);
         context.getSource().getServer().getCommandManager().sendCommandTree(context.getSource().getPlayer());
         return 1;
     }

@@ -23,6 +23,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import static com.bion.omni.omnimod.util.WandGui.getNameFromKey;
@@ -162,7 +163,7 @@ public abstract class Tome extends SimplePolymerItem {
                 switch (symbol.getSymbol()) {
                     case "✔" -> text.append(getCheck(power, config == 1));
                     case "✖" -> text.append(getX(power, config == 0));
-                    default -> text.append(getSpecialSymbol(power, symbol, config == configCounter));
+                    default -> text.append(getSpecialSymbol(power, symbol, config == configCounter && !(Arrays.asList(symbol.getCommand().split("\\.")).contains("noUnderline"))));
                 }
                 text.append(" ");
                 configCounter += 1;

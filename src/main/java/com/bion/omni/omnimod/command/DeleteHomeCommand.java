@@ -27,7 +27,7 @@ public class DeleteHomeCommand {
         EntityDataInterface player = (EntityDataInterface) context.getSource().getPlayer();
         if (player.getPersistentData().contains("homepos")) {
             player.getPersistentData().remove("homepos");
-            context.getSource().sendFeedback(Text.literal("Deleted home"), false);
+            context.getSource().sendFeedback(() -> Text.literal("Deleted home"), false);
         } else {
             context.getSource().sendError(Text.literal("No home set"));
         }

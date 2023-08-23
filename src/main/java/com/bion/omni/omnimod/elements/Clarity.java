@@ -2,6 +2,8 @@ package com.bion.omni.omnimod.elements;
 
 import com.bion.omni.omnimod.powers.Power;
 import com.bion.omni.omnimod.powers.clarity.AstralProject;
+import com.bion.omni.omnimod.powers.clarity.BlindnessImmunity;
+import com.bion.omni.omnimod.powers.clarity.BlockHistory;
 import net.minecraft.util.Formatting;
 
 public class Clarity extends Element {
@@ -20,6 +22,10 @@ public class Clarity extends Element {
         return switch (id) {
             case "astralProject":
                 yield new AstralProject();
+            case "blockHistory":
+                yield new BlockHistory(level);
+            case "blindnessImmunity":
+                yield new BlindnessImmunity();
             default:
                 yield null;
         };
@@ -33,7 +39,9 @@ public class Clarity extends Element {
     @Override
     public String[] getPowerIds() {
         return new String[] {
-            "astralProject"
+                "astralProject",
+                "blockHistory",
+                "blindnessImmunity"
         };
     }
 }

@@ -40,7 +40,7 @@ public class HammerTime extends ImpulsePower {
 
     @Override
     public boolean activate(ServerPlayerEntity user) {
-        LivingEntity mark = ((Mark)(((Apprentice)user).getPowerById("mark"))).getTarget(user.getWorld());
+        LivingEntity mark = ((Mark)(((Apprentice)user).getPowerById("mark"))).getTarget(user.getServerWorld());
         if (mark != null) {
             if (super.activate(user)) {
                 tickCounter = 20;

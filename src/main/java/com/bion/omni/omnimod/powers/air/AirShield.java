@@ -61,7 +61,7 @@ public class AirShield extends ContinuousPower {
                 for (double z = -2; z <= 2; z += 0.2) {
                     double distance = new Vec3d(user.getX() + x, user.getY() + y, user.getZ() + z).distanceTo(user.getPos());
                     if (user.getRandom().nextDouble() > 0.95 && distance > 1.9 && distance <= 2.0) {
-                        user.getWorld().spawnParticles(ParticleTypes.CLOUD, user.getX() + x, user.getY() + y + 1, user.getZ() + z, 1, 0, 0, 0, 0);
+                        user.getServerWorld().spawnParticles(ParticleTypes.CLOUD, user.getX() + x, user.getY() + y + 1, user.getZ() + z, 1, 0, 0, 0, 0);
                     }
                 }
             }

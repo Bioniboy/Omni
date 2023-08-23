@@ -65,7 +65,7 @@ public class Push extends ImpulsePower {
                     mob.takeKnockback((range - distance) / 3, velocity.x, velocity.z);
                     entity.addVelocity(0, 0.7, 0);
                     entity.velocityModified = true;
-                    user.getWorld().spawnParticles(ParticleTypes.CLOUD, entity.getX(), entity.getY(), entity.getZ(), 10, 0.3, 0.3, 0.3, 0.1);
+                    user.getServerWorld().spawnParticles(ParticleTypes.CLOUD, entity.getX(), entity.getY(), entity.getZ(), 10, 0.3, 0.3, 0.3, 0.1);
                 }
             }
             return true;

@@ -8,6 +8,7 @@ import com.bion.omni.omnimod.util.SolidAirMarker;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ public class AirWalk extends ContinuousPower {
             for (int x = -1; x <= 1; x++) {
                 for (int z = -1; z <= 1; z++) {
                     if (user.getWorld().getBlockState(user.getBlockPos().add(x, -1, z)).getBlock() == Blocks.AIR) {
-                        solidAirMarkers.add(new SolidAirMarker(user.getWorld(), user.getBlockPos().add(x, -1, z), 600));
+                        solidAirMarkers.add(new SolidAirMarker(user.getServerWorld(), user.getBlockPos().add(x, -1, z), 600));
                         used = true;
                     }
                 }

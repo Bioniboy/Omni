@@ -30,7 +30,7 @@ public class ReturnHomeCommand {
 
         if (homepos.length != 0) {
             context.getSource().getPlayer().requestTeleport(homepos[0], homepos[1], homepos[2]);
-            context.getSource().sendFeedback(Text.literal("Teleported home"), false);
+            context.getSource().sendFeedback(() -> Text.literal("Teleported home"), false);
 
         } else {
             context.getSource().sendError(Text.literal("No home set"));

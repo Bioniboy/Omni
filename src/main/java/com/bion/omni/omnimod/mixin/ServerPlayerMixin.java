@@ -196,6 +196,9 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 		otherPowers.add(power);
 	}
 	public Power addPower(Power power) {
+		if (getPowerById(power.getId()) != null) {
+			power.setLevel(getPowerById(power.getId()).getLevel() + 1);
+		}
 		Advancement advancement = server.getAdvancementLoader().get(new Identifier(((Apprentice)this).getElement().getName().toLowerCase(), power.getAdvancementId()));
 		if (advancement != null) {
 			advancementTracker.grantCriterion(advancement, advancement.getCriteria().keySet().iterator().next());
@@ -356,6 +359,9 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 		for (String key : ((EntityDataInterface)oldApprentice).getPersistentData().getKeys()) {
 			if (((EntityDataInterface)oldApprentice).getPersistentData().contains(key, NbtElement.STRING_TYPE)) {
 				((EntityDataInterface)this).getPersistentData().putString(key, ((EntityDataInterface)oldApprentice).getPersistentData().getString(key));
+			}
+			if (((EntityDataInterface)oldApprentice).getPersistentData().contains(key, NbtElement.INT_TYPE)) {
+				((EntityDataInterface)this).getPersistentData().putInt(key, ((EntityDataInterface)oldApprentice).getPersistentData().getInt(key));
 			}
 		}
 	}

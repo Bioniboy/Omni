@@ -41,7 +41,7 @@ public class MakeItNight extends ImpulsePower {
     @Override
     public boolean activate(ServerPlayerEntity user) {
         if (super.activate(user)) {
-            user.getWorld().setTimeOfDay(13700);
+            user.getServerWorld().setTimeOfDay(13700);
             return true;
         }
         return false;

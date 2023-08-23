@@ -118,7 +118,7 @@ public class ManaCommand {
         if (influence >= influenceRequirement) {
             omniData.putInt("manaRegenLevel", omniData.getInt("manaRegenLevel") + 1);
             score.incrementScore(-influenceRequirement);
-            context.getSource().sendFeedback(Text.literal("Your mana regen has been upgraded to level " + omniData.getInt("manaRegenLevel")), true);
+            context.getSource().sendFeedback(() -> Text.literal("Your mana regen has been upgraded to level " + omniData.getInt("manaRegenLevel")), true);
         } else {
             if (omniData.getInt("manaMaxLevel") >= 5) {
                 context.getSource().sendError(Text.literal("You've already maxed out this upgrade"));
@@ -151,7 +151,7 @@ public class ManaCommand {
         if (influence >= influenceRequirement) {
             omniData.putInt("manaMaxLevel", omniData.getInt("manaMaxLevel") + 1);
             score.incrementScore(-influenceRequirement);
-            context.getSource().sendFeedback(Text.literal("Your mana regen has been upgraded to level " + omniData.getInt("manaRegenLevel")), true);
+            context.getSource().sendFeedback(() -> Text.literal("Your mana regen has been upgraded to level " + omniData.getInt("manaRegenLevel")), true);
         } else {
             if (omniData.getInt("manaMaxLevel") >= 5) {
                 context.getSource().sendError(Text.literal("You've already maxed out this upgrade"));

@@ -35,7 +35,7 @@ public class PowersCommand {
             score.incrementScore(-cost);
             ((EntityDataInterface) player).getPersistentData().getCompound("powers").putByte(powerId, (byte) 0);
             player.getServer().getCommandManager().sendCommandTree(player);
-            context.getSource().sendFeedback(Text.literal("You feel new power within you"), true);
+            context.getSource().sendFeedback(() -> Text.literal("You feel new power within you"), true);
         } else {
             context.getSource().sendError(Text.literal("You don't have enough Influence. Required: " + cost));
         }

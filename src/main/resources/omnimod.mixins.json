@@ -4,9 +4,11 @@
   "package": "com.bion.omni.omnimod.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "CancelSpectatorTeleport",
     "EntityMixin_Disguise",
     "ServerPlayNetworkHandlerMixin_Disguiser",
     "ServerPlayNetworkHandlerMixin_HitCheck",
+    "TargetFakePlayerMixin",
     "accessor.EntitiesDestroyS2CPacketAccessor",
     "accessor.EntityAccessor",
     "accessor.EntityAttributesS2CPacketAccessor",
@@ -21,11 +23,12 @@
     "accessor.ThreadedAnvilChunkStorageAccessor"
   ],
   "server": [
-    "ServerPlayerMixin",
     "ModEntityDataSaver",
     "PlayerDamageMultiplier",
     "PlayerHurtMultiplier",
-    "PlayerManagerMixin"
+    "PlayerManagerMixin",
+    "ServerPlayerMixin",
+    "SpectateSelf"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -90,7 +90,7 @@ public class TomeGui extends BookGui {
                 wandCommand = String.join(".", shortComponents);
                 return true;
             }
-            if (Objects.equals(shortComponents[1], "activate") && (shortComponents.length <= 3 || !Objects.equals(shortComponents[3], "reopen"))) {
+            if (Arrays.asList(shortComponents).contains("close") || (Objects.equals(shortComponents[1], "activate") && !Arrays.asList(shortComponents).contains("reopen"))) {
                 forceReopen = false;
             }
             tome.powerCommand(shortComponents, player);

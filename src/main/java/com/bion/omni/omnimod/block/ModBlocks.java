@@ -11,13 +11,13 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 
 public class ModBlocks {
-    public static final Block BURNT_TORCH = new BurntTorch(AbstractBlock.Settings.of(Material.WOOD));
-    public static final Block BURNT_WALL_TORCH = new WallBurntTorch(AbstractBlock.Settings.of(Material.WOOD));
-    public static final Block DARK_BLOCK = new DarkBlock(AbstractBlock.Settings.of(Material.STONE));
-    public static final Block SMALL_DARK_BLOCK = new SmallDarkBlock(AbstractBlock.Settings.of(Material.STONE));
-    public static final Block SOLID_AIR = new SolidAirBlock(AbstractBlock.Settings.of(Material.AIR).dropsNothing());
-    public static final Block COMMAND_TNT = new CommandTNT(AbstractBlock.Settings.of(Material.METAL, MapColor.BROWN).requiresTool().strength(-1.0f, 3600000.0f).dropsNothing(), false);
-    public static final Block BAD_TRAPDOOR = new BadTrapdoor(AbstractBlock.Settings.of(Material.WOOD, MapColor.PALE_YELLOW).strength(3.0f).sounds(BlockSoundGroup.WOOD).nonOpaque(), BlockSetType.BIRCH);
+    public static final Block BURNT_TORCH = new BurntTorch(AbstractBlock.Settings.create());
+    public static final Block BURNT_WALL_TORCH = new WallBurntTorch(AbstractBlock.Settings.create());
+    public static final Block DARK_BLOCK = new DarkBlock(AbstractBlock.Settings.create());
+    public static final Block SMALL_DARK_BLOCK = new SmallDarkBlock(AbstractBlock.Settings.create());
+    public static final Block SOLID_AIR = new SolidAirBlock(AbstractBlock.Settings.create().dropsNothing());
+    public static final Block COMMAND_TNT = new CommandTNT(AbstractBlock.Settings.create().mapColor(MapColor.BROWN).requiresTool().strength(-1.0f, 3600000.0f).dropsNothing(), false);
+    public static final Block BAD_TRAPDOOR = new BadTrapdoor(AbstractBlock.Settings.create().mapColor(MapColor.PALE_YELLOW).strength(3.0f).sounds(BlockSoundGroup.WOOD).nonOpaque(), BlockSetType.BIRCH);
 
     public static void registerBlocks() {
         Registry.register(Registries.BLOCK, new Identifier(OmniMod.MOD_ID, "burnt_torch"), BURNT_TORCH);

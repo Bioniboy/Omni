@@ -2,7 +2,6 @@ package com.bion.omni.omnimod.item.tome;
 
 import eu.pb4.polymer.core.api.item.PolymerItemUtils;
 import com.bion.omni.omnimod.elements.Element;
-import com.bion.omni.omnimod.elements.Moon;
 import com.bion.omni.omnimod.elements.Storm;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;

@@ -53,9 +53,9 @@ public class SelfDestruct extends ImpulsePower {
         user.getWorld().playSound(null, user.getX(), user.getY(), user.getZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.PLAYERS, 4.0f, (1.0f + (user.getWorld().random.nextFloat() - user.getWorld().random.nextFloat()) * 0.2f) * 0.7f);
 
         if (power < 2.0f) {
-            user.getWorld().spawnParticles(ParticleTypes.EXPLOSION, user.getX(), user.getY(), user.getZ(), 1, 0, 0, 0, 0);
+            user.getServerWorld().spawnParticles(ParticleTypes.EXPLOSION, user.getX(), user.getY(), user.getZ(), 1, 0, 0, 0, 0);
         } else {
-            user.getWorld().spawnParticles(ParticleTypes.EXPLOSION_EMITTER, user.getX(), user.getY(), user.getZ(), 1, 0, 0, 0, 0);
+            user.getServerWorld().spawnParticles(ParticleTypes.EXPLOSION_EMITTER, user.getX(), user.getY(), user.getZ(), 1, 0, 0, 0, 0);
         }
         Box box = new Box(user.getBlockPos()).expand(power + 1.0);
         for (Entity entity : user.getWorld().getOtherEntities(user, box)) {

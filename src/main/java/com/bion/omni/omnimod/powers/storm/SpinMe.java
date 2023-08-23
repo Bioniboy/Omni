@@ -35,7 +35,7 @@ public class SpinMe extends ImpulsePower {
 
     @Override
     public boolean activate(ServerPlayerEntity user) {
-        LivingEntity mark = ((Mark)(((Apprentice)user).getPowerById("mark"))).getTarget(user.getWorld());
+        LivingEntity mark = ((Mark)(((Apprentice)user).getPowerById("mark"))).getTarget(user.getServerWorld());
         if (mark != null) {
             if (super.activate(user)) {
                 if (mark instanceof ServerPlayerEntity player) {

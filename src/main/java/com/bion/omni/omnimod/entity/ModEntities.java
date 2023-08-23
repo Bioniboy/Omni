@@ -6,6 +6,7 @@ import com.bion.omni.omnimod.entity.custom.TestEntity2;
 import eu.pb4.polymer.core.api.entity.PolymerEntityUtils;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
+import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.mob.MobEntity;
@@ -15,8 +16,8 @@ import net.minecraft.util.Identifier;
 
 public class ModEntities {
     //public static final EntityType<TempBlock> TEMP_BLOCK = FabricEntityTypeBuilder.create(SpawnGroup.AMBIENT, TempBlock::new).build();
-    public static final EntityType<PlayerBody> PLAYER_BODY = FabricEntityTypeBuilder.create(SpawnGroup.MISC, PlayerBody::new).build();
-    public static final EntityType<TestEntity2> ENTITY_2 = EntityType.Builder.create(TestEntity2::new, SpawnGroup.CREATURE).setDimensions(0.75f, 1.8f).build("no");
+    public static final EntityType<PlayerBody> PLAYER_BODY = FabricEntityTypeBuilder.create(SpawnGroup.MISC, PlayerBody::new).dimensions(new EntityDimensions(0.75f, 1.8f, true)).build();
+    public static final EntityType<TestEntity2> ENTITY_2 = FabricEntityTypeBuilder.create(SpawnGroup.MISC, TestEntity2::new).dimensions(new EntityDimensions(0.75f, 1.8f, true)).build();
     public static void registerEntities() {
         Registry.register(Registries.ENTITY_TYPE, new Identifier(OmniMod.MOD_ID, "player_body"), PLAYER_BODY);
         FabricDefaultAttributeRegistry.register(PLAYER_BODY, MobEntity.createMobAttributes());

@@ -91,7 +91,7 @@ public class SolidAir extends ImpulsePower {
             } else {
                 pos = BlockPos.ofFloored(user.getEyePos().add(0, -0.75, 0).add(user.getRotationVector().multiply(2)));
             }
-            solidAirMarkers.add(new SolidAirMarker(user.getWorld(), pos, 36000));
+            solidAirMarkers.add(new SolidAirMarker(user.getServerWorld(), pos, 36000));
             if (solidAirMarkers.size() > getBlockMax()) {
                 solidAirMarkers.get(0).end();
                 solidAirMarkers.remove(0);

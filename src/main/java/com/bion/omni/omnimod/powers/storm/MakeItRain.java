@@ -27,7 +27,7 @@ public class MakeItRain extends ImpulsePower {
     @Override
     public boolean activate(ServerPlayerEntity user) {
         if (super.activate(user)) {
-            user.getWorld().setWeather(0, 0, true, user.getRandom().nextDouble() < 0.33);
+            user.getServerWorld().setWeather(0, 0, true, user.getRandom().nextDouble() < 0.33);
             return true;
         } else {
             return false;

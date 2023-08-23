@@ -125,4 +125,3 @@ public class OmniCommand {
         Mana.manaInitialize((Apprentice) player);
     }
 }
-//((PropertyDelegate)lectern).set(0, 2);
