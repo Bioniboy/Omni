@@ -25,10 +25,6 @@ import java.util.ArrayList;
 public class AstralProject extends ContinuousPower {
     private PlayerBody body = null;
 
-    @Override
-    public NbtCompound toNbt() {
-        return super.toNbt();
-    }
     public PlayerBody getBody() {
         return body;
     }

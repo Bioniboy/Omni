@@ -6,8 +6,10 @@
   "mixins": [
     "CancelSpectatorTeleport",
     "EntityMixin_Disguise",
+    "PlayerEatMultiplier",
     "ServerPlayNetworkHandlerMixin_Disguiser",
     "ServerPlayNetworkHandlerMixin_HitCheck",
+    "ShouldDrown",
     "TargetFakePlayerMixin",
     "accessor.EntitiesDestroyS2CPacketAccessor",
     "accessor.EntityAccessor",

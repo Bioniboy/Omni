@@ -1,12 +1,9 @@
 package com.bion.omni.omnimod.command;
 
-import com.bion.omni.omnimod.elements.Air;
-import com.bion.omni.omnimod.elements.Clarity;
+import com.bion.omni.omnimod.elements.*;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.bion.omni.omnimod.elements.Moon;
-import com.bion.omni.omnimod.elements.Storm;
 import com.bion.omni.omnimod.item.ModItems;
 import com.bion.omni.omnimod.powers.Mana;
 import com.bion.omni.omnimod.util.EntityDataInterface;
@@ -33,7 +30,7 @@ public class OmniCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess s, CommandManager.RegistrationEnvironment p) {
         dispatcher.register(CommandManager.literal("omni")
                 .then(CommandManager.literal("glow")
-                        .requires(context -> {return ((EntityDataInterface)context.getPlayer()).getPersistentData().getCompound("powers").contains("glow");})
+                        .requires(context -> ((EntityDataInterface)context.getPlayer()).getPersistentData().getCompound("powers").contains("glow"))
                         .executes(OmniCommand::run)
                 )
                 .then(CommandManager.literal("choose")
@@ -49,6 +46,9 @@ public class OmniCommand {
                         )
                         .then(CommandManager.literal("clarity")
                                 .executes(context -> {choose(context.getSource().getPlayer(), "clarity"); return 1;})
+                        )
+                        .then(CommandManager.literal("life")
+                                .executes(context -> {choose(context.getSource().getPlayer(), "life"); return 1;})
                         )
                 )
         );
@@ -111,11 +111,20 @@ public class OmniCommand {
                 if (!player.getInventory().contains(ModItems.LIBRONOMICON.getDefaultStack())) {
                     player.giveItemStack(new ItemStack(ModItems.LIBRONOMICON));
                 }
-                if (!player.getInventory().contains(ModItems.STORM_WAND.getDefaultStack())) {
-                    player.giveItemStack(new ItemStack(ModItems.STORM_WAND));
+                if (!player.getInventory().contains(ModItems.CLARITY_WAND.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.CLARITY_WAND));
                 }
                 starterPowerId = "astralProject";
                 yield new Clarity();
+            case "life":
+                if (!player.getInventory().contains(ModItems.VITANOMICON.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.VITANOMICON));
+                }
+                if (!player.getInventory().contains(ModItems.LIFE_WAND.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.LIFE_WAND));
+                }
+                starterPowerId = "photosynthesis";
+                yield new Life();
             default:
                 yield null;
         });

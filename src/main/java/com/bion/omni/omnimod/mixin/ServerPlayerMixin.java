@@ -78,6 +78,8 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 				yield new Air();
 			case "Clarity":
 				yield new Clarity();
+			case "Life":
+				yield new Life();
 			default:
 				OmniMod.LOGGER.error("Error: " + elementId + " element not defined" );
 				yield null;

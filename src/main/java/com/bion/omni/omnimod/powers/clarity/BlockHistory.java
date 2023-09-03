@@ -17,9 +17,6 @@ public class BlockHistory extends ImpulsePower {
     }
     @Override
     public String getName() {
-        OmniMod.LOGGER.info("Name:");
-        OmniMod.LOGGER.info(getLevel().toString());
-        OmniMod.LOGGER.info((getLevel() == 1 ? "" : "Cheap ") + "Block History");
         return (getLevel() == 1 ? "" : "Cheap ") + "Block History";
     }
 
@@ -30,9 +27,6 @@ public class BlockHistory extends ImpulsePower {
 
     @Override
     public String getAdvancementId() {
-        OmniMod.LOGGER.info("Advancement:");
-        OmniMod.LOGGER.info(getLevel().toString());
-        OmniMod.LOGGER.info((getLevel() == 1 ? "" : "cheap_") + "block_history");
         return (getLevel() == 1 ? "" : "cheap_") + "block_history";
     }
 
