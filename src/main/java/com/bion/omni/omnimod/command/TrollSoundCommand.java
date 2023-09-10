@@ -23,13 +23,13 @@ public class TrollSoundCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess s, CommandManager.RegistrationEnvironment p) {
         dispatcher.register(CommandManager.literal("troll")
                 .then(CommandManager.literal("playsound")
-                        .requires(serverCommandSource -> {return ((Apprentice)serverCommandSource.getPlayer()).getPowerById("whatWasThat") != null;})
+                        .requires(serverCommandSource -> {return ((Apprentice)serverCommandSource.getPlayer()).omni$getPowerById("whatWasThat") != null;})
                         .then(CommandManager.argument("sound", IdentifierArgumentType.identifier()).suggests(SuggestionProviders.AVAILABLE_SOUNDS)
                                 .executes(TrollSoundCommand::run)
                         )
                 )
                 .then(CommandManager.literal("mark")
-                        .requires(serverCommandSource -> {return ((Apprentice)serverCommandSource.getPlayer()).getPowerById("mark") != null;})
+                        .requires(serverCommandSource -> {return ((Apprentice)serverCommandSource.getPlayer()).omni$getPowerById("mark") != null;})
                         .executes(TrollSoundCommand::mark)
                 )
         );
@@ -47,12 +47,12 @@ public class TrollSoundCommand {
 
         ServerPlayerEntity player = context.getSource().getPlayer();
         Apprentice apprentice = (Apprentice) player;
-        Power markPower = apprentice.getPowerById("mark");
+        Power markPower = apprentice.omni$getPowerById("mark");
         if (markPower != null) {
             Entity target = ((Mark)markPower).getTarget(context.getSource().getWorld());
             if (target instanceof ServerPlayerEntity targetPlayer) {
-                if (apprentice.getMana() >= 20) {
-                    apprentice.changeMana(-20);
+                if (apprentice.omni$getMana() >= 20) {
+                    apprentice.omni$changeMana(-20);
                     RegistryEntry<SoundEvent> registryEntry = RegistryEntry.of(SoundEvent.of(IdentifierArgumentType.getIdentifier(context, "sound")));
                     targetPlayer.networkHandler.sendPacket(new PlaySoundS2CPacket(registryEntry, SoundCategory.MASTER, targetPlayer.getX(), targetPlayer.getY(), targetPlayer.getZ(), 1.0f, 1.0f, (long) 1.0));
                     context.getSource().getPlayer().networkHandler.sendPacket(new PlaySoundS2CPacket(registryEntry, SoundCategory.MASTER, player.getX(), player.getY(), player.getZ(), 1.0f, 1.0f, (long) 1.0));
@@ -69,7 +69,7 @@ public class TrollSoundCommand {
 
     public static int mark(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         Apprentice apprentice = (Apprentice) context.getSource().getPlayer();
-        Power markPower = apprentice.getPowerById("mark");
+        Power markPower = apprentice.omni$getPowerById("mark");
         if (markPower != null) {
             ((Mark) markPower).setTarget(context.getSource().getPlayer());
         }

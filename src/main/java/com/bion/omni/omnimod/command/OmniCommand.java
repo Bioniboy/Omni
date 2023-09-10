@@ -1,6 +1,8 @@
 package com.bion.omni.omnimod.command;
 
 import com.bion.omni.omnimod.elements.*;
+import com.bion.omni.omnimod.mixin.accessor.EntityAccessor;
+import com.bion.omni.omnimod.util.AfkUtil;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -19,6 +21,7 @@ import net.minecraft.network.packet.s2c.play.EntityTrackerUpdateS2CPacket;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.Box;
 
 import java.util.ArrayList;
@@ -50,6 +53,12 @@ public class OmniCommand {
                         .then(CommandManager.literal("life")
                                 .executes(context -> {choose(context.getSource().getPlayer(), "life"); return 1;})
                         )
+                        .then(CommandManager.literal("fire")
+                                .executes(context -> {choose(context.getSource().getPlayer(), "fire"); return 1;})
+                        )
+                )
+                .then(CommandManager.literal("playtime")
+                        .executes(OmniCommand::playtime)
                 )
         );
     }
@@ -58,12 +67,10 @@ public class OmniCommand {
         ServerPlayerEntity player = context.getSource().getPlayer();
         Box boxAroundPlayer = new Box(player.getBlockPos()).expand(10, 10, 10);
         List<Entity> entities = context.getSource().getWorld().getOtherEntities(null, boxAroundPlayer);
-        ((Apprentice) player).getCosts().put("glow", 20.0);
+        ((Apprentice) player).omni$getCosts().put("glow", 20.0);
         for (Entity entity : entities) {
-            EntityDataInterface dataEntity = (EntityDataInterface) entity;
-            TrackedData<Byte> FLAGS = dataEntity.getFlags();
             List<DataTracker.SerializedEntry<?>> entries = new ArrayList<>();
-            entries.add(DataTracker.SerializedEntry.of(FLAGS, (byte)(entity.getDataTracker().get(FLAGS) | 1 << 6)));
+            entries.add(DataTracker.SerializedEntry.of(EntityAccessor.getFLAGS(), (byte)(entity.getDataTracker().get(EntityAccessor.getFLAGS()) | 1 << 6)));
             var packet = new EntityTrackerUpdateS2CPacket(entity.getId(), entries);
 
             player.networkHandler.sendPacket(packet);
@@ -71,7 +78,7 @@ public class OmniCommand {
         return 1;
     }
     private static void choose(PlayerEntity player, String element) {
-        ((Apprentice)player).clearPowers();
+        ((Apprentice)player).omni$clearPowers();
         NbtCompound omniData = ((EntityDataInterface) player).getPersistentData();
         while (!omniData.isEmpty()) {
             String[] dataList = omniData.toString().split(":", 2);
@@ -79,7 +86,7 @@ public class OmniCommand {
         }
         ((EntityDataInterface)player).getPersistentData().putString("1RightClick", "");
         String starterPowerId = "";
-        ((Apprentice)player).setElement(switch (element) {
+        ((Apprentice)player).omni$setElement(switch (element) {
             case "moon":
                 if (!player.getInventory().contains(ModItems.NOCTONOMICON.getDefaultStack())) {
                     player.giveItemStack(new ItemStack(ModItems.NOCTONOMICON));
@@ -125,12 +132,41 @@ public class OmniCommand {
                 }
                 starterPowerId = "photosynthesis";
                 yield new Life();
+            case "fire":
+                if (!player.getInventory().contains(ModItems.PYRONOMICON.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.PYRONOMICON));
+                }
+                if (!player.getInventory().contains(ModItems.FIRE_WAND.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.FIRE_WAND));
+                }
+                starterPowerId = "fireResistance";
+                yield new Fire();
             default:
                 yield null;
         });
         if (!starterPowerId.equals("")) {
-            ((Apprentice)player).addPower(starterPowerId);
+            ((Apprentice)player).omni$addPower(starterPowerId);
         }
         Mana.manaInitialize((Apprentice) player);
+    }
+
+
+    private static int playtime(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        int activeTicks = ((AfkUtil)context.getSource().getPlayer()).omni$getActiveTicks();
+        int hours = activeTicks / (20 * 60 * 60);
+        int minutes = (activeTicks / (20 * 60)) - (hours * 60);
+        int seconds = (activeTicks / 20) - (minutes * 60);
+
+        if (activeTicks < 72000) {
+            context.getSource().sendFeedback(() -> Text.literal("You have been playing for " + (hours != 0 ? hours + " hours, ": "") + (minutes != 0 ? minutes + " minutes and ": "") + seconds + " seconds today."), false);
+            int remainingTicks = 72000 - activeTicks + 20;
+            int remainingHours = remainingTicks / (20 * 60 * 60);
+            int remainingMinutes = (remainingTicks / (20 * 60)) - (remainingHours * 60);
+            int remainingSeconds = (remainingTicks / 20) - (remainingMinutes * 60);
+            context.getSource().sendFeedback(() -> Text.literal("You need to play for " + (remainingHours != 0 ? remainingHours + " hours, ": "") + (remainingMinutes != 0 ? remainingMinutes + " minutes and ": "") + remainingSeconds + " seconds to get your Influence reward."), false);
+        } else {
+            context.getSource().sendFeedback(() -> Text.literal("You got your Influence reward for today!"), false);
+        }
+        return 1;
     }
 }

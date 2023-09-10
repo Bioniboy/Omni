@@ -15,20 +15,20 @@ import java.util.function.Function;
 public class Mana {
     public static void manaUpdate(Apprentice player) {
 
-        double prevMana = player.getMana();
-        Hashtable<String, Double> costs = player.getCosts();
+        double prevMana = player.omni$getMana();
+        Hashtable<String, Double> costs = player.omni$getCosts();
         for (var costId : costs.keySet()) {
-            player.changeMana(-costs.get(costId));
+            player.omni$changeMana(-costs.get(costId));
         }
         costs.clear();
         //player.getElement().isInDomain((ServerPlayerEntity) player);
-        if (player.getMana() < player.getManaMax()) {
-            player.changeMana(player.getManaRegen());
-            if (player.getMana() > player.getManaMax()) {
-                player.setMana(player.getManaMax());
+        if (player.omni$getMana() < player.omni$getManaMax()) {
+            player.omni$changeMana(player.omni$getManaRegen());
+            if (player.omni$getMana() > player.omni$getManaMax()) {
+                player.omni$setMana(player.omni$getManaMax());
             }
         }
-        if (player.getMana() != prevMana) {
+        if (player.omni$getMana() != prevMana) {
             manaShow((ServerPlayerEntity) player);
         }
 
@@ -36,9 +36,9 @@ public class Mana {
 
     public static void manaShow(ServerPlayerEntity player) {
         Function<Text, Packet<?>> constructor = OverlayMessageS2CPacket::new;
-        double ratio = (((Apprentice)player).getMana() * 100) / ((Apprentice)player).getManaMax();
+        double ratio = (((Apprentice)player).omni$getMana() * 100) / ((Apprentice)player).omni$getManaMax();
         MutableText manaBar = Text.literal("\uf80b\uf808\uf806");
-        String numbers = Math.round((float)((Apprentice)player).getMana()) + "/" + ((Apprentice)player).getManaMax();
+        String numbers = Math.round((float)((Apprentice)player).omni$getMana()) + "/" + ((Apprentice)player).omni$getManaMax();
 //        int spaces = 0;
 //        while (spaces + numbers.length() < 15) {
 //            manaBar.append(" ");
@@ -59,7 +59,7 @@ public class Mana {
         for (int i = 0; i < numbers.length() * 2.5; i++) {
             manaBar.append("\uf801");
         }
-        manaBar.append(Text.literal(numbers + "\uf81A").formatted(((Apprentice)player).getElement().getColor()));
+        manaBar.append(Text.literal(numbers + "\uf81A").formatted(((Apprentice)player).omni$getElement().getColor()));
         for (int i = 0; i < numbers.length() * 2.5; i++) {
             manaBar.append("\uf801");
         }
@@ -68,8 +68,8 @@ public class Mana {
     }
 
     public static void manaInitialize(Apprentice player) {
-        player.setMana(60);
-        player.setManaRegenLevel(1);
-        player.setManaMaxLevel(1);
+        player.omni$setMana(60);
+        player.omni$setManaRegenLevel(1);
+        player.omni$setManaMaxLevel(1);
     }
 }

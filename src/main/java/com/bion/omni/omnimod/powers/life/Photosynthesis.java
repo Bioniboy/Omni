@@ -21,7 +21,7 @@ public class Photosynthesis extends ContinuousPower {
 
     @Override
     public String getAdvancementId() {
-        return "photosynthesis";
+        return "root";
     }
 
     @Override

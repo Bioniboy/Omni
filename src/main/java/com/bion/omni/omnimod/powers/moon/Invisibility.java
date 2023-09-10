@@ -51,7 +51,7 @@ public class Invisibility extends ContinuousPower {
 
     @Override
     public boolean isActive(ServerPlayerEntity user) {
-        return super.isActive(user) || ((Apprentice)user).getConfigValue(getId()) == 2 && user.isSneaking();
+        return super.isActive(user) || ((Apprentice)user).omni$getConfigValue(getId()) == 2 && user.isSneaking();
     }
     @Override
     public ArrayList<ConfigSymbol> getConfigSymbols() {

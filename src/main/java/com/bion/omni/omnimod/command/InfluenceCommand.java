@@ -2,25 +2,15 @@ package com.bion.omni.omnimod.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.bion.omni.omnimod.util.Apprentice;
-import com.bion.omni.omnimod.util.EntityDataInterface;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 
 import java.util.Collection;
-import java.util.Iterator;
-
-import static com.bion.omni.omnimod.powers.Mana.manaInitialize;
-import static com.bion.omni.omnimod.powers.Mana.manaShow;
 
 public class InfluenceCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess s, CommandManager.RegistrationEnvironment p) {
@@ -69,7 +59,7 @@ public class InfluenceCommand {
     }
 
     private static int setPlayerInfluence(ServerPlayerEntity player, int value) {
-        ((Apprentice)player).setInfluence(value);
+        ((Apprentice)player).omni$setInfluence(value);
         return 1;
     }
 
@@ -81,7 +71,7 @@ public class InfluenceCommand {
     }
 
     private static int addPlayerInfluence(ServerPlayerEntity player, int value) {
-        ((Apprentice)player).changeInfluence(value);
+        ((Apprentice)player).omni$changeInfluence(value);
         return 1;
     }
 }

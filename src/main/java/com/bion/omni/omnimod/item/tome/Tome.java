@@ -1,6 +1,5 @@
 package com.bion.omni.omnimod.item.tome;
 
-import com.bion.omni.omnimod.OmniMod;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.sgui.api.elements.BookElementBuilder;
 import com.bion.omni.omnimod.elements.Element;
@@ -39,7 +38,7 @@ public abstract class Tome extends SimplePolymerItem {
     }
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        if (((Apprentice) user).getElement() != null && Objects.equals(((Apprentice) user).getElement().getName(), getElement().getName())) {
+        if (((Apprentice) user).omni$getElement() != null && Objects.equals(((Apprentice) user).omni$getElement().getName(), getElement().getName())) {
             TomeGui gui = new TomeGui((ServerPlayerEntity) user, genTome(user));
             if (((EntityDataInterface) user).getPersistentData().contains("page")) {
                 gui.setPage(((EntityDataInterface) user).getPersistentData().getInt("page"));
@@ -59,8 +58,8 @@ public abstract class Tome extends SimplePolymerItem {
         MutableText configPage = Text.literal("").append(getBorder());
         configPage.append(Text.literal("    Power Usage").formatted(Formatting.BOLD, getElement().getColor()));
         int powerCount = 1;
-        for (PowerConfig entry : ((Apprentice)user).getConfig()) {
-            Power power = ((Apprentice)user).getPowerById(entry.getId());
+        for (PowerConfig entry : ((Apprentice)user).omni$getConfig()) {
+            Power power = ((Apprentice)user).omni$getPowerById(entry.getId());
             configPage.append(getPowerText(power, (ServerPlayerEntity) user));
             if (powerCount < 4) {
                 powerCount++;
@@ -77,10 +76,10 @@ public abstract class Tome extends SimplePolymerItem {
         buyPowersPage.append(Text.literal("    Buy Powers\n\n").formatted(Formatting.BOLD, getElement().getColor()));
         for (String id : getElement().getPowerIds()) {
             Power power = getElement().getPower(id);
-            if ((((Apprentice)user).getPowerById(id) == null && (Objects.equals(power.getPreRequisiteId(), null) || ((Apprentice)user).getPowerById(power.getPreRequisiteId()) != null))
-            || ((Apprentice)user).getPowerById(id) != null && power.getMaxLevel() > ((Apprentice)user).getPowerById(id).getLevel()) {
-                if (((Apprentice)user).getPowerById(id) != null) {
-                    power.setLevel(((Apprentice)user).getPowerById(id).getLevel() + 1);
+            if ((((Apprentice)user).omni$getPowerById(id) == null && (Objects.equals(power.getPreRequisiteId(), null) || ((Apprentice)user).omni$getPowerById(power.getPreRequisiteId()) != null))
+            || ((Apprentice)user).omni$getPowerById(id) != null && power.getMaxLevel() > ((Apprentice)user).omni$getPowerById(id).getLevel()) {
+                if (((Apprentice)user).omni$getPowerById(id) != null) {
+                    power.setLevel(((Apprentice)user).omni$getPowerById(id).getLevel() + 1);
                 }
                 buyPowersPage.append(getPowerBuyDot(power, (Apprentice)user));
                 buyPowersPage.append(Text.literal(power.getName() + "\n").formatted(getElement().getColor()));
@@ -100,7 +99,7 @@ public abstract class Tome extends SimplePolymerItem {
                 .append(getWandSlotDot(user, "2ShiftRightClick"))
                 .append(getWandSlotDot(user, "2ShiftLeftClick"));
         book.addPage(WandSlotPage);
-        String regenText = switch(((Apprentice)user).getManaRegenLevel()) {
+        String regenText = switch(((Apprentice)user).omni$getManaRegenLevel()) {
             case 1:
                 yield "1 per 5 seconds";
             case 2:
@@ -119,7 +118,7 @@ public abstract class Tome extends SimplePolymerItem {
         MutableText manaPage = Text.literal("").append(getBorder())
                 .append(Text.literal("       Mana\n\n").formatted(Formatting.BOLD, getElement().getColor()))
                 .append(Text.literal("Mana Max\n").formatted(getElement().getColor()))
-                .append(((Apprentice) user).getManaMax() + "\n")
+                .append(((Apprentice) user).omni$getManaMax() + "\n")
                 .append(getManaMaxDot((Apprentice)user, 1))
                 .append(getManaMaxDot((Apprentice)user, 2))
                 .append(getManaMaxDot((Apprentice)user, 3))
@@ -155,7 +154,7 @@ public abstract class Tome extends SimplePolymerItem {
                         "will grow with you."));
     }
     private MutableText getPowerText(Power power, ServerPlayerEntity user) {
-        Integer config = ((Apprentice) user).getConfigValue(power.getId());
+        Integer config = ((Apprentice) user).omni$getConfigValue(power.getId());
         MutableText text = (Text.literal("\n\n" + power.getName() + "\n").formatted(getElement().getColor()));
         if (power instanceof ContinuousPower) {
             int configCounter = 0;
@@ -188,35 +187,35 @@ public abstract class Tome extends SimplePolymerItem {
         return text;
     }
     public void powerCommand(String[] components, ServerPlayerEntity user) {
-        ((Apprentice)user).interpretWandCommand(components);
+        ((Apprentice)user).omni$interpretWandCommand(components);
         user.playSound(SoundEvent.of(new Identifier("minecraft:ui.button.click")), SoundCategory.PLAYERS, 0.3F, 1.0F);
     }
     public void arrowCommand(String[] components, ServerPlayerEntity user) {
         if (Objects.equals(components[1], "up")) {
-            ((Apprentice)user).reorderConfig(components[0], -1);
+            ((Apprentice)user).omni$reorderConfig(components[0], -1);
         } else {
-            ((Apprentice)user).reorderConfig(components[0], 1);
+            ((Apprentice)user).omni$reorderConfig(components[0], 1);
         }
         user.playSound(SoundEvent.of(new Identifier("minecraft:ui.button.click")), SoundCategory.PLAYERS, 0.3F, 1.0F);
     }
     public void buyCommand(String[] components, ServerPlayerEntity user) {
-        ((Apprentice)user).buyPower(components[0], Integer.parseInt(components[1]));
+        ((Apprentice)user).omni$buyPower(components[0], Integer.parseInt(components[1]));
     }
     public void wandSlotCommand(String[] components, ServerPlayerEntity user) {
-        if (components[0].startsWith("2") && ((Apprentice)user).getPowerById("changeWandPage") == null) {
-            ((Apprentice)user).addPower(new ChangeWandPage());
+        if (components[0].startsWith("2") && ((Apprentice)user).omni$getPowerById("changeWandPage") == null) {
+            ((Apprentice)user).omni$addPower(new ChangeWandPage());
         }
-        ((Apprentice)user).changeInfluence(-getWandSlotCost(((EntityDataInterface)user).getPersistentData()));
+        ((Apprentice)user).omni$changeInfluence(-getWandSlotCost(((EntityDataInterface)user).getPersistentData()));
         ((EntityDataInterface)user).getPersistentData().putString(components[0], "");
     }
     public void upgradeMaxMana(ServerPlayerEntity player) {
-        ((Apprentice)player).changeInfluence(-((Apprentice) player).getManaMaxLevel() * 30);
-        ((Apprentice)player).upgradeManaMax();
+        ((Apprentice)player).omni$changeInfluence(-((Apprentice) player).omni$getManaMaxLevel() * 30);
+        ((Apprentice)player).omni$upgradeManaMax();
     }
 
     public void upgradeManaRegen(ServerPlayerEntity player) {
-        ((Apprentice)player).changeInfluence(-20 - ((Apprentice) player).getManaRegenLevel() * 40);
-        ((Apprentice)player).upgradeManaRegen();
+        ((Apprentice)player).omni$changeInfluence(-20 - ((Apprentice) player).omni$getManaRegenLevel() * 40);
+        ((Apprentice)player).omni$upgradeManaRegen();
     }
 
     private MutableText getArrows(String key) {
@@ -288,11 +287,11 @@ public abstract class Tome extends SimplePolymerItem {
                 .formatted(getElement().getColor())
                 .styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                         Text.literal("")
-                                .append((player.getInfluence() >= power.getInfluenceCost() ? Text.literal("Buy ").append(Text.literal(power.getName() + "\n").formatted(getElement().getColor())) : Text.literal("")))
+                                .append((player.omni$getInfluence() >= power.getInfluenceCost() ? Text.literal("Buy ").append(Text.literal(power.getName() + "\n").formatted(getElement().getColor())) : Text.literal("")))
                                 .append(power.getInfluenceCost() + " Influence")
-                                .formatted(player.getInfluence() >= power.getInfluenceCost() ? Formatting.WHITE : Formatting.DARK_RED)
+                                .formatted(player.omni$getInfluence() >= power.getInfluenceCost() ? Formatting.WHITE : Formatting.DARK_RED)
                 )));
-        if (player.getInfluence() >= power.getInfluenceCost()) {
+        if (player.omni$getInfluence() >= power.getInfluenceCost()) {
             dot.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/buy." + power.getId() + "." + power.getLevel())));
         }
         return dot;
@@ -324,7 +323,7 @@ public abstract class Tome extends SimplePolymerItem {
     }
     private MutableText getWandSlotDot(PlayerEntity player, String slot) {
         NbtCompound data = ((EntityDataInterface)player).getPersistentData();
-        Integer influence = ((Apprentice)player).getInfluence();
+        Integer influence = ((Apprentice)player).omni$getInfluence();
         return Text.literal("    ")
                 .append(Text.literal("⬤")
                         .formatted(!data.contains(slot) ? Formatting.GRAY : Objects.equals(data.getString(slot), "") ? Formatting.BLACK : Formatting.DARK_GREEN)
@@ -352,12 +351,12 @@ public abstract class Tome extends SimplePolymerItem {
     private MutableText getManaMaxDot(Apprentice player, int level) {
         MutableText dot = Text.literal("")
                 .append(Text.literal("⬤")
-                        .formatted(level < player.getManaMaxLevel() ? Formatting.DARK_GREEN : level > player.getManaMaxLevel() ? Formatting.GRAY : Formatting.BLACK)
-                        .styled(style -> style.withClickEvent(player.getManaMaxLevel() == level && player.getInfluence() >= level * 30 ? new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/upgradeMax") : new ClickEvent(ClickEvent.Action.CHANGE_PAGE, "0")))
+                        .formatted(level < player.omni$getManaMaxLevel() ? Formatting.DARK_GREEN : level > player.omni$getManaMaxLevel() ? Formatting.GRAY : Formatting.BLACK)
+                        .styled(style -> style.withClickEvent(player.omni$getManaMaxLevel() == level && player.omni$getInfluence() >= level * 30 ? new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/upgradeMax") : new ClickEvent(ClickEvent.Action.CHANGE_PAGE, "0")))
                 );
-        if (player.getManaMaxLevel() <= level) {
+        if (player.omni$getManaMaxLevel() <= level) {
             dot.styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                    level > player.getManaMaxLevel() ?
+                    level > player.omni$getManaMaxLevel() ?
                             Text.literal((level + 1) * 60 + " Max ").formatted(Formatting.GRAY)
                                     .append(Text.literal("Mana\n")
                                             .formatted(getElement().getColor())
@@ -370,7 +369,7 @@ public abstract class Tome extends SimplePolymerItem {
                                             .formatted(getElement().getColor())
                                     )
                                     .append(Text.literal(level * 30 + " Influence")
-                                            .formatted(player.getInfluence() >= level * 30 ? Formatting.WHITE : Formatting.DARK_RED)
+                                            .formatted(player.omni$getInfluence() >= level * 30 ? Formatting.WHITE : Formatting.DARK_RED)
                                     )
                     )
             ));
@@ -393,12 +392,12 @@ public abstract class Tome extends SimplePolymerItem {
         } : 1;
         MutableText dot = Text.literal("")
                 .append(Text.literal("⬤")
-                        .formatted(level < player.getManaRegenLevel() ? Formatting.DARK_GREEN : level > player.getManaRegenLevel() ? Formatting.GRAY : Formatting.BLACK)
-                        .styled(style -> style.withClickEvent(player.getManaRegenLevel() == level && player.getInfluence() >= 20 + level * 40 ? new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/upgradeRegen") : new ClickEvent(ClickEvent.Action.CHANGE_PAGE, "0")))
+                        .formatted(level < player.omni$getManaRegenLevel() ? Formatting.DARK_GREEN : level > player.omni$getManaRegenLevel() ? Formatting.GRAY : Formatting.BLACK)
+                        .styled(style -> style.withClickEvent(player.omni$getManaRegenLevel() == level && player.omni$getInfluence() >= 20 + level * 40 ? new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/upgradeRegen") : new ClickEvent(ClickEvent.Action.CHANGE_PAGE, "0")))
                 );
-        if (player.getManaRegenLevel() <= level) {
+        if (player.omni$getManaRegenLevel() <= level) {
             dot.styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                            level > player.getManaRegenLevel() ?
+                            level > player.omni$getManaRegenLevel() ?
                                     Text.literal(regen + " ").formatted(Formatting.GRAY)
                                             .append(Text.literal("Mana")
                                                     .formatted(getElement().getColor())
@@ -413,7 +412,7 @@ public abstract class Tome extends SimplePolymerItem {
                                             )
                                             .append(Text.literal(" per " + (regenDelay > 1 ? regenDelay + " seconds" : "second") + "\n"))
                                             .append(Text.literal((20 + level * 40) + " Influence")
-                                                    .formatted(player.getInfluence() >= (20 + level * 40) ? Formatting.WHITE : Formatting.DARK_RED)
+                                                    .formatted(player.omni$getInfluence() >= (20 + level * 40) ? Formatting.WHITE : Formatting.DARK_RED)
                                             )
                     )
             ));

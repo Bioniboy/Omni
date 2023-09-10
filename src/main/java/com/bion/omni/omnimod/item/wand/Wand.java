@@ -3,7 +3,6 @@ package com.bion.omni.omnimod.item.wand;
 import com.bion.omni.omnimod.elements.Element;
 import eu.pb4.polymer.core.api.item.PolymerItemUtils;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
-import com.bion.omni.omnimod.OmniMod;
 import com.bion.omni.omnimod.util.Apprentice;
 import com.bion.omni.omnimod.util.EntityDataInterface;
 import com.bion.omni.omnimod.util.LeftClickItem;
@@ -30,12 +29,12 @@ public abstract class Wand extends SimplePolymerItem implements LeftClickItem {
     public abstract int getItemNumber();
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        if (((Apprentice)user).getElement() != null && Objects.equals(((Apprentice) user).getElement().getName(), getElement().getName())) {
-            Integer wandPage = ((Apprentice)user).getWandPage();
+        if (((Apprentice)user).omni$getElement() != null && Objects.equals(((Apprentice) user).omni$getElement().getName(), getElement().getName())) {
+            Integer wandPage = ((Apprentice)user).omni$getWandPage();
             if (!Objects.equals(((EntityDataInterface) user).getPersistentData().getString(wandPage + "ShiftRightClick"), "") && user.isSneaking()) {
-                ((Apprentice)user).interpretWandCommand(((EntityDataInterface)user).getPersistentData().getString(wandPage + "ShiftRightClick"));
+                ((Apprentice)user).omni$interpretWandCommand(((EntityDataInterface)user).getPersistentData().getString(wandPage + "ShiftRightClick"));
             } else if (!Objects.equals(((EntityDataInterface) user).getPersistentData().getString(wandPage + "RightClick"), "")) {
-                ((Apprentice)user).interpretWandCommand(((EntityDataInterface)user).getPersistentData().getString(wandPage + "RightClick"));
+                ((Apprentice)user).omni$interpretWandCommand(((EntityDataInterface)user).getPersistentData().getString(wandPage + "RightClick"));
             }
             return TypedActionResult.pass(user.getStackInHand((hand)));
         } else {
@@ -46,12 +45,12 @@ public abstract class Wand extends SimplePolymerItem implements LeftClickItem {
     }
     @Override
     public void click(PlayerEntity user) {
-        if (((Apprentice)user).getElement() != null && Objects.equals(((Apprentice) user).getElement().getName(), getElement().getName())) {
-            Integer wandPage = ((Apprentice) user).getWandPage();
+        if (((Apprentice)user).omni$getElement() != null && Objects.equals(((Apprentice) user).omni$getElement().getName(), getElement().getName())) {
+            Integer wandPage = ((Apprentice) user).omni$getWandPage();
             if (!Objects.equals(((EntityDataInterface) user).getPersistentData().getString(wandPage + "ShiftLeftClick"), "") && user.isSneaking()) {
-                ((Apprentice) user).interpretWandCommand(((EntityDataInterface) user).getPersistentData().getString(wandPage + "ShiftLeftClick"));
+                ((Apprentice) user).omni$interpretWandCommand(((EntityDataInterface) user).getPersistentData().getString(wandPage + "ShiftLeftClick"));
             } else if (!Objects.equals(((EntityDataInterface) user).getPersistentData().getString(wandPage + "LeftClick"), "")) {
-                ((Apprentice) user).interpretWandCommand(((EntityDataInterface) user).getPersistentData().getString(wandPage + "LeftClick"));
+                ((Apprentice) user).omni$interpretWandCommand(((EntityDataInterface) user).getPersistentData().getString(wandPage + "LeftClick"));
             }else {
                 user.sendMessage(Text.literal("The wand won't respond...").formatted(getElement().getColor()));
             }

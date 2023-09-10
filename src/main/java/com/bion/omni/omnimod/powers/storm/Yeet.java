@@ -11,7 +11,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
 
 public class Yeet extends ImpulsePower {
     @Override
@@ -49,12 +48,12 @@ public class Yeet extends ImpulsePower {
         //OmniMod.LOGGER.info(user.raycast(5, 1.0F, false).getType().name());
         EntityHitResult hitResult = ProjectileUtil.raycast(user.getCameraEntity(), user.getEyePos(), user.getEyePos().add(user.getRotationVector().multiply(4)), new Box(user.getBlockPos()).expand(5), EntityPredicates.VALID_LIVING_ENTITY, 16);
         if (hitResult != null) {
-            float percentFull = (float)((Apprentice)user).getMana() / 60;
+            float percentFull = (float)((Apprentice)user).omni$getMana() / 60;
             if (percentFull > 1) percentFull = 1;
             int strength = Math.round((float)Math.random() * (float)Math.floor(6F * percentFull));
             if (strength > 6) strength = 6;
             user.sendMessage(Text.literal("Knockback Strength: " + strength).formatted(Formatting.DARK_GRAY));
-            ((Apprentice)user).changeMana(-strength * 10);
+            ((Apprentice)user).omni$changeMana(-strength * 10);
             Mana.manaShow(user);
             LivingEntity entity = ((LivingEntity)hitResult.getEntity());
             double dx = user.getX() - entity.getX();

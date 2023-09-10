@@ -1,4 +1,4 @@
-package com.bion.omni.omnimod.powers.air;
+package com.bion.omni.omnimod.powers.fire;
 
 import com.bion.omni.omnimod.powers.ContinuousPower;
 import com.bion.omni.omnimod.util.Apprentice;
@@ -12,15 +12,15 @@ import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
 
-public class SlowFall extends ContinuousPower {
+public class FireResistance extends ContinuousPower {
     @Override
     public String getName() {
-        return "Slow Fall";
+        return "Fire Resistance";
     }
 
     @Override
     public String getId() {
-        return "slowFall";
+        return "fireResistance";
     }
     @Override
     public String getAdvancementId() {
@@ -42,11 +42,11 @@ public class SlowFall extends ContinuousPower {
     @Override
     public void use(ServerPlayerEntity user) {
         super.use(user);
-        user.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, 10, 0, true, false));
+        user.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 10, 0, true, false));
     }
     @Override
     public void stop(ServerPlayerEntity user) {
-        user.removeStatusEffect(StatusEffects.SLOW_FALLING);
+        user.removeStatusEffect(StatusEffects.FIRE_RESISTANCE);
     }
 
     @Override
@@ -57,11 +57,11 @@ public class SlowFall extends ContinuousPower {
     public ArrayList<ConfigSymbol> getConfigSymbols() {
         MutableText description = Text.literal("")
                 .append(Text.literal("Sneak mode\n")
-                        .formatted(Formatting.AQUA)
+                        .formatted(Formatting.GOLD)
                 )
                 .append("In sneak mode, ")
                 .append(Text.literal(getName())
-                        .formatted(Formatting.AQUA)
+                        .formatted(Formatting.GOLD)
                 )
                 .append(" is only applied while sneaking");
         ArrayList<ConfigSymbol> configSymbols = new ArrayList<>();

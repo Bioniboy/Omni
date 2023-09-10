@@ -139,13 +139,13 @@ public class ShadowPortal extends ImpulsePower {
             }
             int distance = (int)(( user.getPos().distanceTo(markPosition)));
             int manaCost = (distance / 10 + 1) * 3;
-            if (((Apprentice)user).getMana() >= manaCost) {
+            if (((Apprentice)user).omni$getMana() >= manaCost) {
                 if (distance <= range) {
                     user.requestTeleport(markPosition.getX(), markPosition.getY(), markPosition.getZ());
                     user.getWorld().playSound((Entity) null, user.getBlockPos(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, volume, 1.0F);
                     user.getWorld().playSound((Entity) null, BlockPos.ofFloored(markPosition), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, volume, 1.0F);
                     markPosition = null;
-                    ((Apprentice)user).changeMana(-manaCost);
+                    ((Apprentice)user).omni$changeMana(-manaCost);
                     Mana.manaShow(user);
                 } else {
                     user.sendMessage(Text.literal("Out of range: " + distance + " > " + range).formatted(Formatting.DARK_BLUE));

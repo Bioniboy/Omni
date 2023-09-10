@@ -4,6 +4,7 @@
   "package": "com.bion.omni.omnimod.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ActiveTimeDetector",
     "CancelSpectatorTeleport",
     "EntityMixin_Disguise",
     "PlayerEatMultiplier",

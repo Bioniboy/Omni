@@ -51,7 +51,6 @@ public class TomeGui extends BookGui {
     }
     @Override
     public void close(boolean screenHandlerIsClosed) {
-        this.open = false;
         this.reOpen = false;
 
         if (!screenHandlerIsClosed && this.player.currentScreenHandler == this.screenHandler) {

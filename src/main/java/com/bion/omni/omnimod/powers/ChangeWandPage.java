@@ -23,8 +23,8 @@ public class ChangeWandPage extends ImpulsePower {
 
     @Override
     public boolean activate(ServerPlayerEntity player) {
-        ((Apprentice)player).changeWandPage();
-        player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("Wand Page: " + ((Apprentice)player).getWandPage()).formatted(((Apprentice)player).getElement().getColor())));
+        ((Apprentice)player).omni$changeWandPage();
+        player.networkHandler.sendPacket(new OverlayMessageS2CPacket(Text.literal("Wand Page: " + ((Apprentice)player).omni$getWandPage()).formatted(((Apprentice)player).omni$getElement().getColor())));
         return true;
     }
 }

@@ -3,7 +3,6 @@ package com.bion.omni.omnimod.powers.life;
 import com.bion.omni.omnimod.powers.ContinuousPower;
 import com.bion.omni.omnimod.util.Apprentice;
 import com.bion.omni.omnimod.util.EntityDisguise;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
@@ -30,7 +29,7 @@ public abstract class TransformPower extends ContinuousPower {
         if (entityAttributeInstance.getModifier(TRANSFORM_HEALTH_ID) != null) {
             entityAttributeInstance.removeModifier(TRANSFORM_HEALTH_ID);
         }
-        ((Apprentice)user).setConfig(getId(), 0);
+        ((Apprentice)user).omni$setConfig(getId(), 0);
     }
 
     @Override
@@ -39,9 +38,9 @@ public abstract class TransformPower extends ContinuousPower {
         float customHealth = getDisguiseType().create(user.getWorld()).getMaxHealth();
         if (!(((EntityDisguise)user).getDisguiseType() == getDisguiseType())) {
             ((EntityDisguise) user).disguiseAs(getDisguiseType());
-            for (var power : ((Apprentice)user).getAllPowers()) {
+            for (var power : ((Apprentice)user).omni$getAllPowers()) {
                 if (power instanceof TransformPower transform && transform.getDisguiseType() != getDisguiseType()) {
-                    ((Apprentice)user).setConfig(power.getId(), 0);
+                    ((Apprentice)user).omni$setConfig(power.getId(), 0);
                 }
             }
         }

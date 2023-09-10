@@ -1,15 +1,10 @@
 package com.bion.omni.omnimod.block;
 
-import com.bion.omni.omnimod.OmniMod;
 import com.bion.omni.omnimod.elements.Air;
 import com.bion.omni.omnimod.util.Apprentice;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
 import net.minecraft.block.*;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
 
 
 public class SolidAirBlock extends AirBlock implements PolymerBlock {
@@ -25,7 +20,7 @@ public class SolidAirBlock extends AirBlock implements PolymerBlock {
 
     @Override
     public BlockState getPolymerBlockState(BlockState state, ServerPlayerEntity player) {
-        if (((Apprentice)player).getElement() != null && ((Apprentice)player).getElement() instanceof Air) {
+        if (((Apprentice)player).omni$getElement() != null && ((Apprentice)player).omni$getElement() instanceof Air) {
             return Blocks.BARRIER.getDefaultState();
         } else {
             return Blocks.AIR.getDefaultState();

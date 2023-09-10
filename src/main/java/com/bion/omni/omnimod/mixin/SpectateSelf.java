@@ -1,6 +1,5 @@
 package com.bion.omni.omnimod.mixin;
 
-import com.bion.omni.omnimod.powers.Power;
 import com.bion.omni.omnimod.powers.clarity.AstralProject;
 import com.bion.omni.omnimod.util.Apprentice;
 import com.mojang.authlib.GameProfile;
@@ -23,7 +22,7 @@ public abstract class SpectateSelf extends PlayerEntity {
 
     @Inject(method="setCameraEntity", at = @At("HEAD"))
     public void checkProjectPower(@Nullable Entity entity, CallbackInfo ci) {
-        AstralProject power = (AstralProject) ((Apprentice) this).getPowerById("astralProject");
+        AstralProject power = (AstralProject) ((Apprentice) this).omni$getPowerById("astralProject");
         if (power != null && power.getBody() == entity) {
             power.stop((ServerPlayerEntity) (Object) this);
         }

@@ -1,16 +1,12 @@
 package com.bion.omni.omnimod.util;
 
-import com.bion.omni.omnimod.OmniMod;
 import com.bion.omni.omnimod.block.ModBlocks;
 import com.bion.omni.omnimod.elements.Air;
-import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.particle.CloudParticle;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MarkerEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -33,7 +29,7 @@ public class SolidAirMarker {
 
             if (position.getWorld() instanceof ServerWorld serverWorld) {
                 for (var entity : position.getWorld().getOtherEntities(null, box)) {
-                    if (entity instanceof ServerPlayerEntity player && ((Apprentice)player).getElement() instanceof Air) {
+                    if (entity instanceof ServerPlayerEntity player && ((Apprentice)player).omni$getElement() instanceof Air) {
                         serverWorld.spawnParticles(player, ParticleTypes.CLOUD, true, position.getX(), position.getY() + 0.5, position.getZ(), 1, 0.3, 0.3, 0.3, 0);
                     }
                 }

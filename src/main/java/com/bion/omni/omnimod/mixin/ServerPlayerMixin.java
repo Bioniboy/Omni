@@ -1,15 +1,13 @@
 package com.bion.omni.omnimod.mixin;
 
 import com.bion.omni.omnimod.elements.*;
+import com.bion.omni.omnimod.util.*;
 import com.mojang.authlib.GameProfile;
 import com.bion.omni.omnimod.OmniMod;
 import com.bion.omni.omnimod.powers.*;
-import com.bion.omni.omnimod.util.Apprentice;
-import com.bion.omni.omnimod.util.EntityDataInterface;
-import com.bion.omni.omnimod.util.LeftClickItem;
-import com.bion.omni.omnimod.util.PowerConfig;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.PlayerAdvancementTracker;
+import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.scoreboard.Scoreboard;
@@ -23,6 +21,8 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -34,11 +34,46 @@ import java.util.Objects;
 
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerMixin extends PlayerEntity implements Apprentice {
+public abstract class ServerPlayerMixin extends PlayerEntity implements Apprentice, AfkUtil {
+
+	@Override
+	public int omni$getActiveTicks() {
+		return activeTicks;
+	}
+
+	@Override
+	public void omni$setActiveTicks(int ticks) {
+		activeTicks = ticks;
+	}
+
+	@Override
+	public void omni$changeActiveTicks(int ticks) {
+		activeTicks += ticks;
+	}
+
+	@Override
+	public int omni$getPrevActiveDay() {
+		return prevActiveDay;
+	}
+
+	@Override
+	public void omni$setPrevActiveDay(int day) {
+		prevActiveDay = day;
+	}
+
+	@Unique
+	int activeTicks = 0;
+	@Unique
+	int prevActiveDay = -1;
+	@Unique
 	int tickCounter20 = 0;
+	@Unique
 	private Element element = null;
+	@Unique
 	private double mana = -1;
+	@Unique
 	private Integer manaMaxLevel = 1;
+	@Unique
 	private Integer manaRegenLevel = 1;
 
 	@Final
@@ -51,24 +86,30 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 	@Shadow
 	private PlayerAdvancementTracker advancementTracker;
 
+
 	public ServerPlayerMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
 		super(world, pos, yaw, gameProfile);
 	}
+	@Unique
 	private final Hashtable<String, Double> costs = new Hashtable<>();
+	@Unique
 	private final ArrayList<ContinuousPower> continuousPowers = new ArrayList<>();
+	@Unique
 	private final ArrayList<ImpulsePower> impulsePowers = new ArrayList<>();
+	@Unique
 	private final ArrayList<Power> otherPowers = new ArrayList<>();
+	@Unique
 	private final ArrayList<PowerConfig> config = new ArrayList<>();
 
 
-	public Hashtable<String, Double> getCosts() {
+	public Hashtable<String, Double> omni$getCosts() {
 		return costs;
 	}
-	public Element getElement() { return element; }
-	public void setElement(Element element) {
+	public Element omni$getElement() { return element; }
+	public void omni$setElement(Element element) {
 		this.element = element;
 	}
-	public void setElement(String elementId) {
+	public void omni$setElement(String elementId) {
 		this.element = switch(elementId) {
 			case "Moon":
 				yield new Moon();
@@ -80,22 +121,24 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 				yield new Clarity();
 			case "Life":
 				yield new Life();
+			case "Fire":
+				yield new Fire();
 			default:
 				OmniMod.LOGGER.error("Error: " + elementId + " element not defined" );
 				yield null;
 		};
 	}
-	public void addConfig (String id, Integer value) {
+	public void omni$addConfig(String id, Integer value) {
 		config.add(new PowerConfig(id, value));
 	}
-	public void setConfig (String id, Integer value) {
+	public void omni$setConfig(String id, Integer value) {
 		for (PowerConfig config : this.config) {
 			if (Objects.equals(config.getId(), id)) {
 				config.setValue(value);
 			}
 		}
 	}
-	public Integer getConfigValue(String id) {
+	public Integer omni$getConfigValue(String id) {
 		for (PowerConfig config : this.config) {
 			if (Objects.equals(config.getId(), id)) {
 				return config.getValue();
@@ -103,10 +146,10 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 		}
 		return -1;
 	}
-	public ArrayList<PowerConfig> getConfig() {
+	public ArrayList<PowerConfig> omni$getConfig() {
 		return config;
 	}
-	public void reorderConfig(String id, Integer amount) {
+	public void omni$reorderConfig(String id, Integer amount) {
 		int index = 0;
 		for (int i = 0; i < config.size(); i++) {
 			if (Objects.equals(config.get(i).getId(), id)) {
@@ -120,46 +163,46 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 			config.set(index + amount, temp);
 		}
 	}
-	public ArrayList<ContinuousPower> getContinuousPowers() { return continuousPowers; }
-	public ArrayList<ImpulsePower> getImpulsePowers() { return impulsePowers; }
-	public ArrayList<Power> getOtherPowers() { return otherPowers; }
-	public ArrayList<Power> getAllPowers() {
+	public ArrayList<ContinuousPower> omni$getContinuousPowers() { return continuousPowers; }
+	public ArrayList<ImpulsePower> omni$getImpulsePowers() { return impulsePowers; }
+	public ArrayList<Power> omni$getOtherPowers() { return otherPowers; }
+	public ArrayList<Power> omni$getAllPowers() {
 		ArrayList<Power> allPowers = new ArrayList<>();
 		allPowers.addAll(continuousPowers);
 		allPowers.addAll(impulsePowers);
 		allPowers.addAll(otherPowers);
 		return allPowers;
 	}
-	public Power getPowerById(String id) {
-		for (Power power : getAllPowers()) {
+	public Power omni$getPowerById(String id) {
+		for (Power power : omni$getAllPowers()) {
 			if (Objects.equals(power.getId(), id)) {
 				return power;
 			}
 		}
 		return null;
 	}
-	public double getMana() {
+	public double omni$getMana() {
 		return mana;
 	}
-	public void setMana(double value) {
+	public void omni$setMana(double value) {
 		mana = value;
 	}
-	public void changeMana(double value) {
+	public void omni$changeMana(double value) {
 		mana += value;
 	}
-	public Integer getManaMax() {
+	public Integer omni$getManaMax() {
 		return manaMaxLevel != null ? manaMaxLevel * 60 : null;
 	}
-	public Integer getManaMaxLevel() {
+	public Integer omni$getManaMaxLevel() {
 		return manaMaxLevel;
 	}
-	public void upgradeManaMax() {
+	public void omni$upgradeManaMax() {
 		manaMaxLevel += 1;
 	}
-	public void setManaMaxLevel(Integer value) {
+	public void omni$setManaMaxLevel(Integer value) {
 		manaMaxLevel = value;
 	}
-	public double getManaRegen() {
+	public double omni$getManaRegen() {
 		return switch(manaRegenLevel) {
 			case 1:
 				yield 0.2;
@@ -178,38 +221,41 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 		};
 	}
 
-	public Integer getManaRegenLevel() {
+	public Integer omni$getManaRegenLevel() {
 		return manaRegenLevel;
 	}
-	public void upgradeManaRegen() {
+	public void omni$upgradeManaRegen() {
 		manaRegenLevel += 1;
 	}
-	public void setManaRegenLevel(Integer value) {
+	public void omni$setManaRegenLevel(Integer value) {
 		manaRegenLevel = value;
 	}
 
+	@Unique
 	private void addContinuousPower(ContinuousPower power) {
 		continuousPowers.add(power);
 	}
+	@Unique
 	private void addImpulsePower(ImpulsePower power) {
 		impulsePowers.add(power);
 	}
+	@Unique
 	private void addOtherPower(Power power) {
 		otherPowers.add(power);
 	}
-	public Power addPower(Power power) {
-		if (getPowerById(power.getId()) != null) {
-			power.setLevel(getPowerById(power.getId()).getLevel() + 1);
+	public Power omni$addPower(Power power) {
+		if (omni$getPowerById(power.getId()) != null) {
+			power.setLevel(omni$getPowerById(power.getId()).getLevel() + 1);
 		}
-		Advancement advancement = server.getAdvancementLoader().get(new Identifier(((Apprentice)this).getElement().getName().toLowerCase(), power.getAdvancementId()));
+		Advancement advancement = server.getAdvancementLoader().get(new Identifier(((Apprentice)this).omni$getElement().getName().toLowerCase(), power.getAdvancementId()));
 		if (advancement != null) {
 			advancementTracker.grantCriterion(advancement, advancement.getCriteria().keySet().iterator().next());
 		}
-		if (getPowerById(power.getId()) != null) {
-			return getPowerById(power.getId()).increaseLevel();
+		if (omni$getPowerById(power.getId()) != null) {
+			return omni$getPowerById(power.getId()).increaseLevel();
 		}
-		if (power.hasConfig() && getConfigValue(power.getId()) == -1) {
-			addConfig(power.getId(), 0);
+		if (power.hasConfig() && omni$getConfigValue(power.getId()) == -1) {
+			omni$addConfig(power.getId(), 0);
 		}
 		if (power instanceof ContinuousPower continuousPower) {
 			addContinuousPower(continuousPower);
@@ -223,12 +269,12 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 		}
 		return power;
 	}
-	public Power addPower(String id) {
+	public Power omni$addPower(String id) {
 		if (Objects.equals(id, "changeWandPage")) {
-			return addPower(new ChangeWandPage());
+			return omni$addPower(new ChangeWandPage());
 		} else {
 			if (element.getPower(id) != null) {
-				return addPower(element.getPower(id));
+				return omni$addPower(element.getPower(id));
 			} else {
 				OmniMod.LOGGER.info("Error: " + id + " is not a valid power id");
 				return null;
@@ -237,14 +283,14 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 	}
 
 	@Override
-	public void buyPower(String id, Integer level) {
-		if (getInfluence() >= element.getPower(id, level).getInfluenceCost()) {
-			changeInfluence(-element.getPower(id, level).getInfluenceCost());
-			addPower(id);
+	public void omni$buyPower(String id, Integer level) {
+		if (omni$getInfluence() >= element.getPower(id, level).getInfluenceCost()) {
+			omni$changeInfluence(-element.getPower(id, level).getInfluenceCost());
+			omni$addPower(id);
 		}
 	}
 
-	public void clearPowers() {
+	public void omni$clearPowers() {
 		config.clear();
 		continuousPowers.clear();
 		impulsePowers.clear();
@@ -252,35 +298,35 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 	}
 
 	@Override
-	public Integer getInfluence() {
+	public Integer omni$getInfluence() {
 		Scoreboard scoreboard = this.getScoreboard();
 		ScoreboardPlayerScore score = scoreboard.getPlayerScore(this.getName().getString(), scoreboard.getObjective("Influence"));
 		return score.getScore();
 	}
 	@Override
-	public void setInfluence(Integer amount) {
+	public void omni$setInfluence(Integer amount) {
 		Scoreboard scoreboard = this.getScoreboard();
 		ScoreboardPlayerScore score = scoreboard.getPlayerScore(this.getName().getString(), scoreboard.getObjective("Influence"));
 		score.setScore(amount);
 	}
 
 	@Override
-	public void changeInfluence(Integer amount) {
+	public void omni$changeInfluence(Integer amount) {
 		Scoreboard scoreboard = this.getScoreboard();
 		ScoreboardPlayerScore score = scoreboard.getPlayerScore(this.getName().getString(), scoreboard.getObjective("Influence"));
 		score.incrementScore(amount);
 	}
 
 	@Override
-	public void interpretWandCommand(String[] components) {
+	public void omni$interpretWandCommand(String[] components) {
 		if (components[1].matches("-?\\d+")) {
-			if (Integer.parseInt(components[1]) != ((Apprentice)this).getConfigValue(components[0])) {
-				((Apprentice)this).setConfig(components[0], Integer.parseInt(components[1]));
+			if (Integer.parseInt(components[1]) != ((Apprentice)this).omni$getConfigValue(components[0])) {
+				((Apprentice)this).omni$setConfig(components[0], Integer.parseInt(components[1]));
 			} else {
-				((Apprentice)this).setConfig(components[0], 0);
+				((Apprentice)this).omni$setConfig(components[0], 0);
 			}
 		} else if (components[1].equals("activate")) {
-			Power power = getPowerById(components[0]);
+			Power power = omni$getPowerById(components[0]);
 			if (components.length > 2) {
 				switch (components[2]) {
 					case "1" -> power.activate((ServerPlayerEntity) (Object) this);
@@ -294,17 +340,17 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 		}
 	}
 	@Override
-	public void interpretWandCommand(String command) {
-		interpretWandCommand(command.split("\\."));
+	public void omni$interpretWandCommand(String command) {
+		omni$interpretWandCommand(command.split("\\."));
 	}
 
 	@Override
-	public Integer getWandPage() {
+	public Integer omni$getWandPage() {
 		return ((EntityDataInterface)this).getPersistentData().getInt("wandPage") == 2 ? 2 : 1;
 	}
 
 	@Override
-	public void changeWandPage() {
+	public void omni$changeWandPage() {
 		if (((EntityDataInterface)this).getPersistentData().getInt("wandPage") == 2) {
 			((EntityDataInterface)this).getPersistentData().putInt("wandPage", 1);
 		} else {
@@ -315,7 +361,7 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 
 	@Inject(at = @At("HEAD"), method = "tick")
 	private void init(CallbackInfo ci) {
-		if (this.getMana() > -1) {
+		if (this.omni$getMana() > -1) {
 			if (tickCounter20 < 20) {
 				tickCounter20++;
 			} else {
@@ -328,7 +374,7 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 				clickItem.click(this);
 			}
 		}
-		for (ContinuousPower power : getContinuousPowers()) {
+		for (ContinuousPower power : omni$getContinuousPowers()) {
 			if (power.isActive((ServerPlayerEntity)(Object) this) && power.getManaCost() <= mana) {
 				if (!power.isActive) {
 					power.start((ServerPlayerEntity)(Object) this);
@@ -340,24 +386,26 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 				power.isActive = false;
 			}
 		}
-		for (ImpulsePower power : getImpulsePowers()) {
+		for (ImpulsePower power : omni$getImpulsePowers()) {
 			if (power.isTicking()) {
 				power.tick((ServerPlayerEntity)(Object) this);
 			}
 		}
+
+
 	}
 	@Inject(at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD, method = "copyFrom")
 	private void copyData(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfo ci) {
 		Apprentice oldApprentice = (Apprentice)oldPlayer;
-		this.element = oldApprentice.getElement();
-		this.continuousPowers.addAll(oldApprentice.getContinuousPowers());
-		this.impulsePowers.addAll(oldApprentice.getImpulsePowers());
-		this.otherPowers.addAll(oldApprentice.getOtherPowers());
-		this.config.addAll(oldApprentice.getConfig());
-		this.mana = oldApprentice.getMana();
-		this.manaMaxLevel = oldApprentice.getManaMaxLevel();
-		this.manaRegenLevel = oldApprentice.getManaRegenLevel();
-		this.costs.putAll(oldApprentice.getCosts());
+		this.element = oldApprentice.omni$getElement();
+		this.continuousPowers.addAll(oldApprentice.omni$getContinuousPowers());
+		this.impulsePowers.addAll(oldApprentice.omni$getImpulsePowers());
+		this.otherPowers.addAll(oldApprentice.omni$getOtherPowers());
+		this.config.addAll(oldApprentice.omni$getConfig());
+		this.mana = oldApprentice.omni$getMana();
+		this.manaMaxLevel = oldApprentice.omni$getManaMaxLevel();
+		this.manaRegenLevel = oldApprentice.omni$getManaRegenLevel();
+		this.costs.putAll(oldApprentice.omni$getCosts());
 		for (String key : ((EntityDataInterface)oldApprentice).getPersistentData().getKeys()) {
 			if (((EntityDataInterface)oldApprentice).getPersistentData().contains(key, NbtElement.STRING_TYPE)) {
 				((EntityDataInterface)this).getPersistentData().putString(key, ((EntityDataInterface)oldApprentice).getPersistentData().getString(key));
@@ -366,5 +414,8 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 				((EntityDataInterface)this).getPersistentData().putInt(key, ((EntityDataInterface)oldApprentice).getPersistentData().getInt(key));
 			}
 		}
+
+		((AfkUtil)this).omni$setActiveTicks(((AfkUtil)oldPlayer).omni$getActiveTicks());
+		((AfkUtil)this).omni$setPrevActiveDay(((AfkUtil)oldPlayer).omni$getPrevActiveDay());
 	}
 }

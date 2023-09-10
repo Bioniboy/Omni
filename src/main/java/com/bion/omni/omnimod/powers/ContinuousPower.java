@@ -1,10 +1,7 @@
 package com.bion.omni.omnimod.powers;
 
-import com.bion.omni.omnimod.OmniMod;
 import com.bion.omni.omnimod.util.Apprentice;
 import com.bion.omni.omnimod.util.ConfigSymbol;
-import com.bion.omni.omnimod.util.EntityDataInterface;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.ArrayList;
@@ -12,7 +9,7 @@ import java.util.ArrayList;
 public abstract class ContinuousPower extends Power {
     public boolean isActive = false;
     public void use(ServerPlayerEntity user) {
-        ((Apprentice)user).getCosts().put(getId(), getManaCost());
+        ((Apprentice)user).omni$getCosts().put(getId(), getManaCost());
     }
     public void stop(ServerPlayerEntity user) {
 
@@ -22,7 +19,7 @@ public abstract class ContinuousPower extends Power {
 
     }
     public boolean isActive(ServerPlayerEntity user) {
-        return ((Apprentice)user).getConfigValue(getId()) == 1;
+        return ((Apprentice)user).omni$getConfigValue(getId()) == 1;
     }
 
     @Override

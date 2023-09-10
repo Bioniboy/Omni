@@ -1,10 +1,7 @@
 package com.bion.omni.omnimod.powers.clarity;
 
-import com.bion.omni.omnimod.OmniMod;
 import com.bion.omni.omnimod.powers.ImpulsePower;
 import com.bion.omni.omnimod.util.Apprentice;
-import com.mojang.brigadier.ParseResults;
-import net.minecraft.command.CommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -62,9 +59,9 @@ public class BlockHistory extends ImpulsePower {
     @Override
     public boolean activate(ServerPlayerEntity user) {
         BlockHitResult result = user.getWorld().raycast(new RaycastContext(user.getEyePos(), user.getEyePos().add(user.getRotationVector().multiply(5)), RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.ANY, user));
-        double influence = ((Apprentice)user).getInfluence();
+        double influence = ((Apprentice)user).omni$getInfluence();
         if (result.getType().equals(HitResult.Type.BLOCK) && influence >= getManaCost()) {
-            ((Apprentice)user).changeInfluence(-(int)getManaCost());
+            ((Apprentice)user).omni$changeInfluence(-(int)getManaCost());
 
             BlockPos pos = result.getBlockPos();
             user.getServer().getCommandManager().executeWithPrefix(user.getCommandSource(), "ledger i " + pos.getX() + " " + pos.getY() + " " + pos.getZ());

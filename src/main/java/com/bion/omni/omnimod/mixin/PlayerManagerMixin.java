@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class PlayerManagerMixin {
     @Inject(at = @At("HEAD"), method = "remove")
     private void onDisconnect(ServerPlayerEntity player, CallbackInfo ci) {
-        for (var power : ((Apprentice)player).getAllPowers()) {
+        for (var power : ((Apprentice)player).omni$getAllPowers()) {
             power.onDisconnect(player);
         }
     }

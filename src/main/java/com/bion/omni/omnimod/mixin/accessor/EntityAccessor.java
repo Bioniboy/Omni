@@ -11,4 +11,7 @@ public interface EntityAccessor {
     static TrackedData<Byte> getFLAGS() {
         throw new AssertionError();
     }
+    @Accessor("hasVisualFire")
+    void setHasVisualFire(boolean fire);
+
 }

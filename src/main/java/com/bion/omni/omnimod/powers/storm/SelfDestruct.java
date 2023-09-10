@@ -6,7 +6,6 @@ import com.bion.omni.omnimod.util.Apprentice;
 import net.minecraft.enchantment.ProtectionEnchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.ParticleTypes;
@@ -41,8 +40,8 @@ public class SelfDestruct extends ImpulsePower {
 
     @Override
     public boolean activate(ServerPlayerEntity user) {
-        float power = ((float) ((Apprentice) user).getMana() / (float) ((Apprentice) user).getManaMax()) * 6.0F;
-        ((Apprentice) user).setMana(0);
+        float power = ((float) ((Apprentice) user).omni$getMana() / (float) ((Apprentice) user).omni$getManaMax()) * 6.0F;
+        ((Apprentice) user).omni$setMana(0);
         explode(user, power);
         user.damage(user.getWorld().getDamageSources().explosion(user, user), 999);
         Mana.manaShow(user);

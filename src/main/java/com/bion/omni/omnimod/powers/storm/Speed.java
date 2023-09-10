@@ -43,7 +43,7 @@ public class Speed extends ContinuousPower {
 
     @Override
     public boolean isActive(ServerPlayerEntity user) {
-        return super.isActive(user) || ((Apprentice)user).getConfigValue(getId()) == 2 && user.isSprinting();
+        return super.isActive(user) || ((Apprentice)user).omni$getConfigValue(getId()) == 2 && user.isSprinting();
     }
     @Override
     public void use(ServerPlayerEntity user) {

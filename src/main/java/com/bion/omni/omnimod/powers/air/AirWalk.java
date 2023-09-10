@@ -5,10 +5,8 @@ import com.bion.omni.omnimod.block.SolidAirBlock;
 import com.bion.omni.omnimod.powers.ContinuousPower;
 import com.bion.omni.omnimod.util.Apprentice;
 import com.bion.omni.omnimod.util.SolidAirMarker;
-import net.minecraft.block.AirBlock;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +38,7 @@ public class AirWalk extends ContinuousPower {
     }
     @Override
     public void use(ServerPlayerEntity user) {
-        if (tickCooldown == 0 && ((Apprentice)user).getMana() >= 3) {
+        if (tickCooldown == 0 && ((Apprentice)user).omni$getMana() >= 3) {
             boolean used = false;
             for (int x = -1; x <= 1; x++) {
                 for (int z = -1; z <= 1; z++) {
@@ -51,7 +49,7 @@ public class AirWalk extends ContinuousPower {
                 }
             }
             if (used) {
-                ((Apprentice) user).changeMana(-3);
+                ((Apprentice) user).omni$changeMana(-3);
             }
         }
         if (user.isSneaking() && !wasSneaking && user.getWorld().getBlockState(user.getBlockPos().add(0, -1, 0)).getBlock() instanceof SolidAirBlock) {

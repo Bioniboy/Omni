@@ -23,9 +23,9 @@ public abstract class ImpulsePower extends Power {
     public void end(ServerPlayerEntity user) { }
     @Override
     public boolean activate(ServerPlayerEntity user) {
-        double mana = ((Apprentice)user).getMana();
+        double mana = ((Apprentice)user).omni$getMana();
         if (mana >= getManaCost()) {
-            ((Apprentice)user).changeMana(-getManaCost());
+            ((Apprentice)user).omni$changeMana(-getManaCost());
             return true;
         } else {
             return false;

@@ -1,6 +1,5 @@
 package com.bion.omni.omnimod.mixin;
 
-import com.bion.omni.omnimod.OmniMod;
 import com.bion.omni.omnimod.elements.Air;
 import com.bion.omni.omnimod.powers.Power;
 import com.bion.omni.omnimod.powers.air.Pacifism;
@@ -30,9 +29,9 @@ public abstract class PlayerDamageMultiplier extends LivingEntity {
     @Inject(at = @At(value = "HEAD"), method = "attack", locals = LocalCapture.CAPTURE_FAILHARD)
     private void onHit(Entity target, CallbackInfo ci) {
         this.target = target;
-        if (((Apprentice)this).getElement() instanceof Air) {
+        if (((Apprentice)this).omni$getElement() instanceof Air) {
             Power power;
-            if ((power = ((Apprentice)this).getPowerById("pacifism")) != null) {
+            if ((power = ((Apprentice)this).omni$getPowerById("pacifism")) != null) {
                 ((Pacifism)power).resetTimer();
             }
         }
@@ -40,8 +39,8 @@ public abstract class PlayerDamageMultiplier extends LivingEntity {
     @ModifyArg(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"), index = 1, method = "attack")
     private float injected(float f) {
         assert target != null;
-        if (((Apprentice)this).getElement() != null && Objects.equals(((Apprentice) this).getElement().getName(), "Moon")) {
-            Power backstab = ((Apprentice) this).getPowerById("backstab");
+        if (((Apprentice)this).omni$getElement() != null && Objects.equals(((Apprentice) this).omni$getElement().getName(), "Moon")) {
+            Power backstab = ((Apprentice) this).omni$getPowerById("backstab");
             if (backstab != null) {
                 float diff = Math.abs(this.headYaw - target.getHeadYaw()) % 360;
                 if (diff > 180) {
