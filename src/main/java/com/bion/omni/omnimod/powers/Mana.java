@@ -59,7 +59,8 @@ public class Mana {
         for (int i = 0; i < numbers.length() * 2.5; i++) {
             manaBar.append("\uf801");
         }
-        manaBar.append(Text.literal(numbers + "\uf81A").formatted(((Apprentice)player).omni$getElement().getColor()));
+        Formatting color = ((Apprentice)player).omni$getElement() != null ? ((Apprentice)player).omni$getElement().getColor() : Formatting.WHITE;
+        manaBar.append(Text.literal(numbers + "\uf81A").formatted(color));
         for (int i = 0; i < numbers.length() * 2.5; i++) {
             manaBar.append("\uf801");
         }

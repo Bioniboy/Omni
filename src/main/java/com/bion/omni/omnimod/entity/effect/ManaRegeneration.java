@@ -14,12 +14,14 @@ public class ManaRegeneration extends StatusEffect implements PolymerStatusEffec
 
     @Override
     public void applyUpdateEffect(LivingEntity entity, int amplifier) {
-        if (entity instanceof Apprentice apprentice) {
+        if (entity instanceof Apprentice apprentice && apprentice.omni$getElement() != null) {
             apprentice.omni$changeMana(1);
+
             if (apprentice.omni$getMana() > apprentice.omni$getManaMax()) {
                 apprentice.omni$setMana(apprentice.omni$getManaMax());
             }
         }
+
     }
 
     @Override

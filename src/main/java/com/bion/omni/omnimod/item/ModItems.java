@@ -3,14 +3,19 @@ package com.bion.omni.omnimod.item;
 
 
 import com.bion.omni.omnimod.block.ModBlocks;
+import com.bion.omni.omnimod.entity.effect.ManaRegeneration;
+import com.bion.omni.omnimod.entity.effect.ModStatusEffects;
 import com.bion.omni.omnimod.item.tome.*;
 import com.bion.omni.omnimod.item.wand.*;
 import eu.pb4.polymer.core.api.item.PolymerBlockItem;
+import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import com.bion.omni.omnimod.OmniMod;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.potion.Potion;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
@@ -33,6 +38,7 @@ public class ModItems {
     public static final Item LIFE_WAND = new LifeWand(new FabricItemSettings(), Items.STICK);
     public static final Item FIRE_WAND = new FireWand(new FabricItemSettings(), Items.STICK);
     public static final Item BAD_TRAPDOOR = new PolymerBlockItem(ModBlocks.BAD_TRAPDOOR, new FabricItemSettings(), Items.BIRCH_TRAPDOOR);
+    public static final Potion MANA_REGENERATION = new Potion(new StatusEffectInstance(ModStatusEffects.MANA_REGENERATION, 300));
 
 
     public static void registerItems() {
@@ -51,5 +57,6 @@ public class ModItems {
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "life_wand"), LIFE_WAND);
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "fire_wand"), FIRE_WAND);
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "bad_trapdoor"), BAD_TRAPDOOR);
+        Registry.register(Registries.POTION, new Identifier(OmniMod.MOD_ID, "mana_regeneration"), MANA_REGENERATION);
     }
 }
