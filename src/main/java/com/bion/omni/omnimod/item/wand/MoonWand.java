@@ -1,7 +1,7 @@
 package com.bion.omni.omnimod.item.wand;
 
-import com.bion.omni.omnimod.elements.Element;
-import com.bion.omni.omnimod.elements.Moon;
+import com.bion.omni.omnimod.element.Element;
+import com.bion.omni.omnimod.element.Moon;
 import net.minecraft.item.Item;
 
 public class MoonWand extends Wand {

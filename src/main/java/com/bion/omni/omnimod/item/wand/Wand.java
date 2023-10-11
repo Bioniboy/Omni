@@ -1,6 +1,6 @@
 package com.bion.omni.omnimod.item.wand;
 
-import com.bion.omni.omnimod.elements.Element;
+import com.bion.omni.omnimod.element.Element;
 import eu.pb4.polymer.core.api.item.PolymerItemUtils;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import com.bion.omni.omnimod.util.Apprentice;

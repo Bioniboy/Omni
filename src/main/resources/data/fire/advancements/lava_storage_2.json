@@ -1,0 +1,25 @@
+{
+    "__comment": "Made with TheDestruc7i0n's advancements generator: https://advancements.thedestruc7i0n.ca",
+    "display": {
+        "title": {
+            "text": "Lava Storage II",
+            "color": "gold"
+        },
+        "description": {
+            "text": "Store even larger amounts of lava"
+        },
+        "icon": {
+            "item": "minecraft:lava_bucket"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": false,
+        "hidden": false
+    },
+    "criteria": {
+        "Impossible": {
+            "trigger": "minecraft:impossible"
+        }
+    },
+    "parent": "fire:lava_storage"
+}

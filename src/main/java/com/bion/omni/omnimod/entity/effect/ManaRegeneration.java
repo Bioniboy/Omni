@@ -32,4 +32,5 @@ public class ManaRegeneration extends StatusEffect implements PolymerStatusEffec
         }
         return true;
     }
+
 }

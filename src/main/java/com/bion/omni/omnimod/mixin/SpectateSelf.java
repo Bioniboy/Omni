@@ -1,6 +1,6 @@
 package com.bion.omni.omnimod.mixin;
 
-import com.bion.omni.omnimod.powers.clarity.AstralProject;
+import com.bion.omni.omnimod.power.clarity.AstralProject;
 import com.bion.omni.omnimod.util.Apprentice;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.Entity;

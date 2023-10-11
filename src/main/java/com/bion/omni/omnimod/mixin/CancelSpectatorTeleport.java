@@ -1,6 +1,6 @@
 package com.bion.omni.omnimod.mixin;
 
-import com.bion.omni.omnimod.powers.clarity.AstralProject;
+import com.bion.omni.omnimod.power.clarity.AstralProject;
 import com.bion.omni.omnimod.util.Apprentice;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import org.spongepowered.asm.mixin.Mixin;

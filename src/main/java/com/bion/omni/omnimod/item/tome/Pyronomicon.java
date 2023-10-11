@@ -1,7 +1,7 @@
 package com.bion.omni.omnimod.item.tome;
 
-import com.bion.omni.omnimod.elements.Element;
-import com.bion.omni.omnimod.elements.Fire;
+import com.bion.omni.omnimod.element.Element;
+import com.bion.omni.omnimod.element.Fire;
 import eu.pb4.polymer.core.api.item.PolymerItemUtils;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;

@@ -1,7 +1,7 @@
 package com.bion.omni.omnimod.mixin;
 
-import com.bion.omni.omnimod.elements.Life;
-import com.bion.omni.omnimod.powers.Power;
+import com.bion.omni.omnimod.element.Life;
+import com.bion.omni.omnimod.power.Power;
 import com.bion.omni.omnimod.util.Apprentice;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;

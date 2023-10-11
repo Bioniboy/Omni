@@ -1,0 +1,25 @@
+{
+    "__comment": "Made with TheDestruc7i0n's advancements generator: https://advancements.thedestruc7i0n.ca",
+    "display": {
+        "title": {
+            "text": "Into the Inferno",
+            "color": "gold"
+        },
+        "description": {
+            "text": "Be chosen as a Fire apprentice."
+        },
+        "icon": {
+            "item": "minecraft:fire_charge"
+        },
+        "frame": "challenge",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": false,
+        "background": "minecraft:textures/gui/advancements/backgrounds/stone.png"
+    },
+    "criteria": {
+        "Command": {
+            "trigger": "minecraft:impossible"
+        }
+    }
+}

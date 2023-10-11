@@ -1,0 +1,168 @@
+[
+    {
+      "condition": "minecraft:inverted",
+      "term": {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "location": {
+            "biome": "minecraft:frozen_river",
+            "fluid": {
+              "fluid": "minecraft:water"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "minecraft:inverted",
+      "term": {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "location": {
+            "biome": "minecraft:river",
+            "fluid": {
+              "fluid": "minecraft:water"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "minecraft:inverted",
+      "term": {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "location": {
+            "biome": "minecraft:warm_ocean",
+            "fluid": {
+              "fluid": "minecraft:water"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "minecraft:inverted",
+      "term": {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "location": {
+            "biome": "minecraft:ocean",
+            "fluid": {
+              "fluid": "minecraft:water"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "minecraft:inverted",
+      "term": {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "location": {
+            "biome": "minecraft:lukewarm_ocean",
+            "fluid": {
+              "fluid": "minecraft:water"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "minecraft:inverted",
+      "term": {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "location": {
+            "biome": "minecraft:frozen_ocean",
+            "fluid": {
+              "fluid": "minecraft:water"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "minecraft:inverted",
+      "term": {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "location": {
+            "biome": "minecraft:deep_ocean",
+            "fluid": {
+              "fluid": "minecraft:water"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "minecraft:inverted",
+      "term": {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "location": {
+            "biome": "minecraft:deep_lukewarm_ocean",
+            "fluid": {
+              "fluid": "minecraft:water"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "minecraft:inverted",
+      "term": {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "location": {
+            "biome": "minecraft:deep_frozen_ocean",
+            "fluid": {
+              "fluid": "minecraft:water"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "minecraft:inverted",
+      "term": {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "location": {
+            "biome": "minecraft:deep_cold_ocean",
+            "fluid": {
+              "fluid": "minecraft:water"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "minecraft:inverted",
+      "term": {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "location": {
+            "biome": "minecraft:cold_ocean",
+            "fluid": {
+              "fluid": "minecraft:water"
+            }
+          }
+        }
+      }
+    }
+  ]
+  

@@ -1,11 +1,11 @@
 package com.bion.omni.omnimod.mixin;
 
-import com.bion.omni.omnimod.elements.Air;
-import com.bion.omni.omnimod.elements.Fire;
-import com.bion.omni.omnimod.elements.Storm;
-import com.bion.omni.omnimod.powers.air.AirShield;
-import com.bion.omni.omnimod.powers.air.AirWalk;
-import com.bion.omni.omnimod.powers.Power;
+import com.bion.omni.omnimod.element.Air;
+import com.bion.omni.omnimod.element.Fire;
+import com.bion.omni.omnimod.element.Storm;
+import com.bion.omni.omnimod.power.air.AirShield;
+import com.bion.omni.omnimod.power.air.AirWalk;
+import com.bion.omni.omnimod.power.Power;
 import com.bion.omni.omnimod.util.Apprentice;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -83,6 +83,17 @@ public abstract class PlayerHurtMultiplier extends LivingEntity {
                     return 0F;
                 }
             }
+            if (((Apprentice)this).omni$getElement() instanceof Fire) {
+                if (((Apprentice)this).omni$getConfigValue("fireResistance") != 0) {
+                    return 0;
+                }
+            }
+        } else if (source.isOf(DamageTypes.IN_FIRE) || source.isOf(DamageTypes.ON_FIRE) || source.isOf(DamageTypes.LAVA)) {
+            if (((Apprentice)this).omni$getElement() instanceof Fire) {
+                if (((Apprentice)this).omni$getConfigValue("fireResistance") != 0) {
+                    return 0;
+                }
+            }
         }
         if (((Apprentice)this).omni$getElement() instanceof Air) {
             Power airWalk;
@@ -102,6 +113,7 @@ public abstract class PlayerHurtMultiplier extends LivingEntity {
                 return amount * multiplier;
             }
         }
+
         return amount;
     }
 }

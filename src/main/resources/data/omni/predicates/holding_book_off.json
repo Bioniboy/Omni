@@ -1,0 +1,17 @@
+{
+    "condition": "minecraft:entity_properties",
+    "entity": "this",
+    "predicate": {
+      "equipment": {
+        "offhand": {
+          "items": [
+            "minecraft:book",
+            "minecraft:enchanted_book",
+            "minecraft:writable_book",
+            "minecraft:written_book"
+          ]
+        }
+      }
+    }
+  }
+  

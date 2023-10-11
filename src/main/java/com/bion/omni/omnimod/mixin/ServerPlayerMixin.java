@@ -1,14 +1,18 @@
 package com.bion.omni.omnimod.mixin;
 
-import com.bion.omni.omnimod.elements.*;
+import com.bion.omni.omnimod.element.*;
+import com.bion.omni.omnimod.entity.ModEntities;
+import com.bion.omni.omnimod.entity.custom.Pet;
 import com.bion.omni.omnimod.util.*;
 import com.mojang.authlib.GameProfile;
 import com.bion.omni.omnimod.OmniMod;
-import com.bion.omni.omnimod.powers.*;
+import com.bion.omni.omnimod.power.*;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.PlayerAdvancementTracker;
-import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
@@ -22,10 +26,10 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.ArrayList;
@@ -60,11 +64,57 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 	public void omni$setPrevActiveDay(int day) {
 		prevActiveDay = day;
 	}
+	@Override
+	public void omni$setGotReward(boolean gotReward) {
+		this.gotReward = gotReward;
+	}
+	@Override
+	public boolean omni$getGotReward() {
+		return gotReward;
+	}
+
+	@Override
+	public void omni$setStreak(int streak) {
+		this.streak = streak;
+	}
+
+	@Override
+	public int omni$getStreak() {
+		return streak;
+	}
+
+	@Override
+	public void omni$setNextStreakDay(int day) {
+		nextStreakDay = day;
+	}
+
+	@Override
+	public int omni$getNextStreakDay() {
+		return nextStreakDay;
+	}
+
+	@Override
+	public void omni$setNextStreakYear(int year) {
+		nextStreakYear = year;
+	}
+
+	@Override
+	public int omni$getNextStreakYear() {
+		return nextStreakYear;
+	}
 
 	@Unique
 	int activeTicks = 0;
 	@Unique
 	int prevActiveDay = -1;
+	@Unique
+	boolean gotReward = false;
+	@Unique
+	int streak = 0;
+	@Unique
+	int nextStreakDay = 1;
+	@Unique
+	int nextStreakYear = 0;
 	@Unique
 	int tickCounter20 = 0;
 	@Unique
@@ -123,6 +173,8 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 				yield new Life();
 			case "Fire":
 				yield new Fire();
+			case "Water":
+				yield new Water();
 			default:
 				OmniMod.LOGGER.error("Error: " + elementId + " element not defined" );
 				yield null;
@@ -271,7 +323,7 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 	}
 	public Power omni$addPower(String id) {
 		if (Objects.equals(id, "changeWandPage")) {
-			return omni$addPower(new ChangeWandPage());
+			return omni$addPower(new ChangeWandPage(1));
 		} else {
 			if (element.getPower(id) != null) {
 				return omni$addPower(element.getPower(id));
@@ -392,7 +444,9 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 			}
 		}
 
-
+		if (petCooldown > 0) {
+			petCooldown -= 1;
+		}
 	}
 	@Inject(at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD, method = "copyFrom")
 	private void copyData(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfo ci) {
@@ -415,7 +469,138 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 			}
 		}
 
-		((AfkUtil)this).omni$setActiveTicks(((AfkUtil)oldPlayer).omni$getActiveTicks());
-		((AfkUtil)this).omni$setPrevActiveDay(((AfkUtil)oldPlayer).omni$getPrevActiveDay());
+		omni$setActiveTicks(((AfkUtil)oldPlayer).omni$getActiveTicks());
+		omni$setPrevActiveDay(((AfkUtil)oldPlayer).omni$getPrevActiveDay());
+		omni$setGotReward(((AfkUtil)oldPlayer).omni$getGotReward());
+
+		this.streak = ((AfkUtil) oldApprentice).omni$getStreak();
+		this.nextStreakYear = ((AfkUtil) oldApprentice).omni$getNextStreakYear();
+		this.nextStreakDay = ((AfkUtil) oldApprentice).omni$getNextStreakDay();
+
+		pet = ((Apprentice) oldPlayer).omni$getPet();
+		petCooldown = ((Apprentice) oldPlayer).omni$getPetCooldown();
+	}
+
+	@Inject(method="readCustomDataFromNbt", at=@At("TAIL"))
+	protected void injectReadMethod(NbtCompound nbt, CallbackInfo info) {
+		if (nbt.contains("omnimod.mana")) {
+			omni$setMana(nbt.getInt("omnimod.mana"));
+		}
+		if (nbt.contains("omnimod.manaMaxLevel")) {
+			omni$setManaMaxLevel(nbt.getInt("omnimod.manaMaxLevel"));
+		}
+		if (nbt.contains("omnimod.manaRegenLevel")) {
+			omni$setManaRegenLevel(nbt.getInt("omnimod.manaRegenLevel"));
+		}
+		if (nbt.contains("omnimod.element")) {
+			omni$setElement(nbt.getString("omnimod.element"));
+		}
+		if (nbt.contains("omnimod.powerConfig")) {
+			for (String config : nbt.getString("omnimod.powerConfig").split(",")) {
+				String[] configList = config.split(":");
+				omni$addConfig(configList[0], Integer.parseInt(configList[1]));
+			}
+		}
+		if (nbt.contains("omnimod.powers", NbtElement.COMPOUND_TYPE)) {
+			for (String key : nbt.getCompound("omnimod.powers").getKeys()) {
+				Power playerPower = omni$addPower(key);
+				if (playerPower != null) {
+					playerPower.setNbt(nbt.getCompound("omnimod.powers").getCompound(key));
+				}
+			}
+		}
+		if (nbt.contains("omnimod.activeTicks")) {
+			((AfkUtil)this).omni$setActiveTicks(nbt.getInt("omnimod.activeTicks"));
+		}
+		if (nbt.contains("omnimod.prevActiveDay")) {
+			((AfkUtil)this).omni$setPrevActiveDay(nbt.getInt("omnimod.prevActiveDay"));
+		}
+		if (nbt.contains("omnimod.gotReward")) {
+			((AfkUtil) this).omni$setGotReward(nbt.getBoolean("omnimod.gotReward"));
+		}
+		if (nbt.contains("omnimod.Streak")) {
+			streak = nbt.getInt("omnimod.Streak");
+		}
+		if (nbt.contains("omnimod.NextStreakDay")) {
+			nextStreakDay = nbt.getInt("omnimod.NextStreakDay");
+		}
+		if (nbt.contains("omnimod.NextStreakYear")) {
+			nextStreakYear = nbt.getInt("omnimod.NextStreakYear");
+		}
+		if (nbt.contains("omnimod.pet")) {
+			pet = ModEntities.PET.create(getWorld());
+			pet.readNbt(nbt.getCompound("omnimod.pet"));
+		}
+		if (nbt.contains("omnimod.PetCooldown")) {
+			petCooldown = nbt.getInt("omnimod.PetCooldown");
+		}
+	}
+
+	@Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
+	protected void injectWriteMethod(NbtCompound nbt, CallbackInfo info) {
+		if (omni$getMana() > -1) {
+			nbt.putDouble("omnimod.mana", omni$getMana());
+		}
+		if (omni$getManaMaxLevel() != null) {
+			nbt.putInt("omnimod.manaMaxLevel", omni$getManaMaxLevel());
+		}
+		if (omni$getManaRegenLevel() != null) {
+			nbt.putInt("omnimod.manaRegenLevel", omni$getManaRegenLevel());
+		}
+		if (omni$getElement() != null) {
+			nbt.putString("omnimod.element", omni$getElement().getName());
+		}
+		if (!omni$getAllPowers().isEmpty()) {
+			NbtCompound powers = new NbtCompound();
+			for (Power power : omni$getAllPowers()) {
+				powers.put(power.getId(), power.toNbt());
+			}
+			nbt.put("omnimod.powers", powers);
+		}
+		if (!omni$getConfig().isEmpty()) {
+			StringBuilder config = new StringBuilder();
+			for (PowerConfig entry : omni$getConfig()) {
+				config.append(entry.getId()).append(":").append(entry.getValue()).append(",");
+			}
+			nbt.putString("omnimod.powerConfig", config.toString());
+		}
+		nbt.putInt("omnimod.activeTicks", ((AfkUtil)this).omni$getActiveTicks());
+		nbt.putInt("omnimod.prevActiveDay", ((AfkUtil)this).omni$getPrevActiveDay());
+		nbt.putBoolean("omnimod.gotReward", ((AfkUtil)this).omni$getGotReward());
+		nbt.putInt("omnimod.Streak", streak);
+		nbt.putInt("omnimod.NextStreakDay", nextStreakDay);
+		nbt.putInt("omnimod.NextStreakYear", nextStreakYear);
+		if (omni$getPet() != null) {
+			NbtCompound petNbt = omni$getPet().writeNbt(new NbtCompound());
+			nbt.put("omnimod.pet", petNbt);
+		}
+		if (petCooldown != 0) {
+			nbt.putInt("omnimod.PetCooldown", petCooldown);
+		}
+	}
+
+	@Unique
+	Pet pet = null;
+
+	@Override
+	public void omni$setPet(Pet entity) {
+		pet = entity;
+	}
+
+	@Override
+	public Pet omni$getPet() {
+		return pet;
+	}
+	@Unique
+	int petCooldown = 0;
+
+	@Override
+	public void omni$setPetCooldown(int cooldown) {
+		petCooldown = cooldown;
+	}
+
+	@Override
+	public int omni$getPetCooldown() {
+		return petCooldown;
 	}
 }

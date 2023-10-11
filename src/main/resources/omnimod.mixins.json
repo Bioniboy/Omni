@@ -7,11 +7,15 @@
     "ActiveTimeDetector",
     "CancelSpectatorTeleport",
     "EntityMixin_Disguise",
+    "PetAmbientSounds",
+    "PetHurtSounds",
+    "PetStepSound",
     "PlayerEatMultiplier",
     "ServerPlayNetworkHandlerMixin_Disguiser",
     "ServerPlayNetworkHandlerMixin_HitCheck",
     "ShouldDrown",
     "TargetFakePlayerMixin",
+    "TeamMixin",
     "accessor.EntitiesDestroyS2CPacketAccessor",
     "accessor.EntityAccessor",
     "accessor.EntityAttributesS2CPacketAccessor",
@@ -20,18 +24,21 @@
     "accessor.EntitySpawnS2CPacketAccessor",
     "accessor.EntityTrackerEntryAccessor",
     "accessor.EntityTrackerUpdateS2CPacketAccessor",
+    "accessor.LivingEntityAccessor",
+    "accessor.MobEntityAccessor",
     "accessor.PlayerEntityAccessor",
     "accessor.PlayerListS2CPacketAccessor",
     "accessor.PlayerSpawnS2CPacketAccessor",
-    "accessor.ThreadedAnvilChunkStorageAccessor"
-  ],
-  "server": [
+    "accessor.ThreadedAnvilChunkStorageAccessor",
     "ModEntityDataSaver",
     "PlayerDamageMultiplier",
     "PlayerHurtMultiplier",
     "PlayerManagerMixin",
-    "ServerPlayerMixin",
-    "SpectateSelf"
+    "SpectateSelf",
+    "ServerPlayerMixin"
+  ],
+  "server": [
+
   ],
   "injectors": {
     "defaultRequire": 1

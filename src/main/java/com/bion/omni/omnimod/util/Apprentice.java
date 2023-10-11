@@ -1,9 +1,11 @@
 package com.bion.omni.omnimod.util;
 
-import com.bion.omni.omnimod.elements.Element;
-import com.bion.omni.omnimod.powers.ContinuousPower;
-import com.bion.omni.omnimod.powers.ImpulsePower;
-import com.bion.omni.omnimod.powers.Power;
+import com.bion.omni.omnimod.element.Element;
+import com.bion.omni.omnimod.entity.custom.Pet;
+import com.bion.omni.omnimod.power.ContinuousPower;
+import com.bion.omni.omnimod.power.ImpulsePower;
+import com.bion.omni.omnimod.power.Power;
+import net.minecraft.entity.LivingEntity;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -45,4 +47,8 @@ public interface Apprentice {
     void omni$interpretWandCommand(String command);
     Integer omni$getWandPage();
     void omni$changeWandPage();
+    void omni$setPet(Pet entity);
+    Pet omni$getPet();
+    void omni$setPetCooldown(int cooldown);
+    int omni$getPetCooldown();
 }

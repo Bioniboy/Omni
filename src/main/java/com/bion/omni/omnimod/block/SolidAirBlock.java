@@ -1,6 +1,6 @@
 package com.bion.omni.omnimod.block;
 
-import com.bion.omni.omnimod.elements.Air;
+import com.bion.omni.omnimod.element.Air;
 import com.bion.omni.omnimod.util.Apprentice;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
 import net.minecraft.block.*;

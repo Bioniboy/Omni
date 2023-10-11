@@ -1,7 +1,7 @@
 package com.bion.omni.omnimod.item.tome;
 
-import com.bion.omni.omnimod.elements.Clarity;
-import com.bion.omni.omnimod.elements.Element;
+import com.bion.omni.omnimod.element.Clarity;
+import com.bion.omni.omnimod.element.Element;
 import eu.pb4.polymer.core.api.item.PolymerItemUtils;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;

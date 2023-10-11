@@ -1,0 +1,20 @@
+{
+    "condition": "minecraft:entity_properties",
+    "entity": "this",
+    "predicate": {
+      "type": "minecraft:player",
+      "type_specific": {
+        "type": "player"
+      },
+      "team": "Storm",
+      "location": {
+        "position": {
+          "y": {
+            "min": 150,
+            "max": 10000
+          }
+        }
+      }
+    }
+  }
+  

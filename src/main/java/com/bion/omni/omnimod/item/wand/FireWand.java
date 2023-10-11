@@ -1,8 +1,7 @@
 package com.bion.omni.omnimod.item.wand;
 
-import com.bion.omni.omnimod.elements.Element;
-import com.bion.omni.omnimod.elements.Fire;
-import com.bion.omni.omnimod.elements.Storm;
+import com.bion.omni.omnimod.element.Element;
+import com.bion.omni.omnimod.element.Fire;
 import net.minecraft.item.Item;
 
 public class FireWand extends Wand {

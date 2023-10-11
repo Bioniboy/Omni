@@ -1,7 +1,7 @@
 package com.bion.omni.omnimod.command;
 
-import com.bion.omni.omnimod.powers.Power;
-import com.bion.omni.omnimod.powers.storm.Mark;
+import com.bion.omni.omnimod.power.Power;
+import com.bion.omni.omnimod.power.storm.Mark;
 import com.bion.omni.omnimod.util.Apprentice;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;

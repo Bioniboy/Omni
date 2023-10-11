@@ -1,23 +1,32 @@
 package com.bion.omni.omnimod.command;
 
-import com.bion.omni.omnimod.elements.*;
+import com.bion.omni.omnimod.element.*;
+import com.bion.omni.omnimod.entity.ModEntities;
+import com.bion.omni.omnimod.entity.custom.Pet;
 import com.bion.omni.omnimod.mixin.accessor.EntityAccessor;
 import com.bion.omni.omnimod.util.AfkUtil;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.bion.omni.omnimod.item.ModItems;
-import com.bion.omni.omnimod.powers.Mana;
+import com.bion.omni.omnimod.power.Mana;
 import com.bion.omni.omnimod.util.EntityDataInterface;
 import com.bion.omni.omnimod.util.Apprentice;
 import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.command.argument.RegistryEntryArgumentType;
+import net.minecraft.command.suggestion.SuggestionProviders;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.EntityTrackerUpdateS2CPacket;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -32,10 +41,6 @@ public class OmniCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess s, CommandManager.RegistrationEnvironment p) {
         dispatcher.register(CommandManager.literal("omni")
-                .then(CommandManager.literal("glow")
-                        .requires(context -> ((EntityDataInterface)context.getPlayer()).getPersistentData().getCompound("powers").contains("glow"))
-                        .executes(OmniCommand::run)
-                )
                 .then(CommandManager.literal("choose")
                         .requires(source -> source.hasPermissionLevel(2))
                         .then(CommandManager.literal("moon")
@@ -56,9 +61,41 @@ public class OmniCommand {
                         .then(CommandManager.literal("fire")
                                 .executes(context -> {choose(context.getSource().getPlayer(), "fire"); return 1;})
                         )
+                        .then(CommandManager.literal("water")
+                                .executes(context -> {choose(context.getSource().getPlayer(), "water"); return 1;})
+                        )
                 )
                 .then(CommandManager.literal("playtime")
                         .executes(OmniCommand::playtime)
+                        .then(CommandManager.literal("set")
+                                .requires(source -> source.hasPermissionLevel(2))
+                                .then(CommandManager.argument("time", IntegerArgumentType.integer(0))
+                                        .executes(context -> {setPlaytime(context, IntegerArgumentType.getInteger(context, "time")); return 1;})
+                                )
+
+                        )
+                        .then(CommandManager.literal("reset")
+                                .requires(source -> source.hasPermissionLevel(2))
+                                .executes(OmniCommand::resetPlaytime)
+                        )
+                )
+                .then(CommandManager.literal("pet")
+                        .then(CommandManager.literal("create")
+                                .then(CommandManager.argument("owner", EntityArgumentType.player())
+                                        .then(CommandManager.argument("name", StringArgumentType.word())
+                                                .executes(context -> {
+                                                    createPet(context, EntityArgumentType.getPlayer(context, "owner"), StringArgumentType.getString(context, "name")); return 1;})
+                                                .then(CommandManager.argument("type", RegistryEntryArgumentType.registryEntry(s, RegistryKeys.ENTITY_TYPE)).suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
+                                                        .executes(context -> {
+                                                            createPet(context, EntityArgumentType.getPlayer(context, "owner"), StringArgumentType.getString(context, "name"), RegistryEntryArgumentType.getSummonableEntityType(context, "type").value()); return 1;})
+                                                )
+                                        )
+                                )
+                        )
+                        .then(CommandManager.literal("summon")
+                                .requires(context -> ((((Apprentice)context.getPlayer()).omni$getPet() != null)))
+                                .executes(OmniCommand::summonPet)
+                        )
                 )
         );
     }
@@ -109,8 +146,8 @@ public class OmniCommand {
                 if (!player.getInventory().contains(ModItems.AERONOMICON.getDefaultStack())) {
                     player.giveItemStack(new ItemStack(ModItems.AERONOMICON));
                 }
-                if (!player.getInventory().contains(ModItems.STORM_WAND.getDefaultStack())) {
-                    player.giveItemStack(new ItemStack(ModItems.STORM_WAND));
+                if (!player.getInventory().contains(ModItems.AIR_WAND.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.AIR_WAND));
                 }
                 starterPowerId = "slowFall";
                 yield new Air();
@@ -141,6 +178,15 @@ public class OmniCommand {
                 }
                 starterPowerId = "fireResistance";
                 yield new Fire();
+            case "water":
+                if (!player.getInventory().contains(ModItems.HYDRONOMICON.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.HYDRONOMICON));
+                }
+                if (!player.getInventory().contains(ModItems.WATER_WAND.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.WATER_WAND));
+                }
+                starterPowerId = "waterBreathing";
+                yield new Water();
             default:
                 yield null;
         });
@@ -166,6 +212,54 @@ public class OmniCommand {
             context.getSource().sendFeedback(() -> Text.literal("You need to play for " + (remainingHours != 0 ? remainingHours + " hours, ": "") + (remainingMinutes != 0 ? remainingMinutes + " minutes and ": "") + remainingSeconds + " seconds to get your Influence reward."), false);
         } else {
             context.getSource().sendFeedback(() -> Text.literal("You got your Influence reward for today!"), false);
+        }
+        return 1;
+    }
+    private static void setPlaytime(CommandContext<ServerCommandSource> context, int time) {
+        ((AfkUtil)context.getSource().getPlayer()).omni$setActiveTicks(time);
+    }
+
+    private static int resetPlaytime(CommandContext<ServerCommandSource> context) {
+        AfkUtil player = ((AfkUtil)context.getSource().getPlayer());
+        player.omni$setGotReward(false);
+        player.omni$setActiveTicks(0);
+//        player.omni$setNextStreakDay(1);
+//        player.omni$setNextStreakYear(0);
+        return 1;
+    }
+
+    private static void createPet(CommandContext<ServerCommandSource> context, ServerPlayerEntity player, String name, EntityType<?> type) {
+        Pet pet = ModEntities.PET.create(player.getServerWorld());
+        pet.setOwner(player);
+        pet.setCustomName(Text.literal(name));
+        if (type.create(context.getSource().getWorld()) instanceof LivingEntity) {
+            pet.setCustomType((EntityType<? extends LivingEntity>) type);
+        }
+        ((Apprentice)player).omni$setPet(pet);
+        pet.setPosition(player.getPos());
+        player.getServerWorld().spawnEntity(pet);
+        if (player.networkHandler != null) {
+            player.server.getCommandManager().sendCommandTree(player);
+        }
+    }
+
+    private static void createPet(CommandContext<ServerCommandSource> context, ServerPlayerEntity player, String name) {
+        createPet(context, player, name, null);
+    }
+
+    private static int summonPet(CommandContext<ServerCommandSource> context) {
+        Pet pet = ((Apprentice)context.getSource().getPlayer()).omni$getPet();
+        if (!pet.isAlive() && ((Apprentice) context.getSource().getPlayer()).omni$getPetCooldown() == 0) {
+            pet.unRemove();
+            pet.setHealth(pet.defaultMaxHealth);
+            pet.setPosition(context.getSource().getPosition());
+            context.getSource().getWorld().spawnEntity(((Apprentice) context.getSource().getPlayer()).omni$getPet());
+        } else if (((Apprentice) context.getSource().getPlayer()).omni$getPetCooldown() > 0) {
+            int remainingTicks = ((Apprentice) context.getSource().getPlayer()).omni$getPetCooldown() + 20;
+            int remainingMinutes = (remainingTicks / (20 * 60));
+            int remainingSeconds = (remainingTicks / 20) - (remainingMinutes * 60);
+            context.getSource().sendError(pet.getName().copyContentOnly()
+                    .append(Text.literal(" is still resting. They can be summoned again in " + (remainingMinutes != 0 ? remainingMinutes + " minutes and ": "") + remainingSeconds + " seconds")));
         }
         return 1;
     }

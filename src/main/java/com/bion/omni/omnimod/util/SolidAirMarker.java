@@ -1,7 +1,7 @@
 package com.bion.omni.omnimod.util;
 
 import com.bion.omni.omnimod.block.ModBlocks;
-import com.bion.omni.omnimod.elements.Air;
+import com.bion.omni.omnimod.element.Air;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;

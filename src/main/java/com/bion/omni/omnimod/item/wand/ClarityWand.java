@@ -1,7 +1,7 @@
 package com.bion.omni.omnimod.item.wand;
 
-import com.bion.omni.omnimod.elements.Clarity;
-import com.bion.omni.omnimod.elements.Element;
+import com.bion.omni.omnimod.element.Clarity;
+import com.bion.omni.omnimod.element.Element;
 import net.minecraft.item.Item;
 
 public class ClarityWand extends Wand {

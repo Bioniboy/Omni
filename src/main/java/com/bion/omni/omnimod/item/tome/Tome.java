@@ -2,11 +2,11 @@ package com.bion.omni.omnimod.item.tome;
 
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import eu.pb4.sgui.api.elements.BookElementBuilder;
-import com.bion.omni.omnimod.elements.Element;
-import com.bion.omni.omnimod.powers.ChangeWandPage;
-import com.bion.omni.omnimod.powers.ContinuousPower;
-import com.bion.omni.omnimod.powers.ImpulsePower;
-import com.bion.omni.omnimod.powers.Power;
+import com.bion.omni.omnimod.element.Element;
+import com.bion.omni.omnimod.power.ChangeWandPage;
+import com.bion.omni.omnimod.power.ContinuousPower;
+import com.bion.omni.omnimod.power.ImpulsePower;
+import com.bion.omni.omnimod.power.Power;
 import com.bion.omni.omnimod.util.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -203,7 +203,7 @@ public abstract class Tome extends SimplePolymerItem {
     }
     public void wandSlotCommand(String[] components, ServerPlayerEntity user) {
         if (components[0].startsWith("2") && ((Apprentice)user).omni$getPowerById("changeWandPage") == null) {
-            ((Apprentice)user).omni$addPower(new ChangeWandPage());
+            ((Apprentice)user).omni$addPower(new ChangeWandPage(1));
         }
         ((Apprentice)user).omni$changeInfluence(-getWandSlotCost(((EntityDataInterface)user).getPersistentData()));
         ((EntityDataInterface)user).getPersistentData().putString(components[0], "");

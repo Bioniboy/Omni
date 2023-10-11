@@ -1,0 +1,25 @@
+{
+    "__comment": "Made with TheDestruc7i0n's advancements generator: https://advancements.thedestruc7i0n.ca",
+    "display": {
+        "title": {
+            "text": "Blaze Fire",
+            "color": "gray"
+        },
+        "description": {
+            "text": "Not yet implemented"
+        },
+        "icon": {
+            "item": "minecraft:fire_charge"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": false,
+        "hidden": false
+    },
+    "criteria": {
+        "Impossible": {
+            "trigger": "minecraft:impossible"
+        }
+    },
+    "parent": "fire:lava_storage"
+}
