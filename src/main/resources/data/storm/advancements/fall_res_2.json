@@ -1,0 +1,25 @@
+{
+    "__comment": "Made with TheDestruc7i0n's advancements generator: https://advancements.thedestruc7i0n.ca",
+    "display": {
+        "title": {
+            "text": "Fall Damage Resistance II",
+            "color": "dark_gray"
+        },
+        "description": {
+            "text": "Great resistance to fall damage. Influence: 90"
+        },
+        "icon": {
+            "item": "minecraft:feather"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": false,
+        "hidden": false
+    },
+    "criteria": {
+        "Command": {
+            "trigger": "minecraft:impossible"
+        }
+    },
+    "parent": "storm:fall_res"
+}

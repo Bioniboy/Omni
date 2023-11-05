@@ -1,6 +1,7 @@
 package com.bion.omni.omnimod.power.storm;
 
 import com.bion.omni.omnimod.power.ImpulsePower;
+import com.bion.omni.omnimod.util.Apprentice;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 
@@ -25,6 +26,11 @@ public class ManaRocket extends ImpulsePower {
     }
 
     @Override
+    public String getAdvancementId() {
+        return "mana_rockets";
+    }
+
+    @Override
     public Integer getInfluenceCost() {
         return 45;
     }
@@ -36,7 +42,9 @@ public class ManaRocket extends ImpulsePower {
 
     @Override
     public boolean activate(ServerPlayerEntity user) {
-        if (user.isFallFlying() && (user.getWorld().isRaining() || super.activate(user))) {
+        if (user.isFallFlying() && ((user.getWorld().isRaining() && ((Apprentice)user).omni$getMana() >= 1) || super.activate(user))) {
+            if (user.getWorld().isRaining())
+                ((Apprentice)user).omni$changeMana(-1);
             Vec3d vec3d = user.getRotationVector();
             Vec3d vec3d2 = user.getVelocity();
             user.addVelocity(vec3d.x * 1 + (vec3d.x * 1.5 - vec3d2.x) * 0.5, vec3d.y * 1 + (vec3d.y * 1.5 - vec3d2.y) * 0.5, vec3d.z * 1 + (vec3d.z * 1.5 - vec3d2.z) * 0.5);

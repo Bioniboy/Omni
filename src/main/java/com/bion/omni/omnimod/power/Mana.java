@@ -1,5 +1,6 @@
 package com.bion.omni.omnimod.power;
 
+import com.bion.omni.omnimod.OmniMod;
 import com.bion.omni.omnimod.util.Apprentice;
 
 import net.minecraft.network.packet.Packet;
@@ -8,6 +9,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.intprovider.ClampedIntProvider;
 
 import java.util.Hashtable;
 import java.util.function.Function;
@@ -18,6 +20,7 @@ public class Mana {
         double prevMana = player.omni$getMana();
         Hashtable<String, Double> costs = player.omni$getCosts();
         for (var costId : costs.keySet()) {
+
             player.omni$changeMana(-costs.get(costId));
         }
         costs.clear();
@@ -25,7 +28,8 @@ public class Mana {
         if (player.omni$getMana() < player.omni$getManaMax()) {
             player.omni$changeMana(player.omni$getManaRegen());
             if (player.omni$getElement().isInDomain((ServerPlayerEntity) player)) {
-                player.omni$changeMana(1);
+                OmniMod.LOGGER.info("In domain");
+                player.omni$changeMana(Math.min(player.omni$getManaRegen(), 1));
             }
             if (player.omni$getMana() > player.omni$getManaMax()) {
                 player.omni$setMana(player.omni$getManaMax());

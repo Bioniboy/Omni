@@ -58,6 +58,9 @@ public class ManaCommand {
                                 .executes(ManaCommand::upgradeMax)
                         )
                 )
+                .then(CommandManager.literal("refill")
+                        .executes(context -> setPlayerMana(context.getSource().getPlayer(), ((Apprentice)context.getSource().getPlayer()).omni$getManaMax()))
+                )
         );
     }
 

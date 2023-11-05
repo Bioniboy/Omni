@@ -1,0 +1,21 @@
+{
+    "__comment": "Made with TheDestruc7i0n's advancements generator: https://advancements.thedestruc7i0n.ca",
+    "display": {
+        "title": {
+            "text": "Rewind II",
+            "color": "gray"
+        },
+        "description": {
+            "text": "Not implemented yet"
+        },
+        "icon": {
+            "item": "minecraft:clock"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": false,
+        "hidden": false
+    },
+    "criteria": {},
+    "parent": "magic:rewind"
+}

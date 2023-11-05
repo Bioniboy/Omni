@@ -57,6 +57,11 @@ public class Mark extends ImpulsePower {
         return "mark";
     }
 
+    @Override
+    public String getAdvancementId() {
+        return "mark";
+    }
+
     public LivingEntity getTarget(ServerWorld world) {
         if (!Objects.equals(targetId, "")) {
             return (LivingEntity) world.getEntity(UUID.fromString(targetId));

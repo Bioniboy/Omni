@@ -3,6 +3,7 @@ package com.bion.omni.omnimod.command;
 import com.bion.omni.omnimod.element.*;
 import com.bion.omni.omnimod.entity.ModEntities;
 import com.bion.omni.omnimod.entity.custom.Pet;
+import com.bion.omni.omnimod.item.InfluenceToken;
 import com.bion.omni.omnimod.mixin.accessor.EntityAccessor;
 import com.bion.omni.omnimod.util.AfkUtil;
 import com.mojang.brigadier.CommandDispatcher;
@@ -14,6 +15,7 @@ import com.bion.omni.omnimod.item.ModItems;
 import com.bion.omni.omnimod.power.Mana;
 import com.bion.omni.omnimod.util.EntityDataInterface;
 import com.bion.omni.omnimod.util.Apprentice;
+import eu.pb4.sgui.api.gui.SimpleGuiBuilder;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.RegistryEntryArgumentType;
@@ -22,16 +24,32 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.s2c.play.EntityTrackerUpdateS2CPacket;
+import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.ScoreboardPlayerScore;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.GameMode;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +82,9 @@ public class OmniCommand {
                         .then(CommandManager.literal("water")
                                 .executes(context -> {choose(context.getSource().getPlayer(), "water"); return 1;})
                         )
+                        .then(CommandManager.literal("magic")
+                                .executes(context -> {choose(context.getSource().getPlayer(), "magic"); return 1;})
+                        )
                 )
                 .then(CommandManager.literal("playtime")
                         .executes(OmniCommand::playtime)
@@ -80,6 +101,7 @@ public class OmniCommand {
                         )
                 )
                 .then(CommandManager.literal("pet")
+                        .requires(source -> source.hasPermissionLevel(2))
                         .then(CommandManager.literal("create")
                                 .then(CommandManager.argument("owner", EntityArgumentType.player())
                                         .then(CommandManager.argument("name", StringArgumentType.word())
@@ -95,6 +117,19 @@ public class OmniCommand {
                         .then(CommandManager.literal("summon")
                                 .requires(context -> ((((Apprentice)context.getPlayer()).omni$getPet() != null)))
                                 .executes(OmniCommand::summonPet)
+                        )
+                )
+                .then(CommandManager.literal("opmode")
+                        .requires(source -> source.hasPermissionLevel(2))
+                        .executes(OmniCommand::toggleOpMode)
+                )
+                .then(CommandManager.literal("mansion")
+                        .requires(source -> source.hasPermissionLevel(2))
+                        .then(CommandManager.literal("start")
+                                .executes(OmniCommand::mansionStart)
+                        )
+                        .then(CommandManager.literal("stop")
+                                .executes(context -> {mansionStop(context.getSource().getPlayer()); return 1;})
                         )
                 )
         );
@@ -187,6 +222,15 @@ public class OmniCommand {
                 }
                 starterPowerId = "waterBreathing";
                 yield new Water();
+            case "magic":
+                if (!player.getInventory().contains(ModItems.THAUMONOMICON.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.THAUMONOMICON));
+                }
+                if (!player.getInventory().contains(ModItems.MAGIC_WAND.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.MAGIC_WAND));
+                }
+                starterPowerId = "potionCrafting";
+                yield new Magic();
             default:
                 yield null;
         });
@@ -262,5 +306,88 @@ public class OmniCommand {
                     .append(Text.literal(" is still resting. They can be summoned again in " + (remainingMinutes != 0 ? remainingMinutes + " minutes and ": "") + remainingSeconds + " seconds")));
         }
         return 1;
+    }
+
+    private static int toggleOpMode(CommandContext<ServerCommandSource> context) {
+        ServerPlayerEntity player = context.getSource().getPlayer();
+        Apprentice apprentice = (Apprentice) player;
+        if (player == null) return 0;
+        if (apprentice.omni$getOpModeOtherPos() != null) {
+            World otherWorld = apprentice.omni$getOpModeOtherWorld();
+            Vec3d otherPos = apprentice.omni$getOpModeOtherPos();
+            apprentice.omni$setOpModeOtherPos(player.getPos(), player.getServerWorld());
+            player.teleport((ServerWorld) otherWorld, otherPos.x, otherPos.y, otherPos.z, player.getYaw(), player.getPitch());
+            player.refreshPositionAfterTeleport(player.getX(), player.getY(), player.getZ());
+
+        } else {
+            apprentice.omni$setOpModeOtherPos(player.getPos(), player.getServerWorld());
+        }
+        if (apprentice.omni$getSavedInventory("opMode") == null)
+            apprentice.omni$addSavedInventory("opMode", new PlayerInventory(player));
+        NbtList savedInv = player.getInventory().writeNbt(new NbtList());
+        player.getInventory().readNbt(apprentice.omni$getSavedInventory("opMode").writeNbt(new NbtList()));
+        apprentice.omni$getSavedInventory("opMode").readNbt(savedInv);
+
+        if (!apprentice.omni$inOpMode()) {
+            player.changeGameMode(GameMode.CREATIVE);
+        } else {
+            player.changeGameMode(GameMode.SURVIVAL);
+        }
+
+        apprentice.omni$setInOpMode(!apprentice.omni$inOpMode());
+        return 1;
+    }
+    private static int mansionStart(CommandContext<ServerCommandSource> context) {
+        ServerPlayerEntity player = context.getSource().getPlayer();
+        Apprentice apprentice = (Apprentice) player;
+        player.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, -1, 0, true, false));
+        player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, -1, 3, true, false));
+        apprentice.omni$addSavedInventory("mansion", new PlayerInventory(player));
+        apprentice.omni$getSavedInventory("mansion").readNbt(player.getInventory().writeNbt(new NbtList()));
+        player.getInventory().clear();
+        player.networkHandler.sendPacket(new TitleS2CPacket(Text.literal("You have entered").formatted(Formatting.DARK_RED).formatted(Formatting.BOLD)));
+        player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ENTITY_WITHER_SPAWN, SoundCategory.PLAYERS, 1.0f, 0.5f);
+        apprentice.omni$setInMansion(true);
+        player.changeGameMode(GameMode.ADVENTURE);
+        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "data merge entity 115b67a6-f426-4093-952c-561691e95df7 {Item:{id:\"minecraft:carrot_on_a_stick\",tag:{Damage:0},Count:1b}}");
+        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "data merge entity 51761ee8-fc92-4ca0-a7c4-d0a6e29e22f3 {ArmorItems:[{id:\"minecraft:leather_boots\",tag:{Damage:0},Count:1b},{id:\"minecraft:leather_leggings\",tag:{Damage:0}, Count:1b},{id:\"minecraft:leather_chestplate\",tag:{Damage:0}, Count:1b}]}");
+        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "data merge entity 5c1c1c49-3ba8-48d7-a9b9-6e766faba3ed {ArmorItems:[{},{},{},{id:\"minecraft:leather_helmet\",tag:{Damage:0}, Count:1b}]}");
+        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "summon omnimod:mansion_zombie -492 122 244 {IsBaby:0b}");
+        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "kill @e[type=item,x=-536,y=110,z=210,dx=58,dy=32,dz=44]");
+        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "tp @e[type=minecraft:chest_boat,x=-538,y=110,z=210,dx=58,dy=32,dz=44] -524 112 258");
+        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "tp @e[type=minecraft:boat,x=-538,y=110,z=210,dx=58,dy=32,dz=44] -524 112 258");
+        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "tp @e[type=minecraft:chest_minecart,x=-538,y=110,z=210,dx=58,dy=32,dz=44] -524 112 258");
+        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "tp @e[type=minecraft:donkey,x=-538,y=110,z=210,dx=58,dy=32,dz=44] -524 112 258");
+        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "tp @e[type=minecraft:mule,x=-538,y=110,z=210,dx=58,dy=32,dz=44] -524 112 258");
+
+        return 1;
+    }
+
+    public static void mansionStop(ServerPlayerEntity player) {
+        int totalInfluence = 0;
+        for (ItemStack item : player.getInventory().main) {
+            if (item.isOf(ModItems.INFLUENCE_TOKEN)) {
+                totalInfluence += item.getOrCreateNbt().getInt("Value") * item.getCount();
+            }
+        }
+        if (player.getOffHandStack().isOf(ModItems.INFLUENCE_TOKEN)) {
+            totalInfluence += player.getOffHandStack().getOrCreateNbt().getInt("Value") * player.getOffHandStack().getCount();
+        }
+        Scoreboard scoreboard = player.getScoreboard();
+        ScoreboardPlayerScore score = scoreboard.getPlayerScore(player.getName().getString(), scoreboard.getObjective("MansionPoints"));
+        player.sendMessageToClient(Text.literal("Points earned: " + totalInfluence), false);
+        if (score.getScore() < totalInfluence) {
+            score.setScore(totalInfluence);
+            player.sendMessageToClient(Text.literal("New high score"), false);
+        }
+        player.getInventory().readNbt(((Apprentice)player).omni$removeSavedInventory("mansion").writeNbt(new NbtList()));
+        player.removeStatusEffect(StatusEffects.DARKNESS);
+        player.removeStatusEffect(StatusEffects.REGENERATION);
+        player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ENTITY_WITHER_DEATH, SoundCategory.PLAYERS, 1.0f, 0.5f);
+        ((Apprentice)player).omni$setInMansion(false);
+        player.changeGameMode(GameMode.SURVIVAL);
+        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "clone -536 40 210 -478 72 254 -536 110 210");
+        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "tp @e[type=omnimod:mansion_zombie] ~ -200 ~");
+        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "tag @a[tag=mansion] remove mansion");
     }
 }

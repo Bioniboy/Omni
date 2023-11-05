@@ -26,6 +26,11 @@ public class CreeperDisguise extends ContinuousPower {
     }
 
     @Override
+    public String getAdvancementId() {
+        return "creeper_transform";
+    }
+
+    @Override
     public Integer getInfluenceCost() {
         return 30;
     }

@@ -49,4 +49,18 @@ public class ExplosionResistance extends Power {
     public ArrayList<ConfigSymbol> getConfigSymbols() {
         return null;
     }
+
+    @Override
+    public String getAdvancementId() {
+        return switch(getLevel()) {
+            case 1:
+                yield "explosion_res";
+            case 2:
+                yield "explosion_res_2";
+            case 3:
+                yield "explosion_immunity";
+            default:
+                yield "";
+        };
+    }
 }

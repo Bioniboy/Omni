@@ -26,6 +26,11 @@ public class WhatWasThat extends Power {
     }
 
     @Override
+    public String getAdvancementId() {
+        return "play_sound";
+    }
+
+    @Override
     public Integer getInfluenceCost() {
         return 30;
     }

@@ -1,0 +1,25 @@
+{
+    "__comment": "Made with TheDestruc7i0n's advancements generator: https://advancements.thedestruc7i0n.ca",
+    "display": {
+        "title": {
+            "text": "Creeper Transformation",
+            "color": "dark_gray"
+        },
+        "description": {
+            "text": "Transform yourself into a creeper. Influence: 30"
+        },
+        "icon": {
+            "item": "minecraft:creeper_head"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": false,
+        "hidden": false
+    },
+    "criteria": {
+        "Command": {
+            "trigger": "minecraft:impossible"
+        }
+    },
+    "parent": "storm:explosion_res"
+}

@@ -62,7 +62,7 @@ public abstract class ActiveTimeDetector {
                         afkUtil.omni$setActiveTicks(0);
                     afkTicks = 0;
                     isAfk = true;
-                    player.sendMessageToClient(Text.literal("You are no AFK"), false);
+                    player.sendMessageToClient(Text.literal("You are now AFK"), false);
                 }
             } else if (!((AfkUtil)player).omni$getGotReward()) {
                 ((Apprentice) player).omni$changeInfluence(2);
@@ -101,7 +101,7 @@ public abstract class ActiveTimeDetector {
 
     @Inject(method="onPlayerMove", at=@At("HEAD"))
     private void detectAfk(PlayerMoveC2SPacket packet, CallbackInfo ci) {
-        if (/* packet instanceof PlayerMoveC2SPacket.Full || */ packet instanceof PlayerMoveC2SPacket.LookAndOnGround) {
+        if (packet instanceof PlayerMoveC2SPacket.Full || packet instanceof PlayerMoveC2SPacket.LookAndOnGround) {
             afkTicks = 0;
             if (isAfk) {
                 isAfk = false;

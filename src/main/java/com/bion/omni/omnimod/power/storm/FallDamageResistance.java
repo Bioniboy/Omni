@@ -27,6 +27,11 @@ public class FallDamageResistance extends Power {
     }
 
     @Override
+    public String getAdvancementId() {
+        return getLevel() == 1 ? "fall_res" : "fall_res_2";
+    }
+
+    @Override
     public Boolean hasConfig() {
         return false;
     }

@@ -19,6 +19,11 @@ public class MakeItRain extends ImpulsePower {
     }
 
     @Override
+    public String getAdvancementId() {
+        return "make_rain";
+    }
+
+    @Override
     public Integer getInfluenceCost() {
         return 30;
     }

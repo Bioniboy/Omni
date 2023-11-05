@@ -60,13 +60,13 @@ public class BlockHistory extends ImpulsePower {
 
     @Override
     public boolean activate(ServerPlayerEntity user) {
-        BlockHitResult result = user.getWorld().raycast(new RaycastContext(user.getEyePos(), user.getEyePos().add(user.getRotationVector().multiply(5)), RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.ANY, user));
+        BlockHitResult result = user.getWorld().raycast(new RaycastContext(user.getEyePos(), user.getEyePos().add(user.getRotationVector().multiply(5)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, user));
         double influence = ((Apprentice)user).omni$getInfluence();
         if (result.getType().equals(HitResult.Type.BLOCK) && influence >= getManaCost()) {
             ((Apprentice)user).omni$changeInfluence(-(int)getManaCost());
 
             BlockPos pos = result.getBlockPos();
-            user.getServer().getCommandManager().executeWithPrefix(user.getCommandSource(), "ledger i " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
+            user.getServer().getCommandManager().executeWithPrefix(user.getServer().getCommandSource(), "ledger i " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
             return true;
         } else {
             return false;

@@ -1,0 +1,25 @@
+{
+    "__comment": "Made with TheDestruc7i0n's advancements generator: https://advancements.thedestruc7i0n.ca",
+    "display": {
+        "title": {
+            "text": "Magical Mayhem",
+            "color": "dark_purple"
+        },
+        "description": {
+            "text": "Be chosen as a Magic apprentice."
+        },
+        "icon": {
+            "item": "minecraft:brewing_stand"
+        },
+        "frame": "challenge",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": false,
+        "background": "minecraft:textures/gui/advancements/backgrounds/stone.png"
+    },
+    "criteria": {
+        "Command": {
+            "trigger": "minecraft:impossible"
+        }
+    }
+}

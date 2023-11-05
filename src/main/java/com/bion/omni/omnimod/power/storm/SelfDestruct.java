@@ -38,6 +38,11 @@ public class SelfDestruct extends ImpulsePower {
     }
 
     @Override
+    public String getAdvancementId() {
+        return "big_boom";
+    }
+
+    @Override
     public Integer getInfluenceCost() {
         return 50;
     }

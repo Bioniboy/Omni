@@ -1,5 +1,6 @@
 package com.bion.omni.omnimod.mixin;
 
+import com.bion.omni.omnimod.command.OmniCommand;
 import com.bion.omni.omnimod.util.Apprentice;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -14,6 +15,10 @@ public class PlayerManagerMixin {
     private void onDisconnect(ServerPlayerEntity player, CallbackInfo ci) {
         for (var power : ((Apprentice)player).omni$getAllPowers()) {
             power.onDisconnect(player);
+        }
+        if (((Apprentice)player).omni$getInMansion()) {
+            OmniCommand.mansionStop(player);
+            player.requestTeleport(-525, 112, 258);
         }
     }
 }

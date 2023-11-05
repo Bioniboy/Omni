@@ -91,4 +91,9 @@ public class Speed extends ContinuousPower {
         speedLevel = nbt.getInt("speedLevel");
         return this;
     }
+
+    @Override
+    public String getAdvancementId() {
+        return "root";
+    }
 }

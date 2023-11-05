@@ -54,4 +54,5 @@ public abstract class Power {
         return this;
     }
     public void onDisconnect(ServerPlayerEntity user) {}
+    public int getDefaultConfig() { return 0; }
 }

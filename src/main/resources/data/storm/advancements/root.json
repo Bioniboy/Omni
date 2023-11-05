@@ -1,0 +1,25 @@
+{
+    "__comment": "Made with TheDestruc7i0n's advancements generator: https://advancements.thedestruc7i0n.ca",
+    "display": {
+        "title": {
+            "text": "Total Chaos",
+            "color": "dark_gray"
+        },
+        "description": {
+            "text": "Be chosen as a Storm apprentice."
+        },
+        "icon": {
+            "item": "minecraft:tnt"
+        },
+        "frame": "challenge",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": false,
+        "background": "minecraft:textures/gui/advancements/backgrounds/stone.png"
+    },
+    "criteria": {
+        "Command": {
+            "trigger": "minecraft:impossible"
+        }
+    }
+}

@@ -26,6 +26,11 @@ public class GoBoom extends ImpulsePower {
     }
 
     @Override
+    public String getAdvancementId() {
+        return "small_boom";
+    }
+
+    @Override
     public Integer getInfluenceCost() {
         return 40;
     }

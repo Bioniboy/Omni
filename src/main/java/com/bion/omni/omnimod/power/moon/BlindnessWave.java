@@ -84,9 +84,7 @@ public class BlindnessWave extends ImpulsePower {
             }
             user.getServerWorld().spawnParticles(user, ParticleTypes.SMOKE, true, user.getX(), user.getY(), user.getZ(), 50,0.2, 0, 0.2, 0.5);
             Box entityBox = new Box(user.getBlockPos()).expand(32);
-            OmniMod.LOGGER.info(entityBox.toString());
             List<Entity> entityList = user.getWorld().getOtherEntities(null, entityBox);
-            OmniMod.LOGGER.info(entityList.toString());
             for (Entity entity : entityList) {
                 OmniMod.LOGGER.info(entity.getEntityName());
                 if (!(entity instanceof PlayerEntity) && entity instanceof LivingEntity mob) {

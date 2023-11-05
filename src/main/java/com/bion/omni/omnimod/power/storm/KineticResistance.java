@@ -22,6 +22,11 @@ public class KineticResistance extends Power {
     }
 
     @Override
+    public String getAdvancementId() {
+        return getLevel() == 1 ? "kinetic_res" : "kinetic_immunity";
+    }
+
+    @Override
     public Boolean hasConfig() {
         return false;
     }

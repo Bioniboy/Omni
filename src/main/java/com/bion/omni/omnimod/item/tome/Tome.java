@@ -38,7 +38,7 @@ public abstract class Tome extends SimplePolymerItem {
     }
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        if (((Apprentice) user).omni$getElement() != null && Objects.equals(((Apprentice) user).omni$getElement().getName(), getElement().getName())) {
+        if (((Apprentice) user).omni$getElement() != null && ((Apprentice) user).omni$getElement().getClass() == getElement().getClass()) {
             TomeGui gui = new TomeGui((ServerPlayerEntity) user, genTome(user));
             if (((EntityDataInterface) user).getPersistentData().contains("page")) {
                 gui.setPage(((EntityDataInterface) user).getPersistentData().getInt("page"));
@@ -47,7 +47,7 @@ public abstract class Tome extends SimplePolymerItem {
         } else {
             user.sendMessage(Text.literal("The tome won't open...").formatted(getElement().getColor()));
         }
-        return TypedActionResult.pass(user.getStackInHand(hand));
+        return TypedActionResult.consume(user.getStackInHand(hand));
     }
 
     public BookElementBuilder genTome(PlayerEntity user) {

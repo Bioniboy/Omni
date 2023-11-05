@@ -8,8 +8,12 @@ import net.minecraft.util.Identifier;
 
 public class ModStatusEffects {
     public static final StatusEffect MANA_REGENERATION = new ManaRegeneration();
+    public static final StatusEffect MARK = new Mark();
+    public static final StatusEffect RECALL = new Recall();
 
     public static void registerEffects() {
         Registry.register(Registries.STATUS_EFFECT, new Identifier(OmniMod.MOD_ID, "mana_regeneration"), MANA_REGENERATION);
+        Registry.register(Registries.STATUS_EFFECT, new Identifier(OmniMod.MOD_ID, "mark"), MARK);
+        Registry.register(Registries.STATUS_EFFECT, new Identifier(OmniMod.MOD_ID, "recall"), RECALL);
     }
 }

@@ -32,6 +32,7 @@ public class ModItems {
     public static final SimplePolymerItem VITANOMICON = new Vitanomicon(new FabricItemSettings(), Items.BOOK);
     public static final SimplePolymerItem PYRONOMICON = new Pyronomicon(new FabricItemSettings(), Items.BOOK);
     public static final SimplePolymerItem HYDRONOMICON = new Hydronomicon(new FabricItemSettings(), Items.BOOK);
+    public static final SimplePolymerItem THAUMONOMICON = new Thaumonomicon(new FabricItemSettings(), Items.BOOK);
     public static final Item MOON_WAND = new MoonWand(new FabricItemSettings(), Items.STICK);
     public static final Item AIR_WAND = new AirWand(new FabricItemSettings(), Items.STICK);
     public static final Item STORM_WAND = new StormWand(new FabricItemSettings(), Items.STICK);
@@ -39,8 +40,12 @@ public class ModItems {
     public static final Item LIFE_WAND = new LifeWand(new FabricItemSettings(), Items.STICK);
     public static final Item FIRE_WAND = new FireWand(new FabricItemSettings(), Items.STICK);
     public static final Item WATER_WAND = new WaterWand(new FabricItemSettings(), Items.STICK);
+    public static final Item MAGIC_WAND = new MagicWand(new FabricItemSettings(), Items.STICK);
     public static final Item BAD_TRAPDOOR = new PolymerBlockItem(ModBlocks.BAD_TRAPDOOR, new FabricItemSettings(), Items.BIRCH_TRAPDOOR);
     public static final Potion MANA_REGENERATION = new Potion(new StatusEffectInstance(ModStatusEffects.MANA_REGENERATION, 300));
+    public static final Potion MARK = new Potion(new StatusEffectInstance(ModStatusEffects.MARK, 1));
+    public static final Potion RECALL = new Potion(new StatusEffectInstance(ModStatusEffects.RECALL, 1));
+    public static final Item INFLUENCE_TOKEN = new InfluenceToken(new FabricItemSettings());
 
 
     public static void registerItems() {
@@ -53,6 +58,7 @@ public class ModItems {
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "vitanomicon"), VITANOMICON);
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "pyronomicon"), PYRONOMICON);
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "hydronomicon"), HYDRONOMICON);
+        Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "thaumonomicon"), THAUMONOMICON);
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "moon_wand"), MOON_WAND);
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "air_wand"), AIR_WAND);
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "storm_wand"), STORM_WAND);
@@ -60,7 +66,11 @@ public class ModItems {
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "life_wand"), LIFE_WAND);
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "fire_wand"), FIRE_WAND);
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "water_wand"), WATER_WAND);
+        Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "magic_wand"), MAGIC_WAND);
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "bad_trapdoor"), BAD_TRAPDOOR);
         Registry.register(Registries.POTION, new Identifier(OmniMod.MOD_ID, "mana_regeneration"), MANA_REGENERATION);
+        Registry.register(Registries.POTION, new Identifier(OmniMod.MOD_ID, "mark"), MARK);
+        Registry.register(Registries.POTION, new Identifier(OmniMod.MOD_ID, "recall"), RECALL);
+        Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "influence_token"), INFLUENCE_TOKEN);
     }
 }

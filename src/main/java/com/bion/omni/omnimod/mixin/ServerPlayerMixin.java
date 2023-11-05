@@ -3,6 +3,8 @@ package com.bion.omni.omnimod.mixin;
 import com.bion.omni.omnimod.element.*;
 import com.bion.omni.omnimod.entity.ModEntities;
 import com.bion.omni.omnimod.entity.custom.Pet;
+import com.bion.omni.omnimod.entity.effect.ModStatusEffects;
+import com.bion.omni.omnimod.item.ModItems;
 import com.bion.omni.omnimod.util.*;
 import com.mojang.authlib.GameProfile;
 import com.bion.omni.omnimod.OmniMod;
@@ -12,15 +14,25 @@ import net.minecraft.advancement.PlayerAdvancementTracker;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
+import net.minecraft.particle.DustParticleEffect;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.potion.PotionUtil;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,13 +44,102 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Objects;
+import java.util.*;
 
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerMixin extends PlayerEntity implements Apprentice, AfkUtil {
+	@Unique
+	boolean inMansion = false;
+
+	@Override
+	public void omni$setInMansion(boolean inMansion) {
+		this.inMansion = inMansion;
+	}
+
+	@Override
+	public boolean omni$getInMansion() {
+		return inMansion;
+	}
+
+	@Unique
+	boolean inOpMode = false;
+
+	@Override
+	public void omni$setInOpMode(boolean inOpMode) {
+		this.inOpMode = inOpMode;
+	}
+
+	@Override
+	public boolean omni$inOpMode() {
+		return inOpMode;
+	}
+
+	@Override
+	public void omni$setOpModeOtherPos(Vec3d pos, World world) {
+		opModeOtherPos = pos;
+		opModeOtherWorld = world;
+	}
+
+	@Override
+	public Vec3d omni$getOpModeOtherPos() {
+		return opModeOtherPos;
+	}
+
+	@Override
+	public World omni$getOpModeOtherWorld() {
+		return opModeOtherWorld;
+	}
+
+	@Unique
+	Vec3d opModeOtherPos = null;
+
+	@Unique
+	World opModeOtherWorld = null;
+
+	@Unique
+	HashMap<String, PlayerInventory> savedInventories = new HashMap<>();
+	@Unique
+	Vec3d home = null;
+
+	@Unique
+	World homeWorld = null;
+
+	@Override
+	public void omni$addSavedInventory(String id, PlayerInventory inventory) {
+		savedInventories.put(id, inventory);
+	}
+
+	@Override
+	public PlayerInventory omni$removeSavedInventory(String id) {
+		return savedInventories.remove(id);
+	}
+
+	@Override
+	public PlayerInventory omni$getSavedInventory(String id) {
+		return savedInventories.get(id);
+	}
+
+	@Override
+	public Set<String> omni$getInventoryKeys() {
+		return savedInventories.keySet();
+	}
+
+	@Override
+	public void omni$setHome(Vec3d pos, World world) {
+		home = pos;
+		homeWorld = world;
+	}
+
+	@Override
+	public Vec3d omni$getHomePos() {
+		return home;
+	}
+
+	@Override
+	public World omni$getHomeWorld() {
+		return homeWorld;
+	}
 
 	@Override
 	public int omni$getActiveTicks() {
@@ -137,6 +238,10 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 	private PlayerAdvancementTracker advancementTracker;
 
 
+	@Shadow public abstract ServerWorld getServerWorld();
+
+	@Shadow public abstract void sendAbilitiesUpdate();
+
 	public ServerPlayerMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
 		super(world, pos, yaw, gameProfile);
 	}
@@ -175,6 +280,8 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 				yield new Fire();
 			case "Water":
 				yield new Water();
+			case "Magic":
+				yield new Magic();
 			default:
 				OmniMod.LOGGER.error("Error: " + elementId + " element not defined" );
 				yield null;
@@ -303,11 +410,11 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 		if (advancement != null) {
 			advancementTracker.grantCriterion(advancement, advancement.getCriteria().keySet().iterator().next());
 		}
+		if (power.hasConfig() && omni$getConfigValue(power.getId()) == -1) {
+			omni$addConfig(power.getId(), power.getDefaultConfig());
+		}
 		if (omni$getPowerById(power.getId()) != null) {
 			return omni$getPowerById(power.getId()).increaseLevel();
-		}
-		if (power.hasConfig() && omni$getConfigValue(power.getId()) == -1) {
-			omni$addConfig(power.getId(), 0);
 		}
 		if (power instanceof ContinuousPower continuousPower) {
 			addContinuousPower(continuousPower);
@@ -447,6 +554,10 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 		if (petCooldown > 0) {
 			petCooldown -= 1;
 		}
+
+		if (isHolding((ItemStack stack) -> PotionUtil.getPotion(stack).equals(ModItems.MARK) || PotionUtil.getPotion(stack).equals(ModItems.RECALL)) && home != null && homeWorld == getWorld() && home.squaredDistanceTo(getPos()) < 64) {
+			networkHandler.sendPacket(new ParticleS2CPacket(ParticleTypes.WITCH, true, home.x, home.y, home.z, 0.2F, 0, 0.2F, 0, 1));
+		}
 	}
 	@Inject(at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD, method = "copyFrom")
 	private void copyData(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfo ci) {
@@ -479,6 +590,18 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 
 		pet = ((Apprentice) oldPlayer).omni$getPet();
 		petCooldown = ((Apprentice) oldPlayer).omni$getPetCooldown();
+
+		home = ((Apprentice) oldPlayer).omni$getHomePos();
+		homeWorld = ((Apprentice) oldPlayer).omni$getHomeWorld();
+
+		for (String key : ((Apprentice) oldPlayer).omni$getInventoryKeys())
+			savedInventories.put(key, ((Apprentice) oldPlayer).omni$getSavedInventory(key));
+
+		opModeOtherPos = oldApprentice.omni$getOpModeOtherPos();
+		opModeOtherWorld = oldApprentice.omni$getOpModeOtherWorld();
+
+		inOpMode = oldApprentice.omni$inOpMode();
+		inMansion = oldApprentice.omni$getInMansion();
 	}
 
 	@Inject(method="readCustomDataFromNbt", at=@At("TAIL"))
@@ -534,6 +657,43 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 		if (nbt.contains("omnimod.PetCooldown")) {
 			petCooldown = nbt.getInt("omnimod.PetCooldown");
 		}
+		if (nbt.contains("omnimod.HomePos")) {
+			NbtList homePos = nbt.getList("omnimod.HomePos", NbtElement.DOUBLE_TYPE);
+			home = new Vec3d(homePos.getDouble(0), homePos.getDouble(1), homePos.getDouble(2));
+		}
+		if (nbt.contains("omnimod.HomeWorld")) {
+			for (var key : getServer().getWorldRegistryKeys()) {
+				String registryKeyString = nbt.getString("omnimod.HomeWorld");
+				if (Objects.equals(registryKeyString, key.toString())) {
+					homeWorld = getServer().getWorld(key);
+					break;
+				}
+			}
+		}
+		if (nbt.contains("omnimod.SavedInventories")) {
+			NbtCompound inventories = nbt.getCompound("omnimod.SavedInventories");
+			for (String key : inventories.getKeys()) {
+				PlayerInventory inventory = new PlayerInventory(this);
+				inventory.readNbt(inventories.getList(key, NbtElement.COMPOUND_TYPE));
+				omni$addSavedInventory(key, inventory);
+			}
+		}
+		if (nbt.contains("omnimod.OpModePos")) {
+			NbtList opModePos = nbt.getList("omnimod.OpModePos", NbtElement.DOUBLE_TYPE);
+			opModeOtherPos = new Vec3d(opModePos.getDouble(0), opModePos.getDouble(1), opModePos.getDouble(2));
+		}
+		if (nbt.contains("omnimod.OpModeWorld")) {
+			for (var key : getServer().getWorldRegistryKeys()) {
+				String registryKeyString = nbt.getString("omnimod.OpModeWorld");
+				if (Objects.equals(registryKeyString, key.toString())) {
+					opModeOtherWorld = getServer().getWorld(key);
+					break;
+				}
+			}
+		}
+		if (nbt.contains("omnimod.InOpMode")) {
+			inOpMode = nbt.getBoolean("omnimod.InOpMode");
+		}
 	}
 
 	@Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
@@ -577,6 +737,28 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 		if (petCooldown != 0) {
 			nbt.putInt("omnimod.PetCooldown", petCooldown);
 		}
+		if (home != null) {
+			nbt.put("omnimod.HomePos", toNbtList(home.getX(), home.getY(), home.getZ()));
+		}
+		if (homeWorld != null) {
+			nbt.putString("omnimod.HomeWorld", homeWorld.getRegistryKey().toString());
+		}
+		if (!savedInventories.isEmpty()) {
+			NbtCompound inventories = new NbtCompound();
+			for (String key : omni$getInventoryKeys()) {
+				NbtList inventoryNbt = new NbtList();
+				inventories.put(key, omni$getSavedInventory(key).writeNbt(inventoryNbt));
+			}
+			nbt.put("omnimod.SavedInventories", inventories);
+		}
+		if (opModeOtherPos != null) {
+			nbt.put("omnimod.OpModePos", toNbtList(opModeOtherPos.getX(), opModeOtherPos.getY(), opModeOtherPos.getZ()));
+		}
+		if (opModeOtherWorld != null) {
+			nbt.putString("omnimod.OpModeWorld", opModeOtherWorld.getRegistryKey().toString());
+		}
+		if (inOpMode)
+			nbt.putBoolean("omnimod.InOpMode", inOpMode);
 	}
 
 	@Unique

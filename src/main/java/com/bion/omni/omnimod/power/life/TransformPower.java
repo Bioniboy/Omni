@@ -35,6 +35,7 @@ public abstract class TransformPower extends ContinuousPower {
             entityAttributeInstance.removeModifier(TRANSFORM_HEALTH_ID);
         }
         ((Apprentice)user).omni$setConfig(getId(), 0);
+        user.setNoGravity(false);
     }
 
     @Override

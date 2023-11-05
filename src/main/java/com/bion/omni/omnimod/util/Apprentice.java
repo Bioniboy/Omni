@@ -5,12 +5,30 @@ import com.bion.omni.omnimod.entity.custom.Pet;
 import com.bion.omni.omnimod.power.ContinuousPower;
 import com.bion.omni.omnimod.power.ImpulsePower;
 import com.bion.omni.omnimod.power.Power;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Set;
 
 public interface Apprentice {
+    void omni$setInMansion(boolean inMansion);
+    boolean omni$getInMansion();
+    void omni$setInOpMode(boolean inOpMode);
+    boolean omni$inOpMode();
+    void omni$setOpModeOtherPos(Vec3d pos, World world);
+    Vec3d omni$getOpModeOtherPos();
+    World omni$getOpModeOtherWorld();
+    void omni$addSavedInventory(String id, PlayerInventory inventory);
+    PlayerInventory omni$removeSavedInventory(String id);
+    PlayerInventory omni$getSavedInventory(String id);
+    Set<String> omni$getInventoryKeys();
+    void omni$setHome(Vec3d pos, World world);
+    Vec3d omni$getHomePos();
+    World omni$getHomeWorld();
     Hashtable<String, Double> omni$getCosts();
     Element omni$getElement();
     void omni$setElement(Element element);

@@ -29,6 +29,11 @@ public class HammerTime extends ImpulsePower {
     }
 
     @Override
+    public String getAdvancementId() {
+        return "hammer_time";
+    }
+
+    @Override
     public Integer getInfluenceCost() {
         return 30;
     }

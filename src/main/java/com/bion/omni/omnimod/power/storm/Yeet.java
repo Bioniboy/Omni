@@ -32,7 +32,10 @@ public class Yeet extends ImpulsePower {
         return 2;
     }
 
-
+    @Override
+    public String getAdvancementId() {
+        return getLevel() == 1 ? "yeet" : "be_gone";
+    }
     @Override
     public Integer getInfluenceCost() {
         return switch (getLevel()) {
@@ -66,6 +69,9 @@ public class Yeet extends ImpulsePower {
             }
             //entity.knockbackVelocity = (float)(MathHelper.atan2(dz, dx) * 57.2957763671875 - (double)entity.getYaw());
             entity.takeKnockback(4f * getLevel() * ((float)strength / 6), dx, dz);
+            if (entity instanceof ServerPlayerEntity player) {
+                player.velocityModified = true;
+            }
             return true;
         }
         return false;

@@ -28,6 +28,11 @@ public class SpinMe extends ImpulsePower {
     }
 
     @Override
+    public String getAdvancementId() {
+        return "turn_around";
+    }
+
+    @Override
     public Integer getInfluenceCost() {
         return 30;
     }
