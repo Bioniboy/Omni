@@ -6,6 +6,9 @@ import com.bion.omni.omnimod.power.ContinuousPower;
 import com.bion.omni.omnimod.power.ImpulsePower;
 import com.bion.omni.omnimod.power.Power;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -69,4 +72,7 @@ public interface Apprentice {
     Pet omni$getPet();
     void omni$setPetCooldown(int cooldown);
     int omni$getPetCooldown();
+
+
+
 }

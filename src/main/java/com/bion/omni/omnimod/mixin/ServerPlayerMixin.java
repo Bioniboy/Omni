@@ -15,6 +15,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -49,6 +50,8 @@ import java.util.*;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerMixin extends PlayerEntity implements Apprentice, AfkUtil {
+
+
 	@Unique
 	boolean inMansion = false;
 
@@ -282,6 +285,8 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 				yield new Water();
 			case "Magic":
 				yield new Magic();
+			case "Tech":
+				yield new Tech();
 			default:
 				OmniMod.LOGGER.error("Error: " + elementId + " element not defined" );
 				yield null;
