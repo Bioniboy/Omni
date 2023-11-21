@@ -13,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtInt;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -66,6 +67,7 @@ public abstract class Wand extends SimplePolymerItem implements LeftClickItem {
         assert nbt != null;
         nbt.putInt("CustomModelData", getItemNumber());
         out.setNbt(nbt);
+        itemStack.setSubNbt("CustomModelData", NbtInt.of(850001));
         return out;
     }
 

@@ -15,6 +15,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -45,10 +47,93 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerMixin extends PlayerEntity implements Apprentice, AfkUtil {
+public abstract class ServerPlayerMixin extends PlayerEntity implements Apprentice, AfkUtil, Inventory {
+
+
+	@Override
+	public int getMaxCountPerStack() {
+		return getInventory().getMaxCountPerStack();
+	}
+
+	@Override
+	public void onOpen(PlayerEntity player) {
+		getInventory().onOpen(player);
+	}
+
+	@Override
+	public void onClose(PlayerEntity player) {
+		getInventory().onClose(player);
+	}
+
+	@Override
+	public boolean isValid(int slot, ItemStack stack) {
+		return getInventory().isValid(slot, stack);
+	}
+
+	@Override
+	public boolean canTransferTo(Inventory hopperInventory, int slot, ItemStack stack) {
+		return getInventory().canTransferTo(hopperInventory, slot, stack);
+	}
+
+	@Override
+	public int count(Item item) {
+		return getInventory().count(item);
+	}
+
+	@Override
+	public boolean containsAny(Set<Item> items) {
+		return getInventory().containsAny(items);
+	}
+
+	@Override
+	public boolean containsAny(Predicate<ItemStack> predicate) {
+		return getInventory().containsAny(predicate);
+	}
+
+	@Override
+	public int size() {
+		return getInventory().size();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return getInventory().isEmpty();
+	}
+
+	@Override
+	public ItemStack getStack(int slot) {
+		return getInventory().getStack(slot);
+	}
+
+	@Override
+	public ItemStack removeStack(int slot, int amount) {
+		return getInventory().removeStack(slot, amount);
+	}
+
+	@Override
+	public ItemStack removeStack(int slot) {
+		return getInventory().removeStack(slot);
+	}
+
+	@Override
+	public void setStack(int slot, ItemStack stack) {
+		getInventory().setStack(slot, stack);
+	}
+
+	@Override
+	public void markDirty() {
+		getInventory().markDirty();
+	}
+
+	@Override
+	public boolean canPlayerUse(PlayerEntity player) {
+		return getInventory().canPlayerUse(player);
+	}
+
 	@Unique
 	boolean inMansion = false;
 
@@ -460,6 +545,7 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 	public Integer omni$getInfluence() {
 		Scoreboard scoreboard = this.getScoreboard();
 		ScoreboardPlayerScore score = scoreboard.getPlayerScore(this.getName().getString(), scoreboard.getObjective("Influence"));
+
 		return score.getScore();
 	}
 	@Override

@@ -60,7 +60,7 @@ public class RemoteEnderChest extends ImpulsePower {
 
     @Override
     public void tick(ServerPlayerEntity user) {
-        SimpleGui chestBuilder = new SimpleGui(ScreenHandlerType.GENERIC_9X3, user, false);
+        SimpleGui chestBuilder = new SimpleGui(ScreenHandlerType.GENERIC_9X4, user, false);
         for (int i = 0; i < user.getEnderChestInventory().size(); i++) {
             chestBuilder.setSlotRedirect(i, new Slot(user.getEnderChestInventory(), i, 0, 0));
         }
@@ -72,4 +72,6 @@ public class RemoteEnderChest extends ImpulsePower {
         chestBuilder.open();
         active = true;
     }
+
+
 }
