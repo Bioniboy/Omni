@@ -31,6 +31,8 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation include("eu.pb4:polymer-core:0.5.8+1.20.1")
     modImplementation include("eu.pb4:sgui:1.2.2+1.20")
+    modImplementation include("eu.pb4:polymer-resource-pack:0.5.18+1.20.1")
+    modImplementation include("eu.pb4:polymer-blocks:0.5.18+1.20.1")
 }
 
 processResources {

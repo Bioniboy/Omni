@@ -2,6 +2,8 @@ package com.bion.omni.omnimod.block;
 
 
 import com.bion.omni.omnimod.OmniMod;
+import com.bion.omni.omnimod.block.tech.DivineRepoBlock;
+import com.bion.omni.omnimod.block.tech.TinkerTableBlock;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.registry.Registries;
@@ -18,6 +20,8 @@ public class ModBlocks {
     public static final Block SOLID_AIR = new SolidAirBlock(AbstractBlock.Settings.create().dropsNothing());
     public static final Block COMMAND_TNT = new CommandTNT(AbstractBlock.Settings.create().mapColor(MapColor.BROWN).requiresTool().strength(-1.0f, 3600000.0f).dropsNothing(), false);
     public static final Block BAD_TRAPDOOR = new BadTrapdoor(AbstractBlock.Settings.create().mapColor(MapColor.PALE_YELLOW).strength(3.0f).sounds(BlockSoundGroup.WOOD).nonOpaque(), BlockSetType.BIRCH);
+    public static final Block TINKER_TABLE = new TinkerTableBlock(AbstractBlock.Settings.create());
+    public static final Block DIVINE_REPO   = new DivineRepoBlock(AbstractBlock.Settings.create());
 
     public static void registerBlocks() {
         Registry.register(Registries.BLOCK, new Identifier(OmniMod.MOD_ID, "burnt_torch"), BURNT_TORCH);
@@ -27,5 +31,7 @@ public class ModBlocks {
         Registry.register(Registries.BLOCK, new Identifier(OmniMod.MOD_ID, "solid_air"), SOLID_AIR);
         Registry.register(Registries.BLOCK, new Identifier(OmniMod.MOD_ID, "command_tnt"), COMMAND_TNT);
         Registry.register(Registries.BLOCK, new Identifier(OmniMod.MOD_ID, "bad_trapdoor"), BAD_TRAPDOOR);
+        Registry.register(Registries.BLOCK, new Identifier(OmniMod.MOD_ID, "tinker_table"), TINKER_TABLE);
+        Registry.register(Registries.BLOCK, new Identifier(OmniMod.MOD_ID, "divine_repository"), DIVINE_REPO);
     }
 }

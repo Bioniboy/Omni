@@ -5,8 +5,11 @@ package com.bion.omni.omnimod.item;
 import com.bion.omni.omnimod.block.ModBlocks;
 import com.bion.omni.omnimod.entity.effect.ManaRegeneration;
 import com.bion.omni.omnimod.entity.effect.ModStatusEffects;
+import com.bion.omni.omnimod.item.tech.Augmentation;
+import com.bion.omni.omnimod.item.tech.ItemCannon;
 import com.bion.omni.omnimod.item.tome.*;
 import com.bion.omni.omnimod.item.wand.*;
+import com.bion.omni.omnimod.power.tech.Wrench;
 import eu.pb4.polymer.core.api.item.PolymerBlockItem;
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
@@ -46,6 +49,10 @@ public class ModItems {
     public static final Potion MARK = new Potion(new StatusEffectInstance(ModStatusEffects.MARK, 1));
     public static final Potion RECALL = new Potion(new StatusEffectInstance(ModStatusEffects.RECALL, 1));
     public static final Item INFLUENCE_TOKEN = new InfluenceToken(new FabricItemSettings());
+    public static final Item SPEED_AUGMENTATION = new Augmentation(new FabricItemSettings(), 850013);
+    public static final Item ITEM_CANNON_AUGMENTATION = new Augmentation(new FabricItemSettings(), 850015);
+    public static final Item ITEM_CANNON = new ItemCannon(new FabricItemSettings());
+    public static final Item WRENCH = new Augmentation(new FabricItemSettings(), 850016);
 
 
     public static void registerItems() {
@@ -72,5 +79,16 @@ public class ModItems {
         Registry.register(Registries.POTION, new Identifier(OmniMod.MOD_ID, "mark"), MARK);
         Registry.register(Registries.POTION, new Identifier(OmniMod.MOD_ID, "recall"), RECALL);
         Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, "influence_token"), INFLUENCE_TOKEN);
+        registerItem("bionic_legs", SPEED_AUGMENTATION);
+        registerItem("item_cannon_augmentation", ITEM_CANNON_AUGMENTATION);
+        registerItem("item_cannon", ITEM_CANNON);
+        registerItem("wrench", WRENCH);
+
+    }
+    private static void registerItem(String path, Item item){
+        Registry.register(Registries.ITEM, new Identifier(OmniMod.MOD_ID, path), item);
+    }
+    private static void registerPotion(String path, Potion potion){
+        Registry.register(Registries.POTION, new Identifier(OmniMod.MOD_ID, path), potion);
     }
 }

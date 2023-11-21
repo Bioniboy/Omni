@@ -85,6 +85,9 @@ public class OmniCommand {
                         .then(CommandManager.literal("magic")
                                 .executes(context -> {choose(context.getSource().getPlayer(), "magic"); return 1;})
                         )
+                        .then(CommandManager.literal("tech")
+                                .executes(context -> {choose(context.getSource().getPlayer(), "tech"); return 1;})
+                        )
                 )
                 .then(CommandManager.literal("playtime")
                         .executes(OmniCommand::playtime)
@@ -231,6 +234,13 @@ public class OmniCommand {
                 }
                 starterPowerId = "potionCrafting";
                 yield new Magic();
+            case "tech":
+                if (!player.getInventory().contains(ModItems.WRENCH.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.WRENCH));
+                }
+                starterPowerId = "divineRepo";
+                ((Apprentice)player).omni$addPower("wrench");
+                yield new Tech();
             default:
                 yield null;
         });

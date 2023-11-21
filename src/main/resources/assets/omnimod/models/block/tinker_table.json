@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "omnimod:block/tinker_table_bottom",
+    "east": "omnimod:block/tinker_table_right",
+    "north": "omnimod:block/tinker_table_front",
+    "particle": "omnimod:block/tinker_table_front",
+    "south": "omnimod:block/tinker_table_back",
+    "up": "omnimod:block/tinker_table_top",
+    "west": "omnimod:block/tinker_table_left"
+  }
+}
