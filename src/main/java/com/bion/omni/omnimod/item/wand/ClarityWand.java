@@ -2,7 +2,10 @@ package com.bion.omni.omnimod.item.wand;
 
 import com.bion.omni.omnimod.element.Clarity;
 import com.bion.omni.omnimod.element.Element;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
 
 public class ClarityWand extends Wand {
     private final Element element = new Clarity();
@@ -19,5 +22,10 @@ public class ClarityWand extends Wand {
     @Override
     public int getItemNumber() {
         return 850004;
+    }
+
+    @Override
+    public boolean allowNbtUpdateAnimation(PlayerEntity player, Hand hand, ItemStack oldStack, ItemStack newStack) {
+        return super.allowNbtUpdateAnimation(player, hand, oldStack, newStack);
     }
 }

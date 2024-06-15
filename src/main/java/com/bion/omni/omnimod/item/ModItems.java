@@ -53,6 +53,8 @@ public class ModItems {
     public static final Item ITEM_CANNON_AUGMENTATION = new Augmentation(new FabricItemSettings(), 850015);
     public static final Item ITEM_CANNON = new ItemCannon(new FabricItemSettings());
     public static final Item WRENCH = new Augmentation(new FabricItemSettings(), 850016);
+    public static final Item BACKPACK = new BackpackItem(new FabricItemSettings(), Items.LEATHER_CHESTPLATE);
+
 
 
     public static void registerItems() {
@@ -83,6 +85,7 @@ public class ModItems {
         registerItem("item_cannon_augmentation", ITEM_CANNON_AUGMENTATION);
         registerItem("item_cannon", ITEM_CANNON);
         registerItem("wrench", WRENCH);
+        registerItem("backpack", BACKPACK);
 
     }
     private static void registerItem(String path, Item item){

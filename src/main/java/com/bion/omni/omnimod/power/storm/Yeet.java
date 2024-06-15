@@ -59,7 +59,7 @@ public class Yeet extends ImpulsePower {
             if (strength > 6) strength = 6;
             user.sendMessage(Text.literal("Knockback Strength: " + strength).formatted(Formatting.DARK_GRAY));
             ((Apprentice)user).omni$changeMana(-strength * 10);
-            Mana.manaShow(user);
+//            Mana.manaShow(user);
             LivingEntity entity = ((LivingEntity)hitResult.getEntity());
             double dx = user.getX() - entity.getX();
             double dz = user.getZ() - entity.getZ();

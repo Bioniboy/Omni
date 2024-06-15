@@ -33,6 +33,8 @@ dependencies {
     modImplementation include("eu.pb4:sgui:1.2.2+1.20")
     modImplementation include("eu.pb4:polymer-resource-pack:0.5.18+1.20.1")
     modImplementation include("eu.pb4:polymer-blocks:0.5.18+1.20.1")
+    modImplementation include("eu.pb4:polymer-virtual-entity:0.5.18+1.20.1")
+
 }
 
 processResources {
