@@ -148,7 +148,7 @@ public class ShadowPortal extends ImpulsePower {
                     user.getWorld().playSound((Entity) null, BlockPos.ofFloored(markPosition), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, volume, 1.0F);
                     markPosition = null;
                     ((Apprentice)user).omni$changeMana(-manaCost);
-                    Mana.manaShow(user);
+//                    Mana.manaShow(user);
                 } else {
                     user.sendMessage(Text.literal("Out of range: " + distance + " > " + range).formatted(Formatting.DARK_BLUE));
                 }

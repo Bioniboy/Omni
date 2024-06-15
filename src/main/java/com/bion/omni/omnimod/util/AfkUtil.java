@@ -14,4 +14,6 @@ public interface AfkUtil {
     int omni$getNextStreakDay();
     void omni$setNextStreakYear(int year);
     int omni$getNextStreakYear();
+
+    CustomChar getChar(CustomCharDict.CharName p_name);
 }

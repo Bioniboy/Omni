@@ -2,27 +2,28 @@ package com.bion.omni.omnimod.mixin;
 
 import com.bion.omni.omnimod.element.*;
 import com.bion.omni.omnimod.entity.ModEntities;
+import com.bion.omni.omnimod.entity.custom.Backpacks.ArmorEntityHolder;
 import com.bion.omni.omnimod.entity.custom.Pet;
-import com.bion.omni.omnimod.entity.effect.ModStatusEffects;
 import com.bion.omni.omnimod.item.ModItems;
 import com.bion.omni.omnimod.util.*;
 import com.mojang.authlib.GameProfile;
 import com.bion.omni.omnimod.OmniMod;
 import com.bion.omni.omnimod.power.*;
+import eu.pb4.polymer.virtualentity.api.VirtualEntityUtils;
+import eu.pb4.polymer.virtualentity.api.attachment.EntityAttachment;
+import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.PlayerAdvancementTracker;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
-import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.scoreboard.Scoreboard;
@@ -33,8 +34,11 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.joml.Matrix4x3f;
+import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -42,7 +46,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.*;
@@ -244,6 +247,8 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 	@Shadow public abstract ServerWorld getServerWorld();
 
 	@Shadow public abstract void sendAbilitiesUpdate();
+
+	@Shadow public abstract Entity getCameraEntity();
 
 	public ServerPlayerMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
 		super(world, pos, yaw, gameProfile);
@@ -523,8 +528,104 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 	}
 
 
+
+	@Inject(method = "<init>", at = @At("TAIL"))
+	private void setPassengers(CallbackInfo ci){
+		ItemStack largeBackpack = Items.LEATHER_CHESTPLATE.getDefaultStack();
+		largeBackpack.getNbt().putInt("CustomModelData", 850001);
+
+		if (largeBackpack.getItem() == Items.LEATHER_CHESTPLATE) {
+			NbtCompound nbt = largeBackpack.getOrCreateNbt();
+			NbtCompound display = nbt.getCompound("display");
+			if (!nbt.contains("display", 10)) {
+				nbt.put("display", display);
+			}
+			//display.putInt("color", 0x00FF00);
+			largeBackpack.setNbt(nbt);
+		}
+
+
+		item.setItem(largeBackpack);
+
+
+
+		elementHolder.addElement(item);
+		EntityAttachment.ofTicking(elementHolder, (ServerPlayerEntity)(Object)this);
+	}
+	@Unique
+	boolean firstTick = true;
+	@Unique
+	Vec3d from = null;
+	@Unique
+	Float prevYaw = null;
+	@Unique
+	Float backpackYaw = null;
+	public void turnBody(float bodyRotation, float yaw) {
+		float f = MathHelper.wrapDegrees(bodyRotation - backpackYaw);
+		backpackYaw += (f * 0.3F);
+		float g = MathHelper.wrapDegrees(yaw - backpackYaw);
+		if (g < -75.0F) {
+			g = -75.0F;
+		}
+		if (g >= 75.0F) {
+			g = 75.0F;
+		}
+		backpackYaw = yaw - g;
+		if (g * g > 2500.0F) {
+			backpackYaw += g * 0.2F;
+		}
+	}
 	@Inject(at = @At("HEAD"), method = "tick")
-	private void init(CallbackInfo ci) {
+	private void tick(CallbackInfo ci) {
+		Vec3d to = this.getPos();
+		if(backpackYaw == null){
+			backpackYaw = bodyYaw;
+		}
+		if (from == null) {
+			from = to;
+		}
+		if (prevYaw == null || bodyYaw != prevYaw || !to.equals(from)) {
+			float yaw = this.getYaw();
+			double deltaX = to.getX() - from.getX();
+			double deltaZ = to.getZ() - from.getZ();
+			float distanceSquared = (float) (deltaX * deltaX + deltaZ * deltaZ);
+			float bodyTargetYaw = backpackYaw;
+			if (distanceSquared > 0.0025000002F) {
+				// Using internal Mojang math utils here
+				float targetYaw = (float) MathHelper.atan2(deltaZ, deltaX) * 57.295776F - 90.0F;
+
+				float m = MathHelper.abs(MathHelper.wrapDegrees(yaw) - targetYaw);
+
+				if (95.0F < m && m < 265.0F) {
+					bodyTargetYaw = targetYaw - 180.0F;
+				} else {
+					bodyTargetYaw = targetYaw;
+				}
+			}
+			this.turnBody(bodyTargetYaw, yaw);
+			Matrix4x3f matrix = new Matrix4x3f();
+			matrix.rotateY((MathHelper.wrapDegrees(backpackYaw + 180) * MathHelper.RADIANS_PER_DEGREE) * -1);
+			matrix.translate(0, -1, 0);
+			item.setTransformation(matrix);
+			if (item.getDataTracker().isDirty()) {
+				item.startInterpolation();
+			}
+		}
+		prevYaw = bodyYaw;
+		from = to;
+
+
+
+		if (firstTick){
+			elementHolder.startWatching((ServerPlayerEntity)(Object)this);
+			networkHandler.sendPacket(VirtualEntityUtils.createRidePacket(this.getId(), item.getEntityIds()));
+			firstTick = false;
+			item.setInterpolationDuration(1);
+		}
+		if(this.omni$getElement() != null){
+			ActionBarManager.displayActionBar(((ServerPlayerEntity)(Object)this));
+
+		}
 		if (this.omni$getMana() > -1) {
 			if (tickCounter20 < 20) {
 				tickCounter20++;
@@ -564,6 +665,7 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 			networkHandler.sendPacket(new ParticleS2CPacket(ParticleTypes.WITCH, true, home.x, home.y, home.z, 0.2F, 0, 0.2F, 0, 1));
 		}
 	}
+
 	@Inject(at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD, method = "copyFrom")
 	private void copyData(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfo ci) {
 		Apprentice oldApprentice = (Apprentice)oldPlayer;
@@ -607,6 +709,7 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 
 		inOpMode = oldApprentice.omni$inOpMode();
 		inMansion = oldApprentice.omni$getInMansion();
+
 	}
 
 	@Inject(method="readCustomDataFromNbt", at=@At("TAIL"))
@@ -790,4 +893,20 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 	public int omni$getPetCooldown() {
 		return petCooldown;
 	}
+
+	@Unique
+	CustomCharDict charDict = new CustomCharDict();
+	@Override
+	public CustomChar omni$getChar(CustomCharDict.CharName p_name) {return charDict.getChar(p_name);}
+
+	@Unique
+	ActionBarManager actionBarManager = new ActionBarManager(((ServerPlayerEntity)(Object)this));
+
+	@Unique
+	ArmorEntityHolder elementHolder = new ArmorEntityHolder();
+
+	@Unique
+	ItemDisplayElement item = new ItemDisplayElement();
+
+
 }

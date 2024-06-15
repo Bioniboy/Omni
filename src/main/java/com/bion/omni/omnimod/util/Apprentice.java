@@ -72,6 +72,7 @@ public interface Apprentice {
     Pet omni$getPet();
     void omni$setPetCooldown(int cooldown);
     int omni$getPetCooldown();
+    CustomChar omni$getChar(CustomCharDict.CharName p_name);
 
 
 

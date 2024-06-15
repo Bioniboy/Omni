@@ -14,7 +14,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import java.util.Collection;
 
 import static com.bion.omni.omnimod.power.Mana.manaInitialize;
-import static com.bion.omni.omnimod.power.Mana.manaShow;
+//import static com.bion.omni.omnimod.power.Mana.manaShow;
 
 public class ManaCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess s, CommandManager.RegistrationEnvironment p) {
@@ -72,7 +72,7 @@ public class ManaCommand {
     }
     private static int setPlayerMana(ServerPlayerEntity player, double value) {
         ((Apprentice)player).omni$setMana(value);
-        manaShow(player);
+//        manaShow(player);
         return 1;
     }
     private static int add(Collection<ServerPlayerEntity> players, int value) throws CommandSyntaxException {

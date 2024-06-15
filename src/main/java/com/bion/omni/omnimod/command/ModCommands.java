@@ -13,5 +13,6 @@ public class ModCommands {
         //CommandRegistrationCallback.EVENT.register(PowersCommand::register);
         CommandRegistrationCallback.EVENT.register(InfluenceCommand::register);
         CommandRegistrationCallback.EVENT.register(TrollSoundCommand::register);
+        CommandRegistrationCallback.EVENT.register(OpenBackpackCommand::register);
     }
 }

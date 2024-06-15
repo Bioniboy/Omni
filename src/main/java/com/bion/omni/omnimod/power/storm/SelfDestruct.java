@@ -53,7 +53,7 @@ public class SelfDestruct extends ImpulsePower {
         ((Apprentice) user).omni$setMana(0);
         explode(user, power);
         user.damage(user.getWorld().getDamageSources().explosion(user, user), 999);
-        Mana.manaShow(user);
+//        Mana.manaShow(user);
         return true;
     }
 
