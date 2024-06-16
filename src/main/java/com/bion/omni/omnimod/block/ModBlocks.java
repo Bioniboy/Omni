@@ -24,14 +24,14 @@ public class ModBlocks {
     public static final Block DIVINE_REPO   = new DivineRepoBlock(AbstractBlock.Settings.create());
 
     public static void registerBlocks() {
-        Registry.register(Registries.BLOCK, new Identifier(OmniMod.MOD_ID, "burnt_torch"), BURNT_TORCH);
-        Registry.register(Registries.BLOCK, new Identifier(OmniMod.MOD_ID, "burnt_wall_torch"), BURNT_WALL_TORCH);
-        Registry.register(Registries.BLOCK, new Identifier(OmniMod.MOD_ID, "dark_block"), DARK_BLOCK);
-        Registry.register(Registries.BLOCK, new Identifier(OmniMod.MOD_ID, "small_dark_block"), SMALL_DARK_BLOCK);
-        Registry.register(Registries.BLOCK, new Identifier(OmniMod.MOD_ID, "solid_air"), SOLID_AIR);
-        Registry.register(Registries.BLOCK, new Identifier(OmniMod.MOD_ID, "command_tnt"), COMMAND_TNT);
-        Registry.register(Registries.BLOCK, new Identifier(OmniMod.MOD_ID, "bad_trapdoor"), BAD_TRAPDOOR);
-        Registry.register(Registries.BLOCK, new Identifier(OmniMod.MOD_ID, "tinker_table"), TINKER_TABLE);
-        Registry.register(Registries.BLOCK, new Identifier(OmniMod.MOD_ID, "divine_repository"), DIVINE_REPO);
+        Registry.register(Registries.BLOCK, Identifier.of(OmniMod.MOD_ID, "burnt_torch"), BURNT_TORCH);
+        Registry.register(Registries.BLOCK, Identifier.of(OmniMod.MOD_ID, "burnt_wall_torch"), BURNT_WALL_TORCH);
+        Registry.register(Registries.BLOCK, Identifier.of(OmniMod.MOD_ID, "dark_block"), DARK_BLOCK);
+        Registry.register(Registries.BLOCK, Identifier.of(OmniMod.MOD_ID, "small_dark_block"), SMALL_DARK_BLOCK);
+        Registry.register(Registries.BLOCK, Identifier.of(OmniMod.MOD_ID, "solid_air"), SOLID_AIR);
+        Registry.register(Registries.BLOCK, Identifier.of(OmniMod.MOD_ID, "command_tnt"), COMMAND_TNT);
+        Registry.register(Registries.BLOCK, Identifier.of(OmniMod.MOD_ID, "bad_trapdoor"), BAD_TRAPDOOR);
+        Registry.register(Registries.BLOCK, Identifier.of(OmniMod.MOD_ID, "tinker_table"), TINKER_TABLE);
+        Registry.register(Registries.BLOCK, Identifier.of(OmniMod.MOD_ID, "divine_repository"), DIVINE_REPO);
     }
 }

@@ -60,7 +60,7 @@ public class MansionZombie extends ZombieEntity implements PolymerEntity {
         super.onAttacking(target);
         if (target instanceof Apprentice apprentice && apprentice.omni$getInMansion()) {
             target.requestTeleport(-525, 112, 258);
-            OmniCommand.mansionStop((ServerPlayerEntity) apprentice);
+//            OmniCommand.mansionStop((ServerPlayerEntity) apprentice);
             ((ServerPlayerEntity)apprentice).networkHandler.sendPacket(new TitleS2CPacket(Text.literal("You've been evicted").formatted(Formatting.DARK_RED).formatted(Formatting.BOLD)));
 
         }

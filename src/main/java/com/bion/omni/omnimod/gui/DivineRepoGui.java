@@ -20,7 +20,7 @@ public class DivineRepoGui extends SimpleGui {
 
     }
     public void refreshInventory(){
-        DefaultedList<ItemStack> repoList = this.repoInventory.stacks;
+        DefaultedList<ItemStack> repoList = this.repoInventory.heldStacks;
         for(int i = 0; i < repoList.size(); i++){
             setSlotRedirect(i, new RepoSlot(repoInventory, i,this));
             if(repoList.get(i).isEmpty()){

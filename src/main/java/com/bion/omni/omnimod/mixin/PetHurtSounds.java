@@ -19,27 +19,27 @@ public abstract class PetHurtSounds extends Entity {
         super(entityType, world);
     }
 
-    @ModifyVariable(method="playHurtSound", at=@At("STORE"), ordinal = 0)
-    public SoundEvent modifyHurtSounds(SoundEvent soundEvent, DamageSource source) {
-        if ((Object)this instanceof Pet pet && pet.getCustomType() != null) {
-            return ((LivingEntityAccessor)pet.getCustomType().create(getWorld())).invokeGetHurtSound(source);
-        }
-        return soundEvent;
-    }
-
-    @ModifyVariable(method="damage", at=@At("STORE"), ordinal = 0)
-    public SoundEvent modifyDeathSoundsDamage(SoundEvent soundEvent) {
-        if ((Object)this instanceof Pet pet && pet.getCustomType() != null) {
-            return ((LivingEntityAccessor)pet.getCustomType().create(getWorld())).invokeGetDeathSound();
-        }
-        return soundEvent;
-    }
-
-    @ModifyVariable(method="handleStatus", at=@At("STORE"), ordinal = 0)
-    public SoundEvent modifyDeathSoundsStatus(SoundEvent soundEvent) {
-        if ((Object)this instanceof Pet pet && pet.getCustomType() != null) {
-            return ((LivingEntityAccessor)pet.getCustomType().create(getWorld())).invokeGetDeathSound();
-        }
-        return soundEvent;
-    }
+//    @ModifyVariable(method="playHurtSound", at=@At("STORE"), ordinal = 0)
+//    public SoundEvent modifyHurtSounds(SoundEvent soundEvent, DamageSource source) {
+//        if ((Object)this instanceof Pet pet && pet.getCustomType() != null) {
+//            return ((LivingEntityAccessor)pet.getCustomType().create(getWorld())).invokeGetHurtSound(source);
+//        }
+//        return soundEvent;
+//    }
+//
+//    @ModifyVariable(method="damage", at=@At("STORE"), ordinal = 0)
+//    public SoundEvent modifyDeathSoundsDamage(SoundEvent soundEvent) {
+//        if ((Object)this instanceof Pet pet && pet.getCustomType() != null) {
+//            return ((LivingEntityAccessor)pet.getCustomType().create(getWorld())).invokeGetDeathSound();
+//        }
+//        return soundEvent;
+//    }
+//
+//    @ModifyVariable(method="handleStatus", at=@At("STORE"), ordinal = 0)
+//    public SoundEvent modifyDeathSoundsStatus(SoundEvent soundEvent) {
+//        if ((Object)this instanceof Pet pet && pet.getCustomType() != null) {
+//            return ((LivingEntityAccessor)pet.getCustomType().create(getWorld())).invokeGetDeathSound();
+//        }
+//        return soundEvent;
+//    }
 }

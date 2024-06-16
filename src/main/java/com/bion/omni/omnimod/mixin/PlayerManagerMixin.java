@@ -17,7 +17,7 @@ public class PlayerManagerMixin {
             power.onDisconnect(player);
         }
         if (((Apprentice)player).omni$getInMansion()) {
-            OmniCommand.mansionStop(player);
+//            OmniCommand.mansionStop(player);
             player.requestTeleport(-525, 112, 258);
         }
     }

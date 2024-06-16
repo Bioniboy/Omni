@@ -16,11 +16,11 @@ public abstract class PetAmbientSounds extends Entity {
     public PetAmbientSounds(EntityType<?> type, World world) {
         super(type, world);
     }
-    @ModifyVariable(method="playAmbientSound", at=@At("STORE"), ordinal = 0)
-    public SoundEvent modifyAmbientSounds(SoundEvent soundEvent) {
-        if ((Object)this instanceof Pet pet && pet.getCustomType() != null) {
-            return ((MobEntityAccessor)pet.getCustomType().create(getWorld())).invokeGetAmbientSound();
-        }
-        return soundEvent;
-    }
+//    @ModifyVariable(method="playAmbientSound", at=@At("STORE"), ordinal = 0)
+//    public SoundEvent modifyAmbientSounds(SoundEvent soundEvent) {
+//        if ((Object)this instanceof Pet pet && pet.getCustomType() != null) {
+//            return ((MobEntityAccessor)pet.getCustomType().create(getWorld())).invokeGetAmbientSound();
+//        }
+//        return soundEvent;
+//    }
 }

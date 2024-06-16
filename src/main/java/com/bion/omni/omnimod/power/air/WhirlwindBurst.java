@@ -50,7 +50,7 @@ public class WhirlwindBurst extends ImpulsePower {
             } else {
                 pos = BlockPos.ofFloored(user.getEyePos().add(0, -0.5, 0).add(user.getRotationVector().multiply(2)));
             }
-            AreaEffectCloudEntity cloud = EntityType.AREA_EFFECT_CLOUD.create(user.getServerWorld(), null, null, pos, SpawnReason.NATURAL, false, false);
+            AreaEffectCloudEntity cloud = EntityType.AREA_EFFECT_CLOUD.create(user.getServerWorld(), null, pos, SpawnReason.NATURAL, false, false);
             cloud.addEffect(new StatusEffectInstance(StatusEffects.SPEED, 200, 2));
             cloud.setRadius(4);
             cloud.setDuration(600);

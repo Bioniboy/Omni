@@ -3,6 +3,8 @@ package com.bion.omni.omnimod.mixin;
 import com.bion.omni.omnimod.element.Life;
 import com.bion.omni.omnimod.power.Power;
 import com.bion.omni.omnimod.util.Apprentice;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -17,6 +19,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEatMultiplier extends LivingEntity {
@@ -34,12 +37,12 @@ public abstract class PlayerEatMultiplier extends LivingEntity {
 //
 //    }
     @Inject(at = @At(value = "HEAD"), method = "eatFood")
-    private void omnimod$multiplyHunger(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> cir) {
+    private void omnimod$multiplyHunger(World world, ItemStack stack, FoodComponent foodComponent, CallbackInfoReturnable<ItemStack> cir) {
         if (((Apprentice) this).omni$getElement() instanceof Life) {
             Power power = ((Apprentice) this).omni$getPowerById("transformPig");
 
             if (power != null && ((Apprentice) this).omni$getConfigValue("transformPig") == 1) {
-                this.getHungerManager().eat(stack.getItem(), stack);
+                this.getHungerManager().eat(stack.get(DataComponentTypes.FOOD));
                 if (stack.getItem() == Items.PORKCHOP || stack.getItem() == Items.COOKED_PORKCHOP) {
                     addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 100, 2));
                 }

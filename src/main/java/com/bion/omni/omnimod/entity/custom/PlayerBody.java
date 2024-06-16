@@ -65,10 +65,6 @@ public class PlayerBody extends ArmorStandEntity implements PolymerEntity {
     }
 
     @Override
-    public Packet<ClientPlayPacketListener> createSpawnPacket() {
-        return PolymerEntityUtils.createPlayerSpawnPacket(this);
-    }
-    @Override
     public void modifyRawTrackedData(List<DataTracker.SerializedEntry<?>> data, ServerPlayerEntity player, boolean initial) {
         data.add(new DataTracker.Entry<>(PlayerEntityAccessor.getPLAYER_MODEL_PARTS(), this.player.getDataTracker().get(PlayerEntityAccessor.getPLAYER_MODEL_PARTS())).toSerialized());
 

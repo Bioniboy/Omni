@@ -3,17 +3,19 @@ package com.bion.omni.omnimod.power.magic;
 import com.bion.omni.omnimod.OmniMod;
 import com.bion.omni.omnimod.entity.ModEntities;
 import com.bion.omni.omnimod.item.ModItems;
+import com.bion.omni.omnimod.item.ModPotions;
 import com.bion.omni.omnimod.power.ImpulsePower;
 import com.bion.omni.omnimod.power.Power;
 import com.bion.omni.omnimod.util.ConfigSymbol;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CauldronBlock;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.potion.PotionUtil;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
@@ -88,12 +90,15 @@ public class PotionCrafting extends ImpulsePower {
             user.getServerWorld().playSound(null, cauldronPos.getX(), cauldronPos.getY(), cauldronPos.getZ(), SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5f, 1.5f / (user.getServerWorld().getRandom().nextFloat() * 0.4f + 0.8f));
         } else {
             user.getServerWorld().playSound(null, cauldronPos.getX(), cauldronPos.getY(), cauldronPos.getZ(), SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 0.5f, 1.5f / (user.getServerWorld().getRandom().nextFloat() * 0.4f + 0.8f));
+            ItemStack item = new ItemStack(Items.POTION);
             switch (recipeId) {
                 case "mark":
-                    ItemScatterer.spawn(user.getServerWorld(), cauldronPos.getX(), cauldronPos.getY(), cauldronPos.getZ(), PotionUtil.setPotion(new ItemStack(Items.POTION), ModItems.MARK));
+                    item.set(DataComponentTypes.POTION_CONTENTS, new PotionContentsComponent(ModPotions.MARK));
+                    ItemScatterer.spawn(user.getServerWorld(), cauldronPos.getX(), cauldronPos.getY(), cauldronPos.getZ(), item);
                     break;
                 case "recall":
-                    ItemScatterer.spawn(user.getServerWorld(), cauldronPos.getX(), cauldronPos.getY(), cauldronPos.getZ(), PotionUtil.setPotion(new ItemStack(Items.POTION), ModItems.RECALL));
+                    item.set(DataComponentTypes.POTION_CONTENTS, new PotionContentsComponent(ModPotions.RECALL));
+                    ItemScatterer.spawn(user.getServerWorld(), cauldronPos.getX(), cauldronPos.getY(), cauldronPos.getZ(), item);
                     break;
 
             }
@@ -128,6 +133,6 @@ public class PotionCrafting extends ImpulsePower {
             if (items.count(listItem.getFirst()) != listItem.getSecond())
                 return false;
         }
-        return recipe.size() == items.stacks.stream().filter(stack -> !stack.isEmpty()).count();
+        return recipe.size() == items.getHeldStacks().stream().filter(stack -> !stack.isEmpty()).count();
     }
 }

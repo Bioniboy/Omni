@@ -188,7 +188,7 @@ public abstract class Tome extends SimplePolymerItem {
     }
     public void powerCommand(String[] components, ServerPlayerEntity user) {
         ((Apprentice)user).omni$interpretWandCommand(components);
-        user.playSound(SoundEvent.of(new Identifier("minecraft:ui.button.click")), SoundCategory.PLAYERS, 0.3F, 1.0F);
+        user.playSound(SoundEvent.of(Identifier.of("minecraft:ui.button.click")), 0.3F, 1.0F);
     }
     public void arrowCommand(String[] components, ServerPlayerEntity user) {
         if (Objects.equals(components[1], "up")) {
@@ -196,7 +196,7 @@ public abstract class Tome extends SimplePolymerItem {
         } else {
             ((Apprentice)user).omni$reorderConfig(components[0], 1);
         }
-        user.playSound(SoundEvent.of(new Identifier("minecraft:ui.button.click")), SoundCategory.PLAYERS, 0.3F, 1.0F);
+        user.playSound(SoundEvent.of(Identifier.of("minecraft:ui.button.click")), 0.3F, 1.0F);
     }
     public void buyCommand(String[] components, ServerPlayerEntity user) {
         ((Apprentice)user).omni$buyPower(components[0], Integer.parseInt(components[1]));

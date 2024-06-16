@@ -144,7 +144,7 @@ public class TinkerTableGui extends SimpleGui {
     private void setRepairButtons(){
         for(int i = 1; i < 4; i++){
             setSlot(i,  new GuiElementBuilder(Items.AIR).setCallback((a,b,c)->{
-                player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), SoundCategory.MASTER,  Float.valueOf((float)0.3), 1);
+                player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), Float.valueOf((float)0.3), 1);
             }));
         }
     }
@@ -154,7 +154,7 @@ public class TinkerTableGui extends SimpleGui {
                 final int[] powerSetTo = {i};
                 int finalI = i;
                 setSlot(i + 5,  new GuiElementBuilder(Items.AIR).setCallback((a, b, c)->{
-                    player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), SoundCategory.MASTER,  Float.valueOf((float)0.3), 1);
+                    player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), Float.valueOf((float)0.3), 1);
                     if(augmentation.getPowerLevel() == powerSetTo[0]){
                         powerSetTo[0] = finalI -1;
                     }else{
@@ -181,7 +181,7 @@ public class TinkerTableGui extends SimpleGui {
                 }
                 int finalI = i;
                 setSlot(index,  new GuiElementBuilder(Items.STICK).setName(Text.literal(name).formatted(formatting)).setCustomModelData(850014).setCallback((a, b, c)-> {
-                    player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), SoundCategory.MASTER, Float.valueOf((float) 0.3), 1);
+                    player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), Float.valueOf((float) 0.3), 1);
                     augmentation.getUpgrade(finalI).incrementLevel();
                     clearSlot(index);
                     displaySettingsMenu(augmentation, augmentation.getUpgradeCount() >= 3 && augmentation.getUpgrade(2).CHARACTER == '\ue032');

@@ -5,6 +5,7 @@ import com.bion.omni.omnimod.util.ConfigSymbol;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.registry.RegistryWrapper;
 
 import java.util.ArrayList;
 
@@ -33,15 +34,15 @@ public class DivineRepo extends Power {
     }
 
     @Override
-    public NbtCompound toNbt() {
-        NbtCompound nbt = super.toNbt();
-        nbt.put("DivineRepo", divRepo.toNbtList());
+    public NbtCompound toNbt(RegistryWrapper.WrapperLookup registries) {
+        NbtCompound nbt = super.toNbt(registries);
+        nbt.put("DivineRepo", divRepo.toNbtList(registries));
         return nbt;
     }
 
     @Override
-    public Power setNbt(NbtCompound nbt) {
-        divRepo.readNbtList(nbt.getList("DivineRepo", NbtElement.COMPOUND_TYPE));
+    public Power setNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {
+        divRepo.readNbtList(nbt.getList("DivineRepo", NbtElement.COMPOUND_TYPE), registries);
         return this;
     }
 }

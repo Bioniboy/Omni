@@ -4,6 +4,8 @@ import com.bion.omni.omnimod.entity.ModEntities;
 import com.bion.omni.omnimod.entity.custom.ManaBulletEntity;
 import com.bion.omni.omnimod.power.ImpulsePower;
 import com.bion.omni.omnimod.util.Apprentice;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -12,7 +14,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.entity.projectile.ShulkerBulletEntity;
 import net.minecraft.item.*;
-import net.minecraft.potion.PotionUtil;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
@@ -66,11 +67,13 @@ public class ShulkerBullet extends ImpulsePower {
         if (hitResult != null && hitResult.getEntity() instanceof LivingEntity entity)
         {
             if (super.activate(user)) {
-                List<StatusEffectInstance> effects = null;
+                Iterable<StatusEffectInstance> effects = null;
+                PotionContentsComponent contents = null;
                 ItemStack stack;
                 if (((Apprentice)user).omni$getMana() >= getManaCost() && getLevel() >= 2 && (stack = user.getOffHandStack()).getItem() instanceof PotionItem) {
                     ((Apprentice)user).omni$changeMana(-getManaCost());
-                    effects = PotionUtil.getPotionEffects(user.getOffHandStack());
+                    contents = user.getOffHandStack().get(DataComponentTypes.POTION_CONTENTS);
+                    effects = (contents != null ? contents.getEffects() : null);
                     if (!user.getAbilities().creativeMode) {
                         stack.decrement(1);
                         if (stack.isEmpty()) {
@@ -80,7 +83,7 @@ public class ShulkerBullet extends ImpulsePower {
                     }
                 }
                 user.getServerWorld().playSound(null, user.getX(), user.getY(), user.getZ(), SoundEvents.ENTITY_SHULKER_SHOOT, SoundCategory.PLAYERS, 0.5f, 1.0f / (user.getServerWorld().getRandom().nextFloat() * 0.4f + 0.8f));
-                user.getServerWorld().spawnEntity(ModEntities.MANA_BULLET.create(user.getServerWorld()).setManaBulletEntity(user, entity, Direction.Axis.Y, effects, user.getOffHandStack().getItem() instanceof SplashPotionItem, user.getOffHandStack().getItem() instanceof LingeringPotionItem, PotionUtil.getColor(user.getOffHandStack())));
+                user.getServerWorld().spawnEntity(ModEntities.MANA_BULLET.create(user.getServerWorld()).setManaBulletEntity(user, entity, Direction.Axis.Y, effects, user.getOffHandStack().getItem() instanceof SplashPotionItem, user.getOffHandStack().getItem() instanceof LingeringPotionItem, (contents != null ? contents.getColor() : 0)));
 
             }
         }

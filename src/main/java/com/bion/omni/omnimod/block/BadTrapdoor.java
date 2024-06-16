@@ -14,12 +14,7 @@ import net.minecraft.world.World;
 public class BadTrapdoor extends TrapdoorBlock implements PolymerBlock {
 
     public BadTrapdoor(Settings settings, BlockSetType blockSetType) {
-        super(settings, blockSetType);
-    }
-
-    @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.BIRCH_TRAPDOOR;
+        super(blockSetType, settings);
     }
 
     @Override
@@ -27,9 +22,9 @@ public class BadTrapdoor extends TrapdoorBlock implements PolymerBlock {
         return Blocks.BIRCH_TRAPDOOR.getDefaultState().with(TrapdoorBlock.FACING, state.get(TrapdoorBlock.FACING)).with(TrapdoorBlock.OPEN, state.get(TrapdoorBlock.OPEN)).with(TrapdoorBlock.HALF, state.get(TrapdoorBlock.HALF));
     }
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (player.isCreative()) {
-            return super.onUse(state, world, pos, player, hand, hit);
+            return super.onUse(state, world, pos, player, hit);
         } else {
             return ActionResult.SUCCESS;
         }

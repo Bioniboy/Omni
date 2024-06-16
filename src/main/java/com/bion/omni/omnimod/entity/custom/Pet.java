@@ -21,7 +21,7 @@ public class Pet extends WolfEntity implements PolymerEntity {
     private EntityType<? extends LivingEntity> customType = null;
     public Pet(EntityType<? extends WolfEntity> entityType, World world) {
         super(entityType, world);
-        setTamed(true);
+        setTamed(true, true);
     }
 
     @Override
@@ -53,11 +53,6 @@ public class Pet extends WolfEntity implements PolymerEntity {
     }
     public EntityType<? extends LivingEntity> getCustomType() {
         return customType;
-    }
-
-    @Override
-    public EntityView method_48926() {
-        return this.getWorld();
     }
 
     @Override

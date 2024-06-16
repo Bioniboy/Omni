@@ -6,6 +6,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
@@ -24,8 +25,8 @@ public class Mark extends ImpulsePower {
     }
 
     @Override
-    public NbtCompound toNbt() {
-        NbtCompound nbt = super.toNbt();
+    public NbtCompound toNbt(RegistryWrapper.WrapperLookup registries) {
+        NbtCompound nbt = super.toNbt(registries);
         nbt.putString("targetId", targetId);
         return nbt;
     }
@@ -41,8 +42,8 @@ public class Mark extends ImpulsePower {
     }
 
     @Override
-    public Power setNbt(NbtCompound nbt) {
-        super.setNbt(nbt);
+    public Power setNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {
+        super.setNbt(nbt, registries);
         targetId = nbt.getString("targetId");
         return this;
     }

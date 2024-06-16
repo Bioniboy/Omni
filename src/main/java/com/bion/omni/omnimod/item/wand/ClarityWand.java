@@ -24,8 +24,5 @@ public class ClarityWand extends Wand {
         return 850004;
     }
 
-    @Override
-    public boolean allowNbtUpdateAnimation(PlayerEntity player, Hand hand, ItemStack oldStack, ItemStack newStack) {
-        return super.allowNbtUpdateAnimation(player, hand, oldStack, newStack);
-    }
+
 }

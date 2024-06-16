@@ -7,13 +7,16 @@ import com.bion.omni.omnimod.util.Apprentice;
 import com.bion.omni.omnimod.util.EntityDataInterface;
 import com.bion.omni.omnimod.util.LeftClickItem;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtInt;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -60,14 +63,9 @@ public abstract class Wand extends SimplePolymerItem implements LeftClickItem {
             user.sendMessage(Text.literal("The wand won't respond...").formatted(getElement().getColor()));
         }
     }
-    @Override
-    public ItemStack getPolymerItemStack(ItemStack itemStack, TooltipContext context, @Nullable ServerPlayerEntity player) {
-        ItemStack out = PolymerItemUtils.createItemStack(itemStack, context, player);
-        NbtCompound nbt = out.getNbt();
-        assert nbt != null;
-        nbt.putInt("CustomModelData", getItemNumber());
-        out.setNbt(nbt);
-        itemStack.setSubNbt("CustomModelData", NbtInt.of(850001));
+    public ItemStack getPolymerItemStack(ItemStack itemStack, TooltipType tooltipType, RegistryWrapper.WrapperLookup lookup, @Nullable ServerPlayerEntity player) {
+        ItemStack out = PolymerItemUtils.createItemStack(itemStack, tooltipType, lookup, player);
+        out.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(getItemNumber()));
         return out;
     }
 

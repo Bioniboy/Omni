@@ -16,7 +16,7 @@ public class DarkBlock extends Block implements PolymerBlock {
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.BLACK_CONCRETE;
+    public BlockState getPolymerBlockState(BlockState state) {
+        return Blocks.BLACK_CONCRETE.getDefaultState();
     }
 }

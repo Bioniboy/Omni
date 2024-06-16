@@ -6,7 +6,7 @@ import com.bion.omni.omnimod.util.EntityDataInterface;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.scoreboard.ScoreboardPlayerScore;
+//import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;

@@ -4,7 +4,7 @@ import com.bion.omni.omnimod.element.*;
 import com.bion.omni.omnimod.entity.ModEntities;
 import com.bion.omni.omnimod.entity.custom.Backpacks.ArmorEntityHolder;
 import com.bion.omni.omnimod.entity.custom.Pet;
-import com.bion.omni.omnimod.item.ModItems;
+import com.bion.omni.omnimod.item.ModPotions;
 import com.bion.omni.omnimod.util.*;
 import com.mojang.authlib.GameProfile;
 import com.bion.omni.omnimod.OmniMod;
@@ -12,10 +12,11 @@ import com.bion.omni.omnimod.power.*;
 import eu.pb4.polymer.virtualentity.api.VirtualEntityUtils;
 import eu.pb4.polymer.virtualentity.api.attachment.EntityAttachment;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
-import net.minecraft.advancement.Advancement;
+import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.PlayerAdvancementTracker;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -25,9 +26,6 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.potion.PotionUtil;
-import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -38,7 +36,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.joml.Matrix4x3f;
-import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -416,9 +413,9 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 		if (omni$getPowerById(power.getId()) != null) {
 			power.setLevel(omni$getPowerById(power.getId()).getLevel() + 1);
 		}
-		Advancement advancement = server.getAdvancementLoader().get(new Identifier(((Apprentice)this).omni$getElement().getName().toLowerCase(), power.getAdvancementId()));
+		AdvancementEntry advancement = server.getAdvancementLoader().get(Identifier.of(((Apprentice)this).omni$getElement().getName().toLowerCase(), power.getAdvancementId()));
 		if (advancement != null) {
-			advancementTracker.grantCriterion(advancement, advancement.getCriteria().keySet().iterator().next());
+			advancementTracker.grantCriterion(advancement, advancement.id().toString());
 		}
 		if (power.hasConfig() && omni$getConfigValue(power.getId()) == -1) {
 			omni$addConfig(power.getId(), power.getDefaultConfig());
@@ -468,22 +465,16 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 
 	@Override
 	public Integer omni$getInfluence() {
-		Scoreboard scoreboard = this.getScoreboard();
-		ScoreboardPlayerScore score = scoreboard.getPlayerScore(this.getName().getString(), scoreboard.getObjective("Influence"));
-		return score.getScore();
+		return getScoreboard().getScore(this, getScoreboard().getNullableObjective("Influence")).getScore();
 	}
 	@Override
 	public void omni$setInfluence(Integer amount) {
-		Scoreboard scoreboard = this.getScoreboard();
-		ScoreboardPlayerScore score = scoreboard.getPlayerScore(this.getName().getString(), scoreboard.getObjective("Influence"));
-		score.setScore(amount);
+		getScoreboard().getOrCreateScore(this, getScoreboard().getNullableObjective("Influence")).setScore(amount);
 	}
 
 	@Override
 	public void omni$changeInfluence(Integer amount) {
-		Scoreboard scoreboard = this.getScoreboard();
-		ScoreboardPlayerScore score = scoreboard.getPlayerScore(this.getName().getString(), scoreboard.getObjective("Influence"));
-		score.incrementScore(amount);
+		getScoreboard().getOrCreateScore(this, getScoreboard().getNullableObjective("Influence")).incrementScore(amount);
 	}
 
 	@Override
@@ -529,29 +520,7 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 
 
 
-	@Inject(method = "<init>", at = @At("TAIL"))
-	private void setPassengers(CallbackInfo ci){
-		ItemStack largeBackpack = Items.LEATHER_CHESTPLATE.getDefaultStack();
-		largeBackpack.getNbt().putInt("CustomModelData", 850001);
 
-		if (largeBackpack.getItem() == Items.LEATHER_CHESTPLATE) {
-			NbtCompound nbt = largeBackpack.getOrCreateNbt();
-			NbtCompound display = nbt.getCompound("display");
-			if (!nbt.contains("display", 10)) {
-				nbt.put("display", display);
-			}
-			//display.putInt("color", 0x00FF00);
-			largeBackpack.setNbt(nbt);
-		}
-
-
-		item.setItem(largeBackpack);
-
-
-
-		elementHolder.addElement(item);
-		EntityAttachment.ofTicking(elementHolder, (ServerPlayerEntity)(Object)this);
-	}
 	@Unique
 	boolean firstTick = true;
 	@Unique
@@ -560,6 +529,7 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 	Float prevYaw = null;
 	@Unique
 	Float backpackYaw = null;
+	@Unique
 	public void turnBody(float bodyRotation, float yaw) {
 		float f = MathHelper.wrapDegrees(bodyRotation - backpackYaw);
 		backpackYaw += (f * 0.3F);
@@ -617,6 +587,14 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 
 
 		if (firstTick){
+			ItemStack largeBackpack = Items.LEATHER_CHESTPLATE.getDefaultStack();
+			largeBackpack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(850001));
+			if (largeBackpack.getItem() == Items.LEATHER_CHESTPLATE) {
+//			largeBackpack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(0x00FF00, true));
+			}
+			item.setItem(largeBackpack);
+			elementHolder.addElement(item);
+			EntityAttachment.ofTicking(elementHolder, (ServerPlayerEntity)(Object)this);
 			elementHolder.startWatching((ServerPlayerEntity)(Object)this);
 			networkHandler.sendPacket(VirtualEntityUtils.createRidePacket(this.getId(), item.getEntityIds()));
 			firstTick = false;
@@ -661,7 +639,7 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 			petCooldown -= 1;
 		}
 
-		if (isHolding((ItemStack stack) -> PotionUtil.getPotion(stack).equals(ModItems.MARK) || PotionUtil.getPotion(stack).equals(ModItems.RECALL)) && home != null && homeWorld == getWorld() && home.squaredDistanceTo(getPos()) < 64) {
+		if (isHolding((ItemStack stack) -> stack.get(DataComponentTypes.POTION_CONTENTS) != null && (stack.get(DataComponentTypes.POTION_CONTENTS).matches(ModPotions.MARK) || stack.get(DataComponentTypes.POTION_CONTENTS).matches(ModPotions.RECALL))) && home != null && homeWorld == getWorld() && home.squaredDistanceTo(getPos()) < 64) {
 			networkHandler.sendPacket(new ParticleS2CPacket(ParticleTypes.WITCH, true, home.x, home.y, home.z, 0.2F, 0, 0.2F, 0, 1));
 		}
 	}
@@ -736,7 +714,7 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 			for (String key : nbt.getCompound("omnimod.powers").getKeys()) {
 				Power playerPower = omni$addPower(key);
 				if (playerPower != null) {
-					playerPower.setNbt(nbt.getCompound("omnimod.powers").getCompound(key));
+					playerPower.setNbt(nbt.getCompound("omnimod.powers").getCompound(key), getRegistryManager());
 				}
 			}
 		}
@@ -821,7 +799,7 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 		if (!omni$getAllPowers().isEmpty()) {
 			NbtCompound powers = new NbtCompound();
 			for (Power power : omni$getAllPowers()) {
-				powers.put(power.getId(), power.toNbt());
+				powers.put(power.getId(), power.toNbt(getRegistryManager()));
 			}
 			nbt.put("omnimod.powers", powers);
 		}

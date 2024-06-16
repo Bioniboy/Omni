@@ -2,6 +2,7 @@ package com.bion.omni.omnimod.power;
 
 import com.bion.omni.omnimod.util.ConfigSymbol;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.ArrayList;
@@ -44,12 +45,12 @@ public abstract class Power {
     public boolean activate(ServerPlayerEntity user) {return true;};
     public void activate2(ServerPlayerEntity user) {}
     public void activate3(ServerPlayerEntity user) {}
-    public NbtCompound toNbt() {
+    public NbtCompound toNbt(RegistryWrapper.WrapperLookup registries) {
         NbtCompound nbt = new NbtCompound();
         nbt.putInt("level", getLevel());
         return nbt;
     }
-    public Power setNbt(NbtCompound nbt) {
+    public Power setNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {
         setLevel(nbt.getInt("level"));
         return this;
     }

@@ -23,19 +23,14 @@ public class TinkerTableBlock extends Block implements PolymerTexturedBlock {
    private final BlockState polymerBlockState;
     public TinkerTableBlock(Settings settings) {
         super(settings);
-        this.polymerBlockState = PolymerBlockResourceUtils.requestBlock(BlockModelType.FULL_BLOCK, PolymerBlockModel.of(new Identifier(OmniMod.MOD_ID,"block/tinker_table")));
+        this.polymerBlockState = PolymerBlockResourceUtils.requestBlock(BlockModelType.FULL_BLOCK, PolymerBlockModel.of(Identifier.of(OmniMod.MOD_ID,"block/tinker_table")));
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         TinkerTableGui tinkerTable = new TinkerTableGui((ServerPlayerEntity) player);
         tinkerTable.open();
-        return super.onUse(state, world, pos, player, hand, hit);
-    }
-
-    @Override
-    public Block getPolymerBlock(BlockState state) {
-        return polymerBlockState.getBlock();
+        return super.onUse(state, world, pos, player, hit);
     }
 
     @Override

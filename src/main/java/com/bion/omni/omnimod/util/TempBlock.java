@@ -21,7 +21,7 @@ public class TempBlock {
         position = EntityType.MARKER.spawn(world, pos, SpawnReason.NATURAL);
         blockType = Block.getRawIdFromState(world.getBlockState(pos));
         if (world.getBlockState(pos).hasBlockEntity()) {
-            blockEntity = world.getBlockEntity(pos).createNbt();
+            blockEntity = world.getBlockEntity(pos).createNbt(world.getRegistryManager());
             Clearable.clear(world.getBlockEntity(pos));
         }
         world.setBlockState(pos, tempState);
@@ -44,7 +44,7 @@ public class TempBlock {
     public void end() {
         position.getWorld().setBlockState(position.getBlockPos(), Block.postProcessState(Block.getStateFromRawId(blockType), position.getWorld(), position.getBlockPos()), Block.NOTIFY_LISTENERS);
         if (blockEntity != null) {
-            position.getWorld().getBlockEntity(position.getBlockPos()).readNbt(blockEntity);
+            position.getWorld().getBlockEntity(position.getBlockPos()).read(blockEntity, position.getWorld().getRegistryManager());
         }
         position.discard();
     }

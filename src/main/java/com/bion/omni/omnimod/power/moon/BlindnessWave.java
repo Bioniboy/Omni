@@ -86,7 +86,7 @@ public class BlindnessWave extends ImpulsePower {
             Box entityBox = new Box(user.getBlockPos()).expand(32);
             List<Entity> entityList = user.getWorld().getOtherEntities(null, entityBox);
             for (Entity entity : entityList) {
-                OmniMod.LOGGER.info(entity.getEntityName());
+//                OmniMod.LOGGER.info(entity.getEntityName());
                 if (!(entity instanceof PlayerEntity) && entity instanceof LivingEntity mob) {
                     mob.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, mobDuration, 2));
                 }

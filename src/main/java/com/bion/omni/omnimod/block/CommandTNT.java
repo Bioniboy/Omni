@@ -8,11 +8,11 @@ import net.minecraft.block.CommandBlock;
 
 public class CommandTNT extends CommandBlock implements PolymerBlock {
     public CommandTNT(Settings settings, boolean auto) {
-        super(settings, auto);
+        super(auto, settings);
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.TNT;
+    public BlockState getPolymerBlockState(BlockState state) {
+        return Blocks.TNT.getDefaultState();
     }
 }

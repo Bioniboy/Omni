@@ -2,13 +2,15 @@ package com.bion.omni.omnimod.element;
 
 import com.bion.omni.omnimod.OmniMod;
 import com.bion.omni.omnimod.power.Power;
-import net.minecraft.loot.LootDataType;
-import net.minecraft.loot.LootManager;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.context.LootContextTypes;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Formatting;
@@ -16,6 +18,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class Element {
     protected ArrayList<Power> powers;
@@ -23,16 +26,19 @@ public abstract class Element {
     public abstract Formatting getColor();
     public abstract boolean isInDomain(ServerPlayerEntity player);
     protected boolean testPredicate(ServerPlayerEntity player, String predicate) {
-        Identifier identifier =  new Identifier("omni", predicate);
-        LootManager lootManager = player.getServer().getLootManager();
-        LootCondition condition = lootManager.getElement(LootDataType.PREDICATES, identifier);
+        Identifier identifier =  Identifier.of("omni", predicate);
+        RegistryKey<LootCondition> registryKey = RegistryKey.of(RegistryKeys.PREDICATE, identifier);
 
 
         ServerWorld serverWorld = player.getServerWorld();
-        LootContextParameterSet lootContextParameterSet = new LootContextParameterSet.Builder(serverWorld).add(LootContextParameters.ORIGIN, player.getPos()).addOptional(LootContextParameters.THIS_ENTITY, player).build(LootContextTypes.COMMAND);
-        LootContext lootContext = new LootContext.Builder(lootContextParameterSet).build(null);
-        lootContext.markActive(LootContext.predicate(condition));
-        return condition.test(lootContext);
+        Optional<LootCondition> optional = serverWorld.getServer().getReloadableRegistries().createRegistryLookup().getOptionalEntry(RegistryKeys.PREDICATE, registryKey).map(RegistryEntry::value);
+        if (optional.isEmpty()) {
+            return false;
+        }
+        LootContextParameterSet lootContextParameterSet = new LootContextParameterSet.Builder(serverWorld).add(LootContextParameters.THIS_ENTITY, player).add(LootContextParameters.ORIGIN, player.getPos()).build(LootContextTypes.SELECTOR);
+        LootContext lootContext = new LootContext.Builder(lootContextParameterSet).build(Optional.empty());
+        lootContext.markActive(LootContext.predicate(optional.get()));
+        return optional.get().test(lootContext);
     }
     public abstract String getName();
     public Power getPower(String id, Integer level) {

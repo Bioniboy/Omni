@@ -4,6 +4,7 @@ import com.bion.omni.omnimod.entity.ModEntities;
 import com.bion.omni.omnimod.mixin.accessor.ShulkerBulletEntityAccessor;
 import com.google.common.base.MoreObjects;
 import eu.pb4.polymer.core.api.entity.PolymerEntity;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -17,8 +18,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtil;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -31,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class ManaBulletEntity extends ShulkerBulletEntity implements PolymerEntity {
-    private List<StatusEffectInstance> effects;
+    private Iterable<StatusEffectInstance> effects;
     private boolean splash;
     private boolean lingering;
     private int color;
@@ -41,7 +42,7 @@ public class ManaBulletEntity extends ShulkerBulletEntity implements PolymerEnti
         super(entityType, world);
     }
 
-    public ManaBulletEntity setManaBulletEntity(LivingEntity owner, Entity target, Direction.Axis axis, List<StatusEffectInstance> effects, boolean splash, boolean lingering, int color) {
+    public ManaBulletEntity setManaBulletEntity(LivingEntity owner, Entity target, Direction.Axis axis, Iterable<StatusEffectInstance> effects, boolean splash, boolean lingering, int color) {
         this.splash = splash;
         this.lingering = lingering;
         this.setOwner(owner);
@@ -70,7 +71,7 @@ public class ManaBulletEntity extends ShulkerBulletEntity implements PolymerEnti
         LivingEntity livingEntity = entity2 instanceof LivingEntity ? (LivingEntity)entity2 : null;
         boolean bl = entity.damage(this.getDamageSources().mobProjectile(this, livingEntity), 4.0f);
         if (bl) {
-            this.applyDamageEffects(livingEntity, entity);
+            EnchantmentHelper.onTargetDamaged((ServerWorld) getWorld(), entity, this.getDamageSources().mobProjectile(this, livingEntity));
             if (effects != null) {
                 if (splash) {
                     applySplashPotion(entity);
@@ -78,8 +79,8 @@ public class ManaBulletEntity extends ShulkerBulletEntity implements PolymerEnti
                     applyLingeringPotion();
                 } else if (entity instanceof LivingEntity livingEntity2) {
                     for (StatusEffectInstance statusEffectInstance : effects) {
-                        if (statusEffectInstance.getEffectType().isInstant()) {
-                            statusEffectInstance.getEffectType().applyInstantEffect(getOwner(), getOwner(), livingEntity2, statusEffectInstance.getAmplifier(), 1.0);
+                        if (statusEffectInstance.getEffectType().value().isInstant()) {
+                            statusEffectInstance.getEffectType().value().applyInstantEffect(getOwner(), getOwner(), livingEntity2, statusEffectInstance.getAmplifier(), 1.0);
                             continue;
                         }
                         livingEntity2.addStatusEffect(new StatusEffectInstance(statusEffectInstance));
@@ -98,13 +99,13 @@ public class ManaBulletEntity extends ShulkerBulletEntity implements PolymerEnti
                 if (!livingEntity.isAffectedBySplashPotions() || !((d = this.squaredDistanceTo(livingEntity)) < 16.0)) continue;
                 double e = livingEntity == entity ? 1.0 : 1.0 - Math.sqrt(d) / 4.0;
                 for (StatusEffectInstance statusEffectInstance : effects) {
-                    StatusEffect statusEffect = statusEffectInstance.getEffectType();
+                    StatusEffect statusEffect = statusEffectInstance.getEffectType().value();
                     if (statusEffect.isInstant()) {
                         statusEffect.applyInstantEffect(this, this.getOwner(), livingEntity, statusEffectInstance.getAmplifier(), e);
                         continue;
                     }
                     int i2 = statusEffectInstance.mapDuration(i -> (int)(e * (double)i + 0.5));
-                    StatusEffectInstance statusEffectInstance2 = new StatusEffectInstance(statusEffect, i2, statusEffectInstance.getAmplifier(), statusEffectInstance.isAmbient(), statusEffectInstance.shouldShowParticles());
+                    StatusEffectInstance statusEffectInstance2 = new StatusEffectInstance(statusEffectInstance.getEffectType(), i2, statusEffectInstance.getAmplifier(), statusEffectInstance.isAmbient(), statusEffectInstance.shouldShowParticles());
                     if (statusEffectInstance2.isDurationBelow(20)) continue;
                     livingEntity.addStatusEffect(statusEffectInstance2, entity2);
                 }
@@ -126,7 +127,6 @@ public class ManaBulletEntity extends ShulkerBulletEntity implements PolymerEnti
         for (StatusEffectInstance statusEffectInstance : effects) {
             areaEffectCloudEntity.addEffect(new StatusEffectInstance(statusEffectInstance));
         }
-        areaEffectCloudEntity.setColor(color);
         this.getWorld().spawnEntity(areaEffectCloudEntity);
         this.getWorld().syncWorldEvent(WorldEvents.SPLASH_POTION_SPLASHED, this.getBlockPos(), color);
     }

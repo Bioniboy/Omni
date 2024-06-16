@@ -1,5 +1,6 @@
 package com.bion.omni.omnimod.power.life;
 
+import com.bion.omni.omnimod.OmniMod;
 import com.bion.omni.omnimod.power.ContinuousPower;
 import com.bion.omni.omnimod.util.Apprentice;
 import com.bion.omni.omnimod.util.EntityDisguise;
@@ -9,11 +10,12 @@ import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
 
 import java.util.UUID;
 
 public abstract class TransformPower extends ContinuousPower {
-    protected static final UUID TRANSFORM_HEALTH_ID = UUID.fromString("87f46a96-686f-4796-b035-22e16ee9e039");
+    protected static final Identifier TRANSFORM_HEALTH_ID = Identifier.of(OmniMod.MOD_ID, "max_health");
 
     public TransformPower(int level) {
         super(level);
@@ -50,7 +52,7 @@ public abstract class TransformPower extends ContinuousPower {
                 }
             }
         }
-        EntityAttributeModifier transformHealth = new EntityAttributeModifier(TRANSFORM_HEALTH_ID, "Transform health", customHealth - user.defaultMaxHealth, EntityAttributeModifier.Operation.ADDITION);
+        EntityAttributeModifier transformHealth = new EntityAttributeModifier(TRANSFORM_HEALTH_ID, customHealth - user.defaultMaxHealth, EntityAttributeModifier.Operation.ADD_VALUE);
         EntityAttributeInstance entityAttributeInstance = user.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH);
         if (entityAttributeInstance.getModifier(TRANSFORM_HEALTH_ID) == null) {
             entityAttributeInstance.addTemporaryModifier(transformHealth);

@@ -19,6 +19,7 @@ import eu.pb4.sgui.api.gui.SimpleGuiBuilder;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.RegistryEntryArgumentType;
+import net.minecraft.command.argument.RegistryEntryReferenceArgumentType;
 import net.minecraft.command.suggestion.SuggestionProviders;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -34,10 +35,6 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.s2c.play.EntityTrackerUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.scoreboard.ScoreboardPlayerScore;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -110,9 +107,9 @@ public class OmniCommand {
                                         .then(CommandManager.argument("name", StringArgumentType.word())
                                                 .executes(context -> {
                                                     createPet(context, EntityArgumentType.getPlayer(context, "owner"), StringArgumentType.getString(context, "name")); return 1;})
-                                                .then(CommandManager.argument("type", RegistryEntryArgumentType.registryEntry(s, RegistryKeys.ENTITY_TYPE)).suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
+                                                .then(CommandManager.argument("type", RegistryEntryReferenceArgumentType.registryEntry(s, RegistryKeys.ENTITY_TYPE)).suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
                                                         .executes(context -> {
-                                                            createPet(context, EntityArgumentType.getPlayer(context, "owner"), StringArgumentType.getString(context, "name"), RegistryEntryArgumentType.getSummonableEntityType(context, "type").value()); return 1;})
+                                                            createPet(context, EntityArgumentType.getPlayer(context, "owner"), StringArgumentType.getString(context, "name"), RegistryEntryReferenceArgumentType.getSummonableEntityType(context, "type").value()); return 1;})
                                                 )
                                         )
                                 )
@@ -126,15 +123,15 @@ public class OmniCommand {
                         .requires(source -> source.hasPermissionLevel(2))
                         .executes(OmniCommand::toggleOpMode)
                 )
-                .then(CommandManager.literal("mansion")
-                        .requires(source -> source.hasPermissionLevel(2))
-                        .then(CommandManager.literal("start")
-                                .executes(OmniCommand::mansionStart)
-                        )
-                        .then(CommandManager.literal("stop")
-                                .executes(context -> {mansionStop(context.getSource().getPlayer()); return 1;})
-                        )
-                )
+//                .then(CommandManager.literal("mansion")
+//                        .requires(source -> source.hasPermissionLevel(2))
+//                        .then(CommandManager.literal("start")
+//                                .executes(OmniCommand::mansionStart)
+//                        )
+//                        .then(CommandManager.literal("stop")
+//                                .executes(context -> {mansionStop(context.getSource().getPlayer()); return 1;})
+//                        )
+//                )
         );
     }
 
@@ -373,31 +370,31 @@ public class OmniCommand {
         return 1;
     }
 
-    public static void mansionStop(ServerPlayerEntity player) {
-        int totalInfluence = 0;
-        for (ItemStack item : player.getInventory().main) {
-            if (item.isOf(ModItems.INFLUENCE_TOKEN)) {
-                totalInfluence += item.getOrCreateNbt().getInt("Value") * item.getCount();
-            }
-        }
-        if (player.getOffHandStack().isOf(ModItems.INFLUENCE_TOKEN)) {
-            totalInfluence += player.getOffHandStack().getOrCreateNbt().getInt("Value") * player.getOffHandStack().getCount();
-        }
-        Scoreboard scoreboard = player.getScoreboard();
-        ScoreboardPlayerScore score = scoreboard.getPlayerScore(player.getName().getString(), scoreboard.getObjective("MansionPoints"));
-        player.sendMessageToClient(Text.literal("Points earned: " + totalInfluence), false);
-        if (score.getScore() < totalInfluence) {
-            score.setScore(totalInfluence);
-            player.sendMessageToClient(Text.literal("New high score"), false);
-        }
-        player.getInventory().readNbt(((Apprentice)player).omni$removeSavedInventory("mansion").writeNbt(new NbtList()));
-        player.removeStatusEffect(StatusEffects.DARKNESS);
-        player.removeStatusEffect(StatusEffects.REGENERATION);
-        player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ENTITY_WITHER_DEATH, SoundCategory.PLAYERS, 1.0f, 0.5f);
-        ((Apprentice)player).omni$setInMansion(false);
-        player.changeGameMode(GameMode.SURVIVAL);
-        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "clone -536 40 210 -478 72 254 -536 110 210");
-        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "tp @e[type=omnimod:mansion_zombie] ~ -200 ~");
-        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "tag @a[tag=mansion] remove mansion");
-    }
+//    public static void mansionStop(ServerPlayerEntity player) {
+//        int totalInfluence = 0;
+//        for (ItemStack item : player.getInventory().main) {
+//            if (item.isOf(ModItems.INFLUENCE_TOKEN)) {
+//                totalInfluence += item.getOrCreateNbt().getInt("Value") * item.getCount();
+//            }
+//        }
+//        if (player.getOffHandStack().isOf(ModItems.INFLUENCE_TOKEN)) {
+//            totalInfluence += player.getOffHandStack().getOrCreateNbt().getInt("Value") * player.getOffHandStack().getCount();
+//        }
+//        Scoreboard scoreboard = player.getScoreboard();
+//        ScoreboardPlayerScore score = scoreboard.getPlayerScore(player.getName().getString(), scoreboard.getObjective("MansionPoints"));
+//        player.sendMessageToClient(Text.literal("Points earned: " + totalInfluence), false);
+//        if (score.getScore() < totalInfluence) {
+//            score.setScore(totalInfluence);
+//            player.sendMessageToClient(Text.literal("New high score"), false);
+//        }
+//        player.getInventory().readNbt(((Apprentice)player).omni$removeSavedInventory("mansion").writeNbt(new NbtList()));
+//        player.removeStatusEffect(StatusEffects.DARKNESS);
+//        player.removeStatusEffect(StatusEffects.REGENERATION);
+//        player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ENTITY_WITHER_DEATH, SoundCategory.PLAYERS, 1.0f, 0.5f);
+//        ((Apprentice)player).omni$setInMansion(false);
+//        player.changeGameMode(GameMode.SURVIVAL);
+//        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "clone -536 40 210 -478 72 254 -536 110 210");
+//        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "tp @e[type=omnimod:mansion_zombie] ~ -200 ~");
+//        player.getServer().getCommandManager().executeWithPrefix(player.getServer().getCommandSource(), "tag @a[tag=mansion] remove mansion");
+//    }
 }

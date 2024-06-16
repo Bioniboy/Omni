@@ -6,12 +6,7 @@ import net.minecraft.state.property.Properties;
 
 public class WallBurntTorch extends WallTorchBlock implements PolymerBlock {
     public WallBurntTorch(Settings settings) {
-        super(settings, null);
-    }
-
-    @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.REDSTONE_WALL_TORCH;
+        super(null, settings);
     }
 
     @Override

@@ -22,13 +22,13 @@ public class DivineRepoBlock extends Block implements PolymerTexturedBlock {
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
+    public BlockState getPolymerBlockState(BlockState state) {
 
-        return Blocks.BARREL;
+        return Blocks.BARREL.getDefaultState();
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         ((Apprentice)player).omni$addPower(new DivineRepo(1));
         DivineRepo divineRepo = (DivineRepo)((Apprentice)player).omni$getPowerById("divineRepo");
         if(divineRepo == null){

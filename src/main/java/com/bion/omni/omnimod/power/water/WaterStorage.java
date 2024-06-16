@@ -6,11 +6,10 @@ import com.bion.omni.omnimod.util.Apprentice;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.block.FluidFillable;
-import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.tag.FluidTags;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -45,8 +44,8 @@ public class WaterStorage extends ImpulsePower {
     }
 
     @Override
-    public NbtCompound toNbt() {
-        NbtCompound nbt = super.toNbt();
+    public NbtCompound toNbt(RegistryWrapper.WrapperLookup registries) {
+        NbtCompound nbt = super.toNbt(registries);
         nbt.putInt("waterStored", waterStored);
         return nbt;
     }
@@ -64,8 +63,8 @@ public class WaterStorage extends ImpulsePower {
     }
 
     @Override
-    public Power setNbt(NbtCompound nbt) {
-        super.setNbt(nbt);
+    public Power setNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {
+        super.setNbt(nbt, registries);
         waterStored = nbt.getInt("waterStored");
         return this;
     }

@@ -13,7 +13,7 @@ public class ManaRegeneration extends StatusEffect implements PolymerStatusEffec
     }
 
     @Override
-    public void applyUpdateEffect(LivingEntity entity, int amplifier) {
+    public boolean applyUpdateEffect(LivingEntity entity, int amplifier) {
         if (entity instanceof Apprentice apprentice && apprentice.omni$getElement() != null) {
             apprentice.omni$changeMana(1);
 
@@ -22,6 +22,7 @@ public class ManaRegeneration extends StatusEffect implements PolymerStatusEffec
             }
         }
 
+        return true;
     }
 
     @Override

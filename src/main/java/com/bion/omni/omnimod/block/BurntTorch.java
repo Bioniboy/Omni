@@ -12,22 +12,12 @@ import net.minecraft.world.World;
 
 public class BurntTorch extends TorchBlock implements PolymerBlock {
     public BurntTorch(Settings settings) {
-        super(settings, null);
-    }
-
-    @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.REDSTONE_TORCH;
+        super(null, settings);
     }
 
     @Override
     public BlockState getPolymerBlockState(BlockState state) {
         return Blocks.REDSTONE_TORCH.getDefaultState()
                 .with(Properties.LIT, false);
-    }
-
-    @Override
-    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-        super.onBreak(world, pos, state, player);
     }
 }

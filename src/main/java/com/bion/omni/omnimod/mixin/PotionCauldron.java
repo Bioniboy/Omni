@@ -30,7 +30,7 @@ public abstract class PotionCauldron extends AbstractCauldronBlock {
      * @param settings
      * @param behaviorMap the map containing cauldron behaviors for each item
      */
-    public PotionCauldron(Settings settings, Map<Item, CauldronBehavior> behaviorMap) {
+    public PotionCauldron(Settings settings, CauldronBehavior.CauldronBehaviorMap behaviorMap) {
         super(settings, behaviorMap);
     }
 

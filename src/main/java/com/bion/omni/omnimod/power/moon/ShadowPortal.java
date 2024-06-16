@@ -1,7 +1,6 @@
 package com.bion.omni.omnimod.power.moon;
 
 import com.bion.omni.omnimod.power.ImpulsePower;
-import com.bion.omni.omnimod.power.Mana;
 import com.bion.omni.omnimod.power.Power;
 import com.bion.omni.omnimod.util.Apprentice;
 import com.bion.omni.omnimod.util.ConfigSymbol;
@@ -10,6 +9,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -33,8 +33,8 @@ public class ShadowPortal extends ImpulsePower {
     Vec3d markPosition = null;
 
     @Override
-    public NbtCompound toNbt() {
-        NbtCompound nbt = super.toNbt();
+    public NbtCompound toNbt(RegistryWrapper.WrapperLookup registries) {
+        NbtCompound nbt = super.toNbt(registries);
         if (markPosition != null) {
             var pos = new ArrayList<Long>();
             pos.add((long) markPosition.getX());
@@ -45,8 +45,8 @@ public class ShadowPortal extends ImpulsePower {
         return nbt;
     }
     @Override
-    public Power setNbt(NbtCompound nbt) {
-        super.setNbt(nbt);
+    public Power setNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {
+        super.setNbt(nbt, registries);
         if (nbt.contains("markPos", NbtElement.LONG_ARRAY_TYPE)) {
             var pos = nbt.getLongArray("markPos");
             markPosition = new Vec3d(pos[0], pos[1], pos[2]);

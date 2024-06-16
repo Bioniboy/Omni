@@ -7,6 +7,7 @@ import com.bion.omni.omnimod.util.ConfigSymbol;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -79,15 +80,15 @@ public class Speed extends ContinuousPower {
     }
 
     @Override
-    public NbtCompound toNbt() {
-        NbtCompound nbt = super.toNbt();
+    public NbtCompound toNbt(RegistryWrapper.WrapperLookup registries) {
+        NbtCompound nbt = super.toNbt(registries);
         nbt.putInt("speedLevel", speedLevel);
         return nbt;
     }
 
     @Override
-    public Power setNbt(NbtCompound nbt) {
-        super.setNbt(nbt);
+    public Power setNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {
+        super.setNbt(nbt, registries);
         speedLevel = nbt.getInt("speedLevel");
         return this;
     }

@@ -4,10 +4,13 @@ import com.bion.omni.omnimod.element.Air;
 import com.bion.omni.omnimod.element.Element;
 import com.bion.omni.omnimod.element.Water;
 import eu.pb4.polymer.core.api.item.PolymerItemUtils;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,13 +21,9 @@ public class Hydronomicon extends Tome {
         super(settings, polymerItem);
     }
 
-    @Override
-    public ItemStack getPolymerItemStack(ItemStack itemStack, TooltipContext context, @Nullable ServerPlayerEntity player) {
-        ItemStack out = PolymerItemUtils.createItemStack(itemStack, context, player);
-        NbtCompound nbt = out.getNbt();
-        assert nbt != null;
-        nbt.putInt("CustomModelData", 850002);
-        out.setNbt(nbt);
+    public ItemStack getPolymerItemStack(ItemStack itemStack, TooltipType tooltipType, RegistryWrapper.WrapperLookup lookup, @Nullable ServerPlayerEntity player) {
+        ItemStack out = PolymerItemUtils.createItemStack(itemStack, tooltipType, lookup, player);
+        out.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(850002));
         return out;
     }
 

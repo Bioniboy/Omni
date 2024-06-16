@@ -7,6 +7,7 @@ import com.bion.omni.omnimod.power.ImpulsePower;
 import net.minecraft.block.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 
@@ -121,10 +122,10 @@ public class DarkAura extends ImpulsePower {
 //    }
 
     @Override
-    public NbtCompound toNbt() {
+    public NbtCompound toNbt(RegistryWrapper.WrapperLookup registries) {
         for (TempBlock block : blockList) {
             block.end();
         }
-        return super.toNbt();
+        return super.toNbt(registries);
     }
 }

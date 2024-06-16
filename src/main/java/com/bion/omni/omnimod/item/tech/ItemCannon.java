@@ -5,13 +5,16 @@ import com.bion.omni.omnimod.power.tech.ItemCannonAugmentation;
 import com.bion.omni.omnimod.util.Apprentice;
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.core.api.item.PolymerItemUtils;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.nbt.NbtInt;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -29,13 +32,13 @@ public class ItemCannon extends Item implements PolymerItem {
         return Items.WOODEN_SWORD;
     }
     @Override
-    public ItemStack getPolymerItemStack(ItemStack itemStack, TooltipContext context, @Nullable ServerPlayerEntity player) {
+    public ItemStack getPolymerItemStack(ItemStack itemStack, TooltipType tooltipType, RegistryWrapper.WrapperLookup lookup, @Nullable ServerPlayerEntity player) {
 
-        ItemStack item = PolymerItemUtils.createItemStack(itemStack, context, player);
-        item.setSubNbt("CustomModelData", NbtInt.of(850001));
+        ItemStack item = PolymerItemUtils.createItemStack(itemStack, tooltipType, lookup, player);
+        item.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(850001));
         ItemCannonAugmentation itemCannonAugmentation = (ItemCannonAugmentation)((Apprentice)player).omni$getPowerById("itemCannonAugmentation");
         if(itemCannonAugmentation != null){
-            item.setSubNbt("Damage", NbtInt.of(100 -(itemCannonAugmentation.getDurability()/itemCannonAugmentation.getMaxDurability())*100));
+            item.setDamage(100 -(itemCannonAugmentation.getDurability()/itemCannonAugmentation.getMaxDurability())*100);
             OmniMod.LOGGER.info("" + (100 - itemCannonAugmentation.getDurability()/itemCannonAugmentation.getMaxDurability()));
         }
 
@@ -43,13 +46,8 @@ public class ItemCannon extends Item implements PolymerItem {
     }
 
     @Override
-    public boolean isDamageable() {
-        return true;
-    }
-
-    @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        user.playSound(SoundEvents.BLOCK_AMETHYST_BLOCK_BREAK, SoundCategory.MASTER, 1, 1);
+        user.playSound(SoundEvents.BLOCK_AMETHYST_BLOCK_BREAK, 1, 1);
 
         ItemCannonAugmentation itemCannonAugmentation = (ItemCannonAugmentation)((Apprentice)user).omni$getPowerById("itemCannonAugmentation");
         if(itemCannonAugmentation == null){

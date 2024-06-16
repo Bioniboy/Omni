@@ -65,7 +65,7 @@ public class TomeGui extends BookGui {
         super.setPage(page);
         ((EntityDataInterface)player).getPersistentData().putInt("page", this.page);
         if (player.currentScreenHandler instanceof BookScreenHandler) {
-            this.player.playSound(SoundEvent.of(new Identifier("minecraft:item.book.page_turn")), SoundCategory.PLAYERS, 0.3F, 1.0F);
+            this.player.playSound(SoundEvent.of(Identifier.of("minecraft:item.book.page_turn")), 0.3F, 1.0F);
         }
 
     }

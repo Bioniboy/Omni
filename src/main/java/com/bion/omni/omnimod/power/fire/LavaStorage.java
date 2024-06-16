@@ -6,6 +6,7 @@ import com.bion.omni.omnimod.util.Apprentice;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -31,8 +32,8 @@ public class LavaStorage extends ImpulsePower {
     }
 
     @Override
-    public NbtCompound toNbt() {
-        NbtCompound nbt = super.toNbt();
+    public NbtCompound toNbt(RegistryWrapper.WrapperLookup registries) {
+        NbtCompound nbt = super.toNbt(registries);
         nbt.putInt("lavaStored", lavaStored);
         return nbt;
     }
@@ -50,8 +51,8 @@ public class LavaStorage extends ImpulsePower {
     }
 
     @Override
-    public Power setNbt(NbtCompound nbt) {
-        super.setNbt(nbt);
+    public Power setNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {
+        super.setNbt(nbt, registries);
         lavaStored = nbt.getInt("lavaStored");
         return this;
     }

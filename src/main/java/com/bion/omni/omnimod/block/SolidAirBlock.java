@@ -13,8 +13,8 @@ public class SolidAirBlock extends AirBlock implements PolymerBlock {
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.AIR;
+    public BlockState getPolymerBlockState(BlockState state) {
+        return Blocks.AIR.getDefaultState();
     }
 
 

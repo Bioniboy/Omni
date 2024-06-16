@@ -6,7 +6,6 @@
   "mixins": [
     "ActiveTimeDetector",
     "CancelSpectatorTeleport",
-    "EntityMixin_Disguise",
     "ModEntityDataSaver",
     "NoOffInteraction",
     "PearlCooldownDisable",
@@ -20,7 +19,6 @@
     "PlayerManagerMixin",
     "PotionCauldron",
     "ServerPlayerMixin",
-    "ServerPlayNetworkHandlerMixin_Disguiser",
     "ServerPlayNetworkHandlerMixin_HitCheck",
     "ShouldDrown",
     "SpectateSelf",
@@ -31,16 +29,13 @@
     "accessor.EntityAttributesS2CPacketAccessor",
     "accessor.EntityPositionS2CPacketAccessor",
     "accessor.EntitySetHeadYawS2CPacketAccessor",
-    "accessor.EntitySpawnS2CPacketAccessor",
     "accessor.EntityTrackerEntryAccessor",
     "accessor.EntityTrackerUpdateS2CPacketAccessor",
     "accessor.LivingEntityAccessor",
     "accessor.MobEntityAccessor",
     "accessor.PlayerEntityAccessor",
     "accessor.PlayerListS2CPacketAccessor",
-    "accessor.PlayerSpawnS2CPacketAccessor",
-    "accessor.ShulkerBulletEntityAccessor",
-    "accessor.ThreadedAnvilChunkStorageAccessor"
+    "accessor.ShulkerBulletEntityAccessor"
   ],
   "server": [
   ],

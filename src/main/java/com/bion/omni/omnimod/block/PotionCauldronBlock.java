@@ -12,8 +12,8 @@ public class PotionCauldronBlock extends CauldronBlock implements PolymerBlock {
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
+    public BlockState getPolymerBlockState(BlockState state) {
 
-        return Blocks.CAULDRON;
+        return Blocks.CAULDRON.getDefaultState();
     }
 }
