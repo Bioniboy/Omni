@@ -547,6 +547,7 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 	}
 	@Inject(at = @At("HEAD"), method = "tick")
 	private void tick(CallbackInfo ci) {
+		item.updateLastSyncedPos();
 		Vec3d to = this.getPos();
 		if(backpackYaw == null){
 			backpackYaw = bodyYaw;
@@ -575,7 +576,7 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 			this.turnBody(bodyTargetYaw, yaw);
 			Matrix4x3f matrix = new Matrix4x3f();
 			matrix.rotateY((MathHelper.wrapDegrees(backpackYaw + 180) * MathHelper.RADIANS_PER_DEGREE) * -1);
-			matrix.translate(0, -1, 0);
+			matrix.translate(0, -1.42f, 0);
 			item.setTransformation(matrix);
 			if (item.getDataTracker().isDirty()) {
 				item.startInterpolation();
@@ -593,6 +594,7 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 //			largeBackpack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(0x00FF00, true));
 			}
 			item.setItem(largeBackpack);
+			item.ignorePositionUpdates();
 			elementHolder.addElement(item);
 			EntityAttachment.ofTicking(elementHolder, (ServerPlayerEntity)(Object)this);
 			elementHolder.startWatching((ServerPlayerEntity)(Object)this);

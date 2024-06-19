@@ -1,6 +1,7 @@
 package com.bion.omni.omnimod;
 
 import com.bion.omni.omnimod.block.ModBlocks;
+import com.bion.omni.omnimod.block.entity.ModBlockEntities;
 import com.bion.omni.omnimod.command.ModCommands;
 import com.bion.omni.omnimod.entity.ModEntities;
 import com.bion.omni.omnimod.entity.effect.ModStatusEffects;
@@ -23,6 +24,7 @@ public class OmniMod implements ModInitializer {
         ModEntities.registerEntities();
         ModStatusEffects.registerEffects();
         ModBlocks.registerBlocks();
+        ModBlockEntities.registerBlockEntities();
         DisguiseLib.init();
         PolymerResourcePackUtils.addModAssets(MOD_ID);
     }

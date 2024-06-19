@@ -6,6 +6,7 @@ import com.bion.omni.omnimod.block.tech.DivineRepoBlock;
 import com.bion.omni.omnimod.block.tech.TinkerTableBlock;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
+import net.minecraft.item.PickaxeItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
@@ -22,6 +23,7 @@ public class ModBlocks {
     public static final Block BAD_TRAPDOOR = new BadTrapdoor(AbstractBlock.Settings.create().mapColor(MapColor.PALE_YELLOW).strength(3.0f).sounds(BlockSoundGroup.WOOD).nonOpaque(), BlockSetType.BIRCH);
     public static final Block TINKER_TABLE = new TinkerTableBlock(AbstractBlock.Settings.create());
     public static final Block DIVINE_REPO   = new DivineRepoBlock(AbstractBlock.Settings.create());
+    public static final Block BACKPACK_BLOCK   = new BackpackBlock(AbstractBlock.Settings.create().nonOpaque());
 
     public static void registerBlocks() {
         Registry.register(Registries.BLOCK, Identifier.of(OmniMod.MOD_ID, "burnt_torch"), BURNT_TORCH);
@@ -33,5 +35,6 @@ public class ModBlocks {
         Registry.register(Registries.BLOCK, Identifier.of(OmniMod.MOD_ID, "bad_trapdoor"), BAD_TRAPDOOR);
         Registry.register(Registries.BLOCK, Identifier.of(OmniMod.MOD_ID, "tinker_table"), TINKER_TABLE);
         Registry.register(Registries.BLOCK, Identifier.of(OmniMod.MOD_ID, "divine_repository"), DIVINE_REPO);
+        Registry.register(Registries.BLOCK, Identifier.of(OmniMod.MOD_ID, "backpack_block"), BACKPACK_BLOCK);
     }
 }

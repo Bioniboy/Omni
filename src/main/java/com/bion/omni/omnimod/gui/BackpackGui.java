@@ -21,12 +21,16 @@ public class BackpackGui extends SimpleGui {
     public BackpackGui(ServerPlayerEntity player, SimpleInventory backpackInventory){
         super(ScreenHandlerType.SHULKER_BOX, player, false);
         this.backpackInventory = backpackInventory;
-        refreshInventory();
-    }
-    public void refreshInventory(){
         for(int i = 0; i < 27; i++){
             setSlotRedirect(i, new Slot(backpackInventory, i, 0, 0));
         }
     }
+    public SimpleInventory getBackpackInventory(){
+        return backpackInventory;
+    }
 
+    @Override
+    public void close(boolean screenHandlerIsClosed) {
+        super.close(screenHandlerIsClosed);
+    }
 }

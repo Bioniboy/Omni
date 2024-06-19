@@ -2,6 +2,7 @@ package com.bion.omni.omnimod.item;
 
 
 
+import com.bion.omni.omnimod.block.BackpackBlock;
 import com.bion.omni.omnimod.block.ModBlocks;
 import com.bion.omni.omnimod.entity.effect.ManaRegeneration;
 import com.bion.omni.omnimod.entity.effect.ModStatusEffects;
@@ -14,13 +15,18 @@ import eu.pb4.polymer.core.api.item.PolymerBlockItem;
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import com.bion.omni.omnimod.OmniMod;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.util.BlockRotation;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.RotationCalculator;
 
 public class ModItems {
 
@@ -49,7 +55,8 @@ public class ModItems {
     public static final Item ITEM_CANNON_AUGMENTATION = new Augmentation(new Item.Settings(), 850015);
     public static final Item ITEM_CANNON = new ItemCannon(new Item.Settings());
     public static final Item WRENCH = new Augmentation(new Item.Settings(), 850016);
-    public static final Item BACKPACK = new BackpackItem(new Item.Settings(), Items.LEATHER_CHESTPLATE);
+    public static final Item BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1), Items.LEATHER_CHESTPLATE, ModBlocks.BACKPACK_BLOCK);
+
 
 
 
@@ -78,7 +85,7 @@ public class ModItems {
         registerItem("item_cannon_augmentation", ITEM_CANNON_AUGMENTATION);
         registerItem("item_cannon", ITEM_CANNON);
         registerItem("wrench", WRENCH);
-        registerItem("backpack", BACKPACK);
+        registerItem("backpack_item", BACKPACK_ITEM);
 
     }
     private static void registerItem(String path, Item item){

@@ -19,6 +19,8 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    maven { url "https://api.modrinth.com/maven" } // Nylon
+    maven { url 'https://maven.nucleoid.xyz' }
 }
 
 dependencies {
@@ -34,6 +36,9 @@ dependencies {
     modImplementation include("eu.pb4:polymer-resource-pack:${project.polymer_version}")
     modImplementation include("eu.pb4:polymer-blocks:${project.polymer_version}")
     modImplementation include("eu.pb4:polymer-virtual-entity:${project.polymer_version}")
+
+    modImplementation "maven.modrinth:nylon:0.9.16"
+    modImplementation include("eu.pb4:factorytools:0.3.1+1.21")
 
 }
 
