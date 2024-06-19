@@ -6,6 +6,7 @@ import com.bion.omni.omnimod.gui.BackpackGui;
 import com.bion.omni.omnimod.item.BackpackItem;
 import com.mojang.serialization.Codec;
 import eu.pb4.factorytools.api.block.FactoryBlock;
+import eu.pb4.factorytools.api.virtualentity.BlockModel;
 import eu.pb4.polymer.blocks.api.BlockModelType;
 import eu.pb4.polymer.blocks.api.PolymerBlockModel;
 import eu.pb4.polymer.blocks.api.PolymerBlockResourceUtils;
@@ -16,6 +17,7 @@ import eu.pb4.polymer.core.api.item.PolymerItemUtils;
 import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import eu.pb4.polymer.virtualentity.api.VirtualEntityUtils;
+import eu.pb4.polymer.virtualentity.api.attachment.BlockAwareAttachment;
 import eu.pb4.polymer.virtualentity.api.attachment.ChunkAttachment;
 import eu.pb4.polymer.virtualentity.api.elements.InteractionElement;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
@@ -84,21 +86,8 @@ public class BackpackBlock extends BarrelBlock implements FactoryBlock {
 
     @Override
     public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
-        ItemDisplayElement item = new ItemDisplayElement();
-        ElementHolder elementHolder = new ElementHolder();
-        ItemStack largeBackpack = Items.LEATHER_CHESTPLATE.getDefaultStack();
-        largeBackpack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(850001));
-        if (largeBackpack.getItem() == Items.LEATHER_CHESTPLATE) {
-            if(world.shouldTick(pos)){
-                BlockEntity blockEntity = world.getBlockEntity(pos);
-                OmniMod.LOGGER.info("Anything" + ((BackpackBlockEntity)blockEntity).getDyedColor().rgb());
-                largeBackpack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(((BackpackBlockEntity)blockEntity).getDyedColor().rgb(), true));
-            }
-        }
-        item.setItem(largeBackpack);
-        item.ignorePositionUpdates();
-        elementHolder.addElement(item);
-        return elementHolder;
+
+        return new BackpackModel();
     }
 
     @Nullable
@@ -107,5 +96,29 @@ public class BackpackBlock extends BarrelBlock implements FactoryBlock {
         return new BackpackBlockEntity(pos, state);
     }
 
+    @Override
+    public boolean tickElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
+        return true;
+    }
 
+    public static final class BackpackModel extends BlockModel {
+        BackpackModel() {
+            ItemDisplayElement item = new ItemDisplayElement();
+            ItemStack largeBackpack = Items.LEATHER_CHESTPLATE.getDefaultStack();
+            largeBackpack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(850001));
+
+
+            item.setItem(largeBackpack);
+            item.ignorePositionUpdates();
+            this.addElement(item);
+        }
+
+        @Override
+        protected void onTick() {
+            super.onTick();
+            if (getAttachment() == null) return;
+            BlockEntity blockEntity = getAttachment().getWorld().getBlockEntity(BlockPos.ofFloored(getAttachment().getPos()));
+            ((ItemDisplayElement)getElements().getFirst()).getItem().set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(((BackpackBlockEntity) blockEntity).getDyedColor().rgb(), true));
+        }
+    }
 }
