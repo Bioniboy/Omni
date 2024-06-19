@@ -26,5 +26,4 @@ public class SolidAirBlock extends AirBlock implements PolymerBlock {
             return Blocks.AIR.getDefaultState();
         }
     }
-
 }

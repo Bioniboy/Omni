@@ -2,6 +2,8 @@ package com.bion.omni.omnimod.element;
 
 import com.bion.omni.omnimod.OmniMod;
 import com.bion.omni.omnimod.power.Power;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameterSet;
@@ -28,7 +30,6 @@ public abstract class Element {
     protected boolean testPredicate(ServerPlayerEntity player, String predicate) {
         Identifier identifier =  Identifier.of("omni", predicate);
         RegistryKey<LootCondition> registryKey = RegistryKey.of(RegistryKeys.PREDICATE, identifier);
-
 
         ServerWorld serverWorld = player.getServerWorld();
         Optional<LootCondition> optional = serverWorld.getServer().getReloadableRegistries().createRegistryLookup().getOptionalEntry(RegistryKeys.PREDICATE, registryKey).map(RegistryEntry::value);
