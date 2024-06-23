@@ -4,6 +4,7 @@ import com.bion.omni.omnimod.OmniMod;
 import com.bion.omni.omnimod.block.entity.BackpackBlockEntity;
 import com.bion.omni.omnimod.gui.BackpackGui;
 import com.bion.omni.omnimod.item.BackpackItem;
+import com.bion.omni.omnimod.util.Apprentice;
 import com.mojang.serialization.Codec;
 import eu.pb4.factorytools.api.block.FactoryBlock;
 import eu.pb4.factorytools.api.virtualentity.BlockModel;
@@ -33,10 +34,10 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BarrelBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.CustomModelDataComponent;
-import net.minecraft.component.type.DyedColorComponent;
+import net.minecraft.component.type.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.InteractionObserver;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.decoration.InteractionEntity;
 import net.minecraft.entity.mob.PiglinBrain;
 import net.minecraft.entity.player.PlayerEntity;
@@ -44,9 +45,13 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -61,8 +66,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public class BackpackBlock extends BarrelBlock implements FactoryBlock {
-    private Integer level = 1;
-    public Integer getLevel() { return level; }
     public BackpackBlock(Settings settings) {
         super(settings.nonOpaque());
     }
@@ -74,19 +77,31 @@ public class BackpackBlock extends BarrelBlock implements FactoryBlock {
 
     @Override
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-
-
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity instanceof BackpackBlockEntity) {
-            player.openHandledScreen((BackpackBlockEntity)blockEntity);
-        }
+        if (player.isSneaking() && player.getInventory().armor.get(2).isEmpty() && blockEntity instanceof BackpackBlockEntity backpackBlockEntity) {
+            ItemStack itemStack = this.asItem().getDefaultStack();
+            itemStack.applyComponentsFrom(backpackBlockEntity.createComponentMap());
+            ItemStack leggings = player.getInventory().armor.get(3);
+            player.getInventory().armor.set(2, itemStack);
+            player.getInventory().armor.set(3, leggings);
+            ((BackpackBlockEntity) blockEntity).clear();
+            ((Apprentice)player).omni$setBackpackCooldown(5);
+            player.playSoundToPlayer(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER.value(), SoundCategory.MASTER, 1, 1);
 
-        return ActionResult.CONSUME;
+            // Remove the backpack block from the ground
+            world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
+
+            return ActionResult.SUCCESS;  // Indicate the action was successful
+        } else if (blockEntity instanceof BackpackBlockEntity) {
+            if (!player.isSneaking()) {
+                player.openHandledScreen((BackpackBlockEntity) blockEntity);
+            }
+        }
+        return ActionResult.CONSUME;  // Indicate the action was handled
     }
 
     @Override
     public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
-
         return new BackpackModel();
     }
 
@@ -102,11 +117,9 @@ public class BackpackBlock extends BarrelBlock implements FactoryBlock {
     }
 
     public static final class BackpackModel extends BlockModel {
-        BackpackModel() {
+        public BackpackModel() {
             ItemDisplayElement item = new ItemDisplayElement();
-            ItemStack largeBackpack = Items.LEATHER_CHESTPLATE.getDefaultStack();
-            largeBackpack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(850001));
-
+            ItemStack largeBackpack = Items.LEATHER_LEGGINGS.getDefaultStack();
 
             item.setItem(largeBackpack);
             item.ignorePositionUpdates();
@@ -119,6 +132,9 @@ public class BackpackBlock extends BarrelBlock implements FactoryBlock {
             if (getAttachment() == null) return;
             BlockEntity blockEntity = getAttachment().getWorld().getBlockEntity(BlockPos.ofFloored(getAttachment().getPos()));
             ((ItemDisplayElement)getElements().getFirst()).getItem().set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(((BackpackBlockEntity) blockEntity).getDyedColor().rgb(), true));
+            NbtCompound nbtCompound = new NbtCompound();
+            nbtCompound.putInt("backpack_level", ((BackpackBlockEntity) blockEntity).getLevel());
+            ((ItemDisplayElement)getElements().getFirst()).getItem().set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(850000 + ((BackpackBlockEntity) blockEntity).getLevel()));
         }
     }
 }

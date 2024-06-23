@@ -26,9 +26,11 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.network.ServerRecipeBook;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -547,61 +549,61 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 	}
 	@Inject(at = @At("HEAD"), method = "tick")
 	private void tick(CallbackInfo ci) {
-		item.updateLastSyncedPos();
-		Vec3d to = this.getPos();
-		if(backpackYaw == null){
-			backpackYaw = bodyYaw;
-		}
-		if (from == null) {
-			from = to;
-		}
-		if (prevYaw == null || bodyYaw != prevYaw || !to.equals(from)) {
-			float yaw = this.getYaw();
-			double deltaX = to.getX() - from.getX();
-			double deltaZ = to.getZ() - from.getZ();
-			float distanceSquared = (float) (deltaX * deltaX + deltaZ * deltaZ);
-			float bodyTargetYaw = backpackYaw;
-			if (distanceSquared > 0.0025000002F) {
-				// Using internal Mojang math utils here
-				float targetYaw = (float) MathHelper.atan2(deltaZ, deltaX) * 57.295776F - 90.0F;
+//		item.updateLastSyncedPos();
+//		Vec3d to = this.getPos();
+//		if(backpackYaw == null){
+//			backpackYaw = bodyYaw;
+//		}
+//		if (from == null) {
+//			from = to;
+//		}
+//		if (prevYaw == null || bodyYaw != prevYaw || !to.equals(from)) {
+//			float yaw = this.getYaw();
+//			double deltaX = to.getX() - from.getX();
+//			double deltaZ = to.getZ() - from.getZ();
+//			float distanceSquared = (float) (deltaX * deltaX + deltaZ * deltaZ);
+//			float bodyTargetYaw = backpackYaw;
+//			if (distanceSquared > 0.0025000002F) {
+//				// Using internal Mojang math utils here
+//				float targetYaw = (float) MathHelper.atan2(deltaZ, deltaX) * 57.295776F - 90.0F;
+//
+//				float m = MathHelper.abs(MathHelper.wrapDegrees(yaw) - targetYaw);
+//
+//				if (95.0F < m && m < 265.0F) {
+//					bodyTargetYaw = targetYaw - 180.0F;
+//				} else {
+//					bodyTargetYaw = targetYaw;
+//				}
+//			}
+//			this.turnBody(bodyTargetYaw, yaw);
+//			Matrix4x3f matrix = new Matrix4x3f();
+//			matrix.rotateY((MathHelper.wrapDegrees(backpackYaw + 180) * MathHelper.RADIANS_PER_DEGREE) * -1);
+//			matrix.translate(0, -1.42f, 0);
+//			item.setTransformation(matrix);
+//			if (item.getDataTracker().isDirty()) {
+//				item.startInterpolation();
+//			}
+//		}
+//		prevYaw = bodyYaw;
+//		from = to;
 
-				float m = MathHelper.abs(MathHelper.wrapDegrees(yaw) - targetYaw);
-
-				if (95.0F < m && m < 265.0F) {
-					bodyTargetYaw = targetYaw - 180.0F;
-				} else {
-					bodyTargetYaw = targetYaw;
-				}
-			}
-			this.turnBody(bodyTargetYaw, yaw);
-			Matrix4x3f matrix = new Matrix4x3f();
-			matrix.rotateY((MathHelper.wrapDegrees(backpackYaw + 180) * MathHelper.RADIANS_PER_DEGREE) * -1);
-			matrix.translate(0, -1.42f, 0);
-			item.setTransformation(matrix);
-			if (item.getDataTracker().isDirty()) {
-				item.startInterpolation();
-			}
-		}
-		prevYaw = bodyYaw;
-		from = to;
 
 
-
-		if (firstTick){
-			ItemStack largeBackpack = Items.LEATHER_CHESTPLATE.getDefaultStack();
-			largeBackpack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(850001));
-			if (largeBackpack.getItem() == Items.LEATHER_CHESTPLATE) {
-//			largeBackpack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(0x00FF00, true));
-			}
-			item.setItem(largeBackpack);
-			item.ignorePositionUpdates();
-			elementHolder.addElement(item);
-			EntityAttachment.ofTicking(elementHolder, (ServerPlayerEntity)(Object)this);
-			elementHolder.startWatching((ServerPlayerEntity)(Object)this);
-			networkHandler.sendPacket(VirtualEntityUtils.createRidePacket(this.getId(), item.getEntityIds()));
-			firstTick = false;
-			item.setInterpolationDuration(1);
-		}
+//		if (firstTick){
+//			ItemStack largeBackpack = Items.LEATHER_CHESTPLATE.getDefaultStack();
+//			largeBackpack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(850001));
+//			if (largeBackpack.getItem() == Items.LEATHER_CHESTPLATE) {
+////			largeBackpack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(0x00FF00, true));
+//			}
+//			item.setItem(largeBackpack);
+//			item.ignorePositionUpdates();
+//			elementHolder.addElement(item);
+//			EntityAttachment.ofTicking(elementHolder, (ServerPlayerEntity)(Object)this);
+//			elementHolder.startWatching((ServerPlayerEntity)(Object)this);
+//			networkHandler.sendPacket(VirtualEntityUtils.createRidePacket(this.getId(), item.getEntityIds()));
+//			firstTick = false;
+//			item.setInterpolationDuration(1);
+//		}
 		if(this.omni$getElement() != null){
 			ActionBarManager.displayActionBar(((ServerPlayerEntity)(Object)this));
 
@@ -643,6 +645,9 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 
 		if (isHolding((ItemStack stack) -> stack.get(DataComponentTypes.POTION_CONTENTS) != null && (stack.get(DataComponentTypes.POTION_CONTENTS).matches(ModPotions.MARK) || stack.get(DataComponentTypes.POTION_CONTENTS).matches(ModPotions.RECALL))) && home != null && homeWorld == getWorld() && home.squaredDistanceTo(getPos()) < 64) {
 			networkHandler.sendPacket(new ParticleS2CPacket(ParticleTypes.WITCH, true, home.x, home.y, home.z, 0.2F, 0, 0.2F, 0, 1));
+		}
+		if(backpackCooldown > 0){
+			backpackCooldown -= 1;
 		}
 	}
 
@@ -849,6 +854,12 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 			nbt.putBoolean("omnimod.InOpMode", inOpMode);
 	}
 
+//	@Inject(method = "unlockRecipes*", at = @At("HEAD"), cancellable = true)
+//	private int onUnlockRecipes(Collection<RecipeEntry<?>> recipes, CallbackInfo ci){
+//		ci.cancel();
+//        return this.recipeBook.unlockRecipes(recipes, ((ServerPlayerEntity)(Object)this));
+//    }
+
 	@Unique
 	Pet pet = null;
 
@@ -887,6 +898,15 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 
 	@Unique
 	ItemDisplayElement item = new ItemDisplayElement();
+	@Unique
+	int backpackCooldown = 0;
+	@Override
+	public int omni$getBackpackCooldown() {return backpackCooldown;}
+
+	@Override
+	public void omni$setBackpackCooldown(int cooldown) {
+		backpackCooldown = cooldown;
+	}
 
 
 }

@@ -1,0 +1,20 @@
+{
+  "type": "crafting_shaped",
+  "key": {
+    "#": {"item": "leather"},
+    "T": {"item": "iron_ingot"},
+    "X": {"item": "chest"}
+  },
+    "pattern": [
+      "#T#",
+      "#X#",
+      "###"
+    ],
+  "result": {
+    "id": "omnimod:backpack_item",
+    "count": 1,
+    "components": {
+      "custom_data": {"backpack_level":  1}
+    }
+  }
+}

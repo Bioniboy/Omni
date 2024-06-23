@@ -6,6 +6,7 @@
   "mixins": [
     "ActiveTimeDetector",
     "CancelSpectatorTeleport",
+    "CauldronBehaviorMixin",
     "LeashMixin",
     "ModEntityDataSaver",
     "NoOffInteraction",
@@ -20,7 +21,9 @@
     "PlayerManagerMixin",
     "PotionCauldron",
     "ServerPlayerMixin",
+    "ServerPlayNetworkHandlerMixin",
     "ServerPlayNetworkHandlerMixin_HitCheck",
+    "ServerRecipeBookMixin",
     "ShouldDrown",
     "SpectateSelf",
     "TargetFakePlayerMixin",
@@ -42,5 +45,8 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "client": [
+    "RecipeToastMixin"
+  ]
 }

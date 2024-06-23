@@ -55,7 +55,7 @@ public class ModItems {
     public static final Item ITEM_CANNON_AUGMENTATION = new Augmentation(new Item.Settings(), 850015);
     public static final Item ITEM_CANNON = new ItemCannon(new Item.Settings());
     public static final Item WRENCH = new Augmentation(new Item.Settings(), 850016);
-    public static final Item BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1), Items.LEATHER_CHESTPLATE, ModBlocks.BACKPACK_BLOCK);
+    public static final Item BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1), Items.LEATHER_LEGGINGS, ModBlocks.BACKPACK_BLOCK);
 
 
 

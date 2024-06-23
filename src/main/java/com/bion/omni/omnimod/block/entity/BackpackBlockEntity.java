@@ -15,6 +15,7 @@ import net.minecraft.component.Component;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
@@ -38,19 +39,20 @@ import net.minecraft.world.World;
 public class BackpackBlockEntity extends LootableContainerBlockEntity {
     private DefaultedList<ItemStack> inventory;
     private final ViewerCountManager stateManager;
-    private DyedColorComponent dyedColor = new DyedColorComponent(DyeColor.BROWN.getEntityColor(), true);
+    private DyedColorComponent dyedColor = new DyedColorComponent(DyedColorComponent.DEFAULT_COLOR, true);
+    private int level = 1;
 
     public BackpackBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.BACKPACK, pos, state);
-        this.inventory = DefaultedList.ofSize(27, ItemStack.EMPTY);
+        this.inventory = DefaultedList.ofSize(9*level, ItemStack.EMPTY);
         this.stateManager = new ViewerCountManager() {
             protected void onContainerOpen(World world, BlockPos pos, BlockState state) {
-                BackpackBlockEntity.this.playSound(state, SoundEvents.BLOCK_BARREL_OPEN);
+                BackpackBlockEntity.this.playSound(state, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER.value());
                 BackpackBlockEntity.this.setOpen(state, true);
             }
 
             protected void onContainerClose(World world, BlockPos pos, BlockState state) {
-                BackpackBlockEntity.this.playSound(state, SoundEvents.BLOCK_BARREL_CLOSE);
+                BackpackBlockEntity.this.playSound(state, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER.value());
                 BackpackBlockEntity.this.setOpen(state, false);
             }
 
@@ -73,7 +75,8 @@ public class BackpackBlockEntity extends LootableContainerBlockEntity {
         if (!this.writeLootTable(nbt)) {
             Inventories.writeNbt(nbt, this.inventory, registryLookup);
         }
-
+        nbt.putInt("Color", dyedColor.rgb());
+        nbt.putInt("backpack_level", level);
     }
 
     protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
@@ -82,11 +85,16 @@ public class BackpackBlockEntity extends LootableContainerBlockEntity {
         if (!this.readLootTable(nbt)) {
             Inventories.readNbt(nbt, this.inventory, registryLookup);
         }
-
+        if(nbt.contains("Color")){
+            dyedColor = new DyedColorComponent(nbt.getInt("Color"), true);
+        }
+        if(nbt.contains("backpack_level")){
+            level = nbt.getInt("backpack_level");
+        }
     }
 
     public int size() {
-        return 27;
+        return 9*level;
     }
 
     protected DefaultedList<ItemStack> getHeldStacks() {
@@ -98,11 +106,25 @@ public class BackpackBlockEntity extends LootableContainerBlockEntity {
     }
 
     protected Text getContainerName() {
-        return Text.translatable("container.barrel");
+        return switch (level){
+            case 2 -> Text.translatable("container.small_backpack");
+            case 3 -> Text.translatable("container.medium_backpack");
+            case 4 -> Text.translatable("container.large_backpack");
+            case 5 -> Text.translatable("container.massive_backpack");
+            case 6 -> Text.translatable("container.giant_backpack");
+            default -> Text.translatable("container.tiny_backpack");
+        };
     }
 
     protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
-        return GenericContainerScreenHandler.createGeneric9x3(syncId, playerInventory, this);
+        return switch (level) {
+            case 2 -> GenericContainerScreenHandler.createGeneric9x2(syncId, playerInventory);
+            case 3 -> GenericContainerScreenHandler.createGeneric9x3(syncId, playerInventory);
+            case 4 -> GenericContainerScreenHandler.createGeneric9x4(syncId, playerInventory);
+            case 5 -> GenericContainerScreenHandler.createGeneric9x5(syncId, playerInventory);
+            case 6 -> GenericContainerScreenHandler.createGeneric9x6(syncId, playerInventory);
+            default -> GenericContainerScreenHandler.createGeneric9x1(syncId, playerInventory);
+        };
     }
 
     public void onOpen(PlayerEntity player) {
@@ -142,17 +164,20 @@ public class BackpackBlockEntity extends LootableContainerBlockEntity {
     protected void addComponents(ComponentMap.Builder componentMapBuilder) {
         super.addComponents(componentMapBuilder);
         componentMapBuilder.add(DataComponentTypes.DYED_COLOR, this.dyedColor);
+        NbtCompound nbtCompound = new NbtCompound();
+        nbtCompound.putInt("backpack_level", level);
+        componentMapBuilder.add(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbtCompound));
     }
 
     @Override
     protected void readComponents(ComponentsAccess components) {
         super.readComponents(components);
         this.dyedColor = components.getOrDefault(DataComponentTypes.DYED_COLOR, new DyedColorComponent(DyeColor.BROWN.getEntityColor(), true));
-        OmniMod.LOGGER.info("Other" + components.getOrDefault(DataComponentTypes.DYED_COLOR, new DyedColorComponent(0, true)).rgb());
-        OmniMod.LOGGER.info("Get Dyed Color: " + getDyedColor());
+        this.level = components.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt().getInt("backpack_level");
     }
     public DyedColorComponent getDyedColor(){
         return dyedColor;
     }
+    public int getLevel(){return level;}
 
 }

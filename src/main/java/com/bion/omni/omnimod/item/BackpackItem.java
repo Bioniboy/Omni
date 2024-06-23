@@ -7,12 +7,13 @@ import eu.pb4.polymer.core.api.item.PolymerBlockItem;
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.core.api.item.PolymerItemUtils;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.block.Block;
 import net.minecraft.component.Component;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.CustomModelDataComponent;
-import net.minecraft.component.type.DyedColorComponent;
+import net.minecraft.component.type.*;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.inventory.StackReference;
@@ -28,42 +29,49 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.core.config.builder.api.CompositeFilterComponentBuilder;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Unique;
 
-public class BackpackItem extends PolymerBlockItem {
+public class BackpackItem extends PolymerBlockItem implements Equipment{
     public BackpackItem(Item.Settings settings, Item polymerItem, Block block) {
         super(block, settings, polymerItem);
-        OmniMod.LOGGER.info("" + this.getComponents().getTypes());
     }
-    SimpleInventory backpackInventory = new SimpleInventory(27);
-    private Integer level = 1;
 
     public int getColor(ItemStack itemStack) {
-        return DyedColorComponent.getColor(itemStack, DyeColor.BROWN.getEntityColor());
+        return DyedColorComponent.getColor(itemStack, DyedColorComponent.DEFAULT_COLOR);
     }
 
-    public Integer getLevel() { return level; }
-    public SimpleInventory get(){
-        return backpackInventory;
-    }
-
-
-
-    @Override
-    public boolean onStackClicked(ItemStack stack, Slot slot, ClickType clickType, PlayerEntity player) {
-        OmniMod.LOGGER.info("Click: " + clickType);
-        return super.onStackClicked(stack, slot, clickType, player);
+    public void openGUI(ServerPlayerEntity player, ItemStack backpackItem){
+        BackpackGui GUI = new BackpackGui(player, backpackItem, (backpackItem.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT)).copyNbt().getInt("backpack_level"));
+        GUI.open();
     }
 
     @Override
     public boolean onClicked(ItemStack stack, ItemStack otherStack, Slot slot, ClickType clickType, PlayerEntity player, StackReference cursorStackReference) {
-        OmniMod.LOGGER.info("Click: " + slot);
+        if (clickType == ClickType.RIGHT && slot.id == 6){
+            openGUI((ServerPlayerEntity) player, stack);
+            return true;
+        }
+        if(slot.id == 6 && !stack.getComponents().getOrDefault(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).stream().toList().isEmpty()){
+            return true;
+        }
         return super.onClicked(stack, otherStack, slot, clickType, player, cursorStackReference);
     }
 
     @Override
     public ItemStack getPolymerItemStack(ItemStack itemStack, TooltipType tooltipType, RegistryWrapper.WrapperLookup lookup, @Nullable ServerPlayerEntity player) {
         ItemStack out = PolymerItemUtils.createItemStack(itemStack, tooltipType, lookup, player);
-        out.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(850001));
+        out.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(DyedColorComponent.DEFAULT_COLOR, true));
+        //out.set(DataComponentTypes.FIREWORK_EXPLOSION, new FireworkExplosionComponent(FireworkExplosionComponent.Type.CREEPER, IntList.of(itemStack.getOrDefault(DataComponentTypes.DYED_COLOR, new DyedColorComponent(DyedColorComponent.DEFAULT_COLOR, true)).rgb()), IntList.of(), false, false));
+        if(itemStack.getComponents().contains(DataComponentTypes.CUSTOM_DATA)){
+            int modelData = 850000;
+            modelData += (itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT)).copyNbt().getInt("backpack_level");
+            out.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(modelData));
+        }
         return out;
+    }
+
+    @Override
+    public EquipmentSlot getSlotType() {
+        return EquipmentSlot.CHEST;
     }
 }
