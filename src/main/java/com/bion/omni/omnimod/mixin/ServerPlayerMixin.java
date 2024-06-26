@@ -19,6 +19,7 @@ import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -604,16 +605,18 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 //			firstTick = false;
 //			item.setInterpolationDuration(1);
 //		}
-		if(this.omni$getElement() != null){
-			ActionBarManager.displayActionBar(((ServerPlayerEntity)(Object)this));
-
-		}
-		if (this.omni$getMana() > -1) {
-			if (tickCounter20 < 20) {
-				tickCounter20++;
-			} else {
-				tickCounter20 = 0;
-				Mana.manaUpdate(this);
+//		if(this.omni$getElement() != null){
+//			ActionBarManager.displayActionBar(((ServerPlayerEntity)(Object)this));
+//
+//		}
+		if (omni$getElement() != null) {
+			if (this.omni$getMana() > -1) {
+				if (tickCounter20 < 20) {
+					tickCounter20++;
+				} else {
+					tickCounter20 = 0;
+					Mana.manaUpdate(this);
+				}
 			}
 		}
 		if (this.handSwingTicks == 1) {
@@ -890,8 +893,8 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 	@Override
 	public CustomChar omni$getChar(CustomCharDict.CharName p_name) {return charDict.getChar(p_name);}
 
-	@Unique
-	ActionBarManager actionBarManager = new ActionBarManager(((ServerPlayerEntity)(Object)this));
+//	@Unique
+//	ActionBarManager actionBarManager = new ActionBarManager(((ServerPlayerEntity)(Object)this));
 
 	@Unique
 	ArmorEntityHolder elementHolder = new ArmorEntityHolder();

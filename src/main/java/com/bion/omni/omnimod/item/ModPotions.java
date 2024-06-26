@@ -10,6 +10,7 @@ import com.bion.omni.omnimod.item.tome.*;
 import com.bion.omni.omnimod.item.wand.*;
 import eu.pb4.polymer.core.api.item.PolymerBlockItem;
 import eu.pb4.polymer.core.api.item.SimplePolymerItem;
+import eu.pb4.polymer.core.api.other.SimplePolymerPotion;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -21,9 +22,9 @@ import net.minecraft.util.Identifier;
 
 public class ModPotions {
 
-    public static final RegistryEntry<Potion> MANA_REGENERATION = register("mana_regeneration", new Potion(new StatusEffectInstance(ModStatusEffects.MANA_REGENERATION, 300)));
-    public static final RegistryEntry<Potion> MARK = register("mark", new Potion(new StatusEffectInstance(ModStatusEffects.MARK, 1)));
-    public static final RegistryEntry<Potion> RECALL = register("mark", new Potion(new StatusEffectInstance(ModStatusEffects.RECALL, 1)));
+    public static final RegistryEntry<Potion> MANA_REGENERATION = register("mana_regeneration", new SimplePolymerPotion(new StatusEffectInstance(ModStatusEffects.MANA_REGENERATION, 300)));
+    public static final RegistryEntry<Potion> MARK = register("mark", new SimplePolymerPotion(new StatusEffectInstance(ModStatusEffects.MARK, 1)));
+    public static final RegistryEntry<Potion> RECALL = register("mark", new SimplePolymerPotion(new StatusEffectInstance(ModStatusEffects.RECALL, 1)));
 
 
 

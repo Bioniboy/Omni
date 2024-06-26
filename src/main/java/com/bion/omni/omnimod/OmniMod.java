@@ -6,6 +6,7 @@ import com.bion.omni.omnimod.command.ModCommands;
 import com.bion.omni.omnimod.entity.ModEntities;
 import com.bion.omni.omnimod.entity.effect.ModStatusEffects;
 import com.bion.omni.omnimod.item.ModItems;
+import com.bion.omni.omnimod.item.ModPotions;
 import com.bion.omni.omnimod.util.DisguiseLib;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.api.ModInitializer;
@@ -27,6 +28,7 @@ public class OmniMod implements ModInitializer {
         ModBlockEntities.registerBlockEntities();
         DisguiseLib.init();
         PolymerResourcePackUtils.addModAssets(MOD_ID);
+        ModPotions.registerItems();
     }
 }
 
