@@ -1,0 +1,20 @@
+{
+  "type": "crafting_shaped",
+  "key": {
+    "#": {"item": "phantom_membrane"},
+    "T": {"item": "netherite_scrap"},
+    "X": {"item": "omnimod:small_backpack_item"}
+  },
+  "pattern": [
+    "#T#",
+    "#X#",
+    "###"
+  ],
+  "result": {
+    "id": "omnimod:medium_backpack_item",
+    "count": 1,
+    "components": {
+      "custom_data": {"backpack_level":  3}
+    }
+  }
+}

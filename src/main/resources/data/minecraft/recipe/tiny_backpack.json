@@ -11,7 +11,7 @@
       "###"
     ],
   "result": {
-    "id": "omnimod:backpack_item",
+    "id": "omnimod:tiny_backpack_item",
     "count": 1,
     "components": {
       "custom_data": {"backpack_level":  1}

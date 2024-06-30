@@ -26,6 +26,7 @@ import eu.pb4.polymer.virtualentity.api.elements.VirtualElement;
 import eu.pb4.polymer.virtualentity.api.tracker.InteractionTrackedData;
 import eu.pb4.polymer.virtualentity.impl.VirtualEntityMod;
 import eu.pb4.sgui.virtual.inventory.VirtualInventory;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.event.Event;
@@ -41,6 +42,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.decoration.InteractionEntity;
 import net.minecraft.entity.mob.PiglinBrain;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -53,10 +55,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -92,17 +91,31 @@ public class BackpackBlock extends BarrelBlock implements FactoryBlock {
             world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
 
             return ActionResult.SUCCESS;  // Indicate the action was successful
-        } else if (blockEntity instanceof BackpackBlockEntity) {
+        } else if (blockEntity instanceof BackpackBlockEntity backpackBlockEntity) {
             if (!player.isSneaking()) {
-                player.openHandledScreen((BackpackBlockEntity) blockEntity);
+                ItemStack itemStack = this.asItem().getDefaultStack();
+                itemStack.applyComponentsFrom(backpackBlockEntity.createComponentMap());
+                openGUI((ServerPlayerEntity) player, itemStack, backpackBlockEntity);
             }
         }
         return ActionResult.CONSUME;  // Indicate the action was handled
+    }
+    public void openGUI(ServerPlayerEntity player, ItemStack backpackItem, Inventory inventory){
+        BackpackGui GUI = new BackpackGui(player, backpackItem, (backpackItem.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT)).copyNbt().getInt("backpack_level"), inventory);
+        GUI.open();
     }
 
     @Override
     public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
         return new BackpackModel();
+    }
+
+    @Override
+    public void afterBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
+        super.afterBreak(world, player, pos, state, blockEntity, tool);
+        ItemStack itemStack = this.asItem().getDefaultStack();
+        itemStack.applyComponentsFrom(blockEntity.createComponentMap());
+        Block.dropStack(world, pos, itemStack);
     }
 
     @Nullable
@@ -119,7 +132,7 @@ public class BackpackBlock extends BarrelBlock implements FactoryBlock {
     public static final class BackpackModel extends BlockModel {
         public BackpackModel() {
             ItemDisplayElement item = new ItemDisplayElement();
-            ItemStack largeBackpack = Items.LEATHER_LEGGINGS.getDefaultStack();
+            ItemStack largeBackpack = Items.FIREWORK_STAR.getDefaultStack();
 
             item.setItem(largeBackpack);
             item.ignorePositionUpdates();
@@ -131,7 +144,7 @@ public class BackpackBlock extends BarrelBlock implements FactoryBlock {
             super.onTick();
             if (getAttachment() == null) return;
             BlockEntity blockEntity = getAttachment().getWorld().getBlockEntity(BlockPos.ofFloored(getAttachment().getPos()));
-            ((ItemDisplayElement)getElements().getFirst()).getItem().set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(((BackpackBlockEntity) blockEntity).getDyedColor().rgb(), true));
+            ((ItemDisplayElement)getElements().getFirst()).getItem().set(DataComponentTypes.FIREWORK_EXPLOSION, new FireworkExplosionComponent(FireworkExplosionComponent.Type.CREEPER, IntList.of(((BackpackBlockEntity) blockEntity).getDyedColor().rgb()), IntList.of(), false, false));
             NbtCompound nbtCompound = new NbtCompound();
             nbtCompound.putInt("backpack_level", ((BackpackBlockEntity) blockEntity).getLevel());
             ((ItemDisplayElement)getElements().getFirst()).getItem().set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(850000 + ((BackpackBlockEntity) blockEntity).getLevel()));
