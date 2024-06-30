@@ -14,17 +14,21 @@ import net.minecraft.block.entity.ViewerCountManager;
 import net.minecraft.component.Component;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.ContainerLock;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -44,6 +48,7 @@ public class BackpackBlockEntity extends LootableContainerBlockEntity {
 
     public BackpackBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.BACKPACK, pos, state);
+        OmniMod.LOGGER.info("size: " + (9*level));
         this.inventory = DefaultedList.ofSize(9*level, ItemStack.EMPTY);
         this.stateManager = new ViewerCountManager() {
             protected void onContainerOpen(World world, BlockPos pos, BlockState state) {
@@ -81,6 +86,9 @@ public class BackpackBlockEntity extends LootableContainerBlockEntity {
 
     protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         super.readNbt(nbt, registryLookup);
+        if(nbt.contains("backpack_level")){
+            level = nbt.getInt("backpack_level");
+        }
         this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
         if (!this.readLootTable(nbt)) {
             Inventories.readNbt(nbt, this.inventory, registryLookup);
@@ -88,14 +96,9 @@ public class BackpackBlockEntity extends LootableContainerBlockEntity {
         if(nbt.contains("Color")){
             dyedColor = new DyedColorComponent(nbt.getInt("Color"), true);
         }
-        if(nbt.contains("backpack_level")){
-            level = nbt.getInt("backpack_level");
-        }
     }
 
-    public int size() {
-        return 9*level;
-    }
+    public int size() {return 9*level;}
 
     protected DefaultedList<ItemStack> getHeldStacks() {
         return this.inventory;
@@ -167,6 +170,12 @@ public class BackpackBlockEntity extends LootableContainerBlockEntity {
         NbtCompound nbtCompound = new NbtCompound();
         nbtCompound.putInt("backpack_level", level);
         componentMapBuilder.add(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbtCompound));
+        OmniMod.LOGGER.info("Add Components");
+        for (int i = 0; i < 9 * level; i++) {
+            if(!inventory.get(i).isEmpty()){
+                OmniMod.LOGGER.info("I: " + i + " Item: " + inventory.get(i).getItem().getName());
+            }
+        }
     }
 
     @Override
@@ -174,6 +183,14 @@ public class BackpackBlockEntity extends LootableContainerBlockEntity {
         super.readComponents(components);
         this.dyedColor = components.getOrDefault(DataComponentTypes.DYED_COLOR, new DyedColorComponent(DyeColor.BROWN.getEntityColor(), true));
         this.level = components.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt().getInt("backpack_level");
+        this.inventory = DefaultedList.ofSize(9*level, ItemStack.EMPTY);
+        components.getOrDefault(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).copyTo(this.getHeldStacks());
+        OmniMod.LOGGER.info("Read Components");
+        for (int i = 0; i < 9 * level; i++) {
+            if(!inventory.get(i).isEmpty()){
+                OmniMod.LOGGER.info("I: " + i + " Item: " + inventory.get(i).getItem().getName());
+            }
+        }
     }
     public DyedColorComponent getDyedColor(){
         return dyedColor;

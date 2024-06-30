@@ -3,6 +3,7 @@ package com.bion.omni.omnimod.mixin;
 import com.bion.omni.omnimod.OmniMod;
 import com.bion.omni.omnimod.item.BackpackItem;
 import com.bion.omni.omnimod.util.Apprentice;
+import com.mojang.datafixers.kinds.App;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
@@ -12,6 +13,7 @@ import net.minecraft.network.listener.TickablePacketListener;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.network.packet.c2s.play.RecipeBookDataC2SPacket;
+import net.minecraft.network.packet.c2s.play.RecipeCategoryOptionsC2SPacket;
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.server.MinecraftServer;
@@ -47,8 +49,16 @@ public abstract class ServerPlayNetworkHandlerMixin extends ServerCommonNetworkH
         super(server, connection, clientData);
     }
 
+    @Inject(method = "onRecipeCategoryOptions", at = @At("TAIL"))
+    public void detectBookButtonPress(RecipeCategoryOptionsC2SPacket packet, CallbackInfo ci){
+        ((Apprentice)player).omni$setIsRecipeBookOpen(!((Apprentice) player).omni$getIsRecipeBookOpen());
+    }
+
     @Inject(method = "onRecipeBookData", at = @At("TAIL"))
     public void stalkRecipeBook(RecipeBookDataC2SPacket packet, CallbackInfo ci){
+        if(!((Apprentice)player).omni$getIsRecipeBookOpen()){
+            //close book
+        }
         if(player.isSneaking() && !inventoryOpen && player.getInventory().armor.get(2).getItem() instanceof BackpackItem){
             OmniMod.LOGGER.info("inventory open: " + inventoryOpen);
             player.closeHandledScreen();
@@ -64,6 +74,10 @@ public abstract class ServerPlayNetworkHandlerMixin extends ServerCommonNetworkH
             Collection<RecipeEntry<?>> allRecipes = recipeManager.values();
             player.lockRecipes(allRecipes);
             player.unlockRecipes(allRecipes);
+
+            if(!((Apprentice)player).omni$getIsRecipeBookOpen()){
+               //open Recipe Book
+            }
 
             inventoryOpen = false;
         }

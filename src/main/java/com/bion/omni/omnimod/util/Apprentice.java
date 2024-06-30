@@ -75,6 +75,8 @@ public interface Apprentice {
     CustomChar omni$getChar(CustomCharDict.CharName p_name);
     int omni$getBackpackCooldown();
     void omni$setBackpackCooldown(int cooldown);
+    boolean omni$getIsRecipeBookOpen();
+    void omni$setIsRecipeBookOpen(boolean bool);
 
 
 

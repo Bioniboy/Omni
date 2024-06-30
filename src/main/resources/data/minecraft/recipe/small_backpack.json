@@ -1,0 +1,20 @@
+{
+  "type": "crafting_shaped",
+  "key": {
+    "#": {"item": "rabbit_hide"},
+    "T": {"item": "diamond"},
+    "X": {"item": "omnimod:tiny_backpack_item"}
+  },
+  "pattern": [
+    "#T#",
+    "#X#",
+    "###"
+  ],
+  "result": {
+    "id": "omnimod:small_backpack_item",
+    "count": 1,
+    "components": {
+      "custom_data": {"backpack_level":  2}
+    }
+  }
+}

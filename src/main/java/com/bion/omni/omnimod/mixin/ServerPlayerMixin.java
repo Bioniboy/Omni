@@ -1,9 +1,11 @@
 package com.bion.omni.omnimod.mixin;
 
+import com.bion.omni.omnimod.block.entity.BackpackBlockEntity;
 import com.bion.omni.omnimod.element.*;
 import com.bion.omni.omnimod.entity.ModEntities;
 import com.bion.omni.omnimod.entity.custom.Backpacks.ArmorEntityHolder;
 import com.bion.omni.omnimod.entity.custom.Pet;
+import com.bion.omni.omnimod.item.BackpackItem;
 import com.bion.omni.omnimod.item.ModPotions;
 import com.bion.omni.omnimod.util.*;
 import com.mojang.authlib.GameProfile;
@@ -12,16 +14,20 @@ import com.bion.omni.omnimod.power.*;
 import eu.pb4.polymer.virtualentity.api.VirtualEntityUtils;
 import eu.pb4.polymer.virtualentity.api.attachment.EntityAttachment;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.PlayerAdvancementTracker;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.CustomModelDataComponent;
+import net.minecraft.component.type.DyedColorComponent;
+import net.minecraft.component.type.FireworkExplosionComponent;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
@@ -33,10 +39,13 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerRecipeBook;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.DyeColor;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.ItemScatterer;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.*;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import org.joml.Matrix4x3f;
 import org.spongepowered.asm.mixin.Final;
@@ -47,7 +56,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import org.spongepowered.asm.mixin.injection.modify.LocalVariableDiscriminator;
 
+import javax.naming.Context;
+import javax.swing.text.AbstractDocument;
 import java.util.*;
 
 
@@ -249,6 +261,8 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 	@Shadow public abstract void sendAbilitiesUpdate();
 
 	@Shadow public abstract Entity getCameraEntity();
+
+	@Shadow public abstract void requestTeleport(double destX, double destY, double destZ);
 
 	public ServerPlayerMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
 		super(world, pos, yaw, gameProfile);
@@ -550,61 +564,72 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 	}
 	@Inject(at = @At("HEAD"), method = "tick")
 	private void tick(CallbackInfo ci) {
-//		item.updateLastSyncedPos();
-//		Vec3d to = this.getPos();
-//		if(backpackYaw == null){
-//			backpackYaw = bodyYaw;
-//		}
-//		if (from == null) {
-//			from = to;
-//		}
-//		if (prevYaw == null || bodyYaw != prevYaw || !to.equals(from)) {
-//			float yaw = this.getYaw();
-//			double deltaX = to.getX() - from.getX();
-//			double deltaZ = to.getZ() - from.getZ();
-//			float distanceSquared = (float) (deltaX * deltaX + deltaZ * deltaZ);
-//			float bodyTargetYaw = backpackYaw;
-//			if (distanceSquared > 0.0025000002F) {
-//				// Using internal Mojang math utils here
-//				float targetYaw = (float) MathHelper.atan2(deltaZ, deltaX) * 57.295776F - 90.0F;
-//
-//				float m = MathHelper.abs(MathHelper.wrapDegrees(yaw) - targetYaw);
-//
-//				if (95.0F < m && m < 265.0F) {
-//					bodyTargetYaw = targetYaw - 180.0F;
-//				} else {
-//					bodyTargetYaw = targetYaw;
-//				}
-//			}
-//			this.turnBody(bodyTargetYaw, yaw);
-//			Matrix4x3f matrix = new Matrix4x3f();
-//			matrix.rotateY((MathHelper.wrapDegrees(backpackYaw + 180) * MathHelper.RADIANS_PER_DEGREE) * -1);
-//			matrix.translate(0, -1.42f, 0);
-//			item.setTransformation(matrix);
-//			if (item.getDataTracker().isDirty()) {
-//				item.startInterpolation();
-//			}
-//		}
-//		prevYaw = bodyYaw;
-//		from = to;
+		if(this.getInventory().armor.get(2).getItem() instanceof BackpackItem){
+			item.updateLastSyncedPos();
+			Vec3d to = this.getPos();
+			if(backpackYaw == null){
+				backpackYaw = bodyYaw;
+			}
+			if (from == null) {
+				from = to;
+			}
+			if (prevYaw == null || bodyYaw != prevYaw || !to.equals(from)) {
+				float yaw = this.getYaw();
+				double deltaX = to.getX() - from.getX();
+				double deltaZ = to.getZ() - from.getZ();
+				float distanceSquared = (float) (deltaX * deltaX + deltaZ * deltaZ);
+				float bodyTargetYaw = backpackYaw;
+				if (distanceSquared > 0.0025000002F) {
+					// Using internal Mojang math utils here
+					float targetYaw = (float) MathHelper.atan2(deltaZ, deltaX) * 57.295776F - 90.0F;
+
+					float m = MathHelper.abs(MathHelper.wrapDegrees(yaw) - targetYaw);
+
+					if (95.0F < m && m < 265.0F) {
+						bodyTargetYaw = targetYaw - 180.0F;
+					} else {
+						bodyTargetYaw = targetYaw;
+					}
+				}
+				this.turnBody(bodyTargetYaw, yaw);
+				Matrix4x3f matrix = new Matrix4x3f();
+				matrix.rotateY((MathHelper.wrapDegrees(backpackYaw + 180) * MathHelper.RADIANS_PER_DEGREE) * -1);
+				matrix.translate(0, -1.42f, 0);
+				item.setTransformation(matrix);
+				if (item.getDataTracker().isDirty()) {
+					item.startInterpolation();
+				}
+			}
+			prevYaw = bodyYaw;
+			from = to;
+		}else if(!elementHolder.getElements().isEmpty()){
+			firstTick = true;
+			elementHolder.removeElement(elementHolder.getElements().getFirst());
+		}
 
 
+		Box entityBox = new Box(getBlockPos()).expand(32);
+		for (Entity entity : getWorld().getOtherEntities(this, entityBox, entity -> entity instanceof ServerPlayerEntity)) {
+//			elementHolder.startWatching((ServerPlayerEntity) entity);
+			((ServerPlayerEntity) entity).networkHandler.sendPacket(VirtualEntityUtils.createRidePacket(this.getId(), item.getEntityIds()));
+			OmniMod.LOGGER.info("Found player " + elementHolder.getWatchingPlayers());
+		}
 
-//		if (firstTick){
-//			ItemStack largeBackpack = Items.LEATHER_CHESTPLATE.getDefaultStack();
-//			largeBackpack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(850001));
-//			if (largeBackpack.getItem() == Items.LEATHER_CHESTPLATE) {
-////			largeBackpack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(0x00FF00, true));
-//			}
-//			item.setItem(largeBackpack);
-//			item.ignorePositionUpdates();
-//			elementHolder.addElement(item);
-//			EntityAttachment.ofTicking(elementHolder, (ServerPlayerEntity)(Object)this);
-//			elementHolder.startWatching((ServerPlayerEntity)(Object)this);
-//			networkHandler.sendPacket(VirtualEntityUtils.createRidePacket(this.getId(), item.getEntityIds()));
-//			firstTick = false;
-//			item.setInterpolationDuration(1);
-//		}
+		if (firstTick && this.getInventory().armor.get(2).getItem() instanceof BackpackItem){
+			ItemStack backpackItem = this.getInventory().armor.get(2);
+			ItemStack backpack = Items.FIREWORK_STAR.getDefaultStack();
+			OmniMod.LOGGER.info("" + (backpackItem.getComponents().getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt().getInt("backpack_level")));
+			backpack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(850006 + backpackItem.getComponents().getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt().getInt("backpack_level")));
+			backpack.set(DataComponentTypes.FIREWORK_EXPLOSION, new FireworkExplosionComponent(FireworkExplosionComponent.Type.CREEPER, IntList.of(backpackItem.getOrDefault(DataComponentTypes.DYED_COLOR, new DyedColorComponent(BackpackItem.DEFAULT_COLOR, false)).rgb()), IntList.of(), false, false));
+			item.setItem(backpack);
+			item.ignorePositionUpdates();
+			elementHolder.addElement(item);
+			EntityAttachment.ofTicking(elementHolder, (ServerPlayerEntity)(Object)this);
+			//elementHolder.startWatching((ServerPlayerEntity)(Object)this);
+			networkHandler.sendPacket(VirtualEntityUtils.createRidePacket(this.getId(), item.getEntityIds()));
+			firstTick = false;
+			item.setInterpolationDuration(1);
+		}
 //		if(this.omni$getElement() != null){
 //			ActionBarManager.displayActionBar(((ServerPlayerEntity)(Object)this));
 //
@@ -790,6 +815,9 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 		if (nbt.contains("omnimod.InOpMode")) {
 			inOpMode = nbt.getBoolean("omnimod.InOpMode");
 		}
+		if(nbt.contains("omnimod.RecipeBookStatus")){
+			isRecipeBookOpen = nbt.getBoolean("omnimod.RecipeBookStatus");
+		}
 	}
 
 	@Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
@@ -855,13 +883,28 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 		}
 		if (inOpMode)
 			nbt.putBoolean("omnimod.InOpMode", inOpMode);
+		nbt.putBoolean("omnimod.RecipeBookStatus", isRecipeBookOpen);
 	}
 
-//	@Inject(method = "unlockRecipes*", at = @At("HEAD"), cancellable = true)
-//	private int onUnlockRecipes(Collection<RecipeEntry<?>> recipes, CallbackInfo ci){
-//		ci.cancel();
-//        return this.recipeBook.unlockRecipes(recipes, ((ServerPlayerEntity)(Object)this));
-//    }
+	@Inject(method = "onDeath", at = @At("HEAD"))
+	private void placeBackpack(DamageSource damageSource, CallbackInfo ci){
+		if(this.getInventory().armor.get(2).getItem() instanceof BackpackItem backpackItem && !this.getInventory().armor.get(2).get(DataComponentTypes.CONTAINER).streamNonEmpty().toList().isEmpty()){
+			BlockPos pos = this.getBlockPos();
+			World world = this.getWorld();
+			if(!world.getBlockState(pos).isSolidBlock(world, pos)){
+				OmniMod.LOGGER.info("Placing");
+
+				BlockHitResult result = new BlockHitResult(new Vec3d(this.getPos().x, this.getPos().y - 1, this.getPos().z), Direction.DOWN, pos, false);
+				ItemUsageContext context = new ItemPlacementContext(this, Hand.MAIN_HAND, this.getInventory().armor.get(2), result);
+				ItemPlacementContext placementContext = new ItemPlacementContext(context);
+				OmniMod.LOGGER.info("Can place: " + placementContext.canPlace());
+				this.getInventory().armor.get(2).useOnBlock(context);
+			}else{
+				OmniMod.LOGGER.info("Scattering");
+				ItemScatterer.spawn(world, pos, (Inventory) this.getInventory().armor.get(2).get(DataComponentTypes.CONTAINER).stream().toList());
+			}
+		}
+	}
 
 	@Unique
 	Pet pet = null;
@@ -910,6 +953,15 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 	public void omni$setBackpackCooldown(int cooldown) {
 		backpackCooldown = cooldown;
 	}
+
+	@Unique
+	boolean isRecipeBookOpen = false;
+
+	@Override
+	public boolean omni$getIsRecipeBookOpen(){return isRecipeBookOpen;}
+
+	@Override
+	public void omni$setIsRecipeBookOpen(boolean bool){isRecipeBookOpen = bool;}
 
 
 }
