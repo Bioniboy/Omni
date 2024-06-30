@@ -8,6 +8,7 @@
     "AnvilScreenMixin",
     "CancelSpectatorTeleport",
     "CauldronBehaviorMixin",
+    "GliderModifications",
     "ModEntityDataSaver",
     "NoOffInteraction",
     "PearlCooldownDisable",
