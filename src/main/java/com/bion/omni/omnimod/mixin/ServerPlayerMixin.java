@@ -17,6 +17,8 @@ import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.PlayerAdvancementTracker;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.component.type.DyedColorComponent;
@@ -893,15 +895,22 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 			World world = this.getWorld();
 			if(!world.getBlockState(pos).isSolidBlock(world, pos)){
 				OmniMod.LOGGER.info("Placing");
-
-				BlockHitResult result = new BlockHitResult(new Vec3d(this.getPos().x, this.getPos().y - 1, this.getPos().z), Direction.DOWN, pos, false);
-				ItemUsageContext context = new ItemPlacementContext(this, Hand.MAIN_HAND, this.getInventory().armor.get(2), result);
-				ItemPlacementContext placementContext = new ItemPlacementContext(context);
-				OmniMod.LOGGER.info("Can place: " + placementContext.canPlace());
-				this.getInventory().armor.get(2).useOnBlock(context);
+				world.setBlockState(pos, backpackItem.getBlock().getDefaultState());
+				BlockEntity blockEntity = world.getBlockEntity(pos);
+				if (blockEntity != null) {
+					blockEntity.readComponents(this.getInventory().armor.get(2));
+					blockEntity.markDirty();
+				}
+				this.getInventory().armor.get(2).decrement(1);
+//				BlockHitResult result = new BlockHitResult(new Vec3d(this.getPos().x, this.getPos().y - 1, this.getPos().z), Direction.DOWN, pos, false);
+//				ItemUsageContext context = new ItemPlacementContext(this, Hand.MAIN_HAND, this.getInventory().armor.get(2), result);
+//				ItemPlacementContext placementContext = new ItemPlacementContext(context);
+//				OmniMod.LOGGER.info("Can place: " + placementContext.canPlace());
+//				BlockState blockState = backpackItem.getBlock().getPlacementState(placementContext);
+//				this.getInventory().armor.get(2).useOnBlock(context);
 			}else{
 				OmniMod.LOGGER.info("Scattering");
-				ItemScatterer.spawn(world, pos, (Inventory) this.getInventory().armor.get(2).get(DataComponentTypes.CONTAINER).stream().toList());
+				this.getInventory().armor.get(2).get(DataComponentTypes.CONTAINER).iterateNonEmpty().forEach(itemStack -> ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), itemStack));
 			}
 		}
 	}

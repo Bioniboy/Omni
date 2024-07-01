@@ -19,30 +19,30 @@ public abstract class GliderModifications {
         return 1000;
     }
 
-    @ModifyConstant(
-        method="<clinit>",
-        constant = @Constant(intValue = 350),
-        slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=cherry_hang_glider", ordinal = 0))
-    )
-    private static int replaceCherryGliderMaxDamage(int maxDamage) {
-        return 1500;
-    }
-
-    @ModifyConstant(
-            method="<clinit>",
-            constant = @Constant(intValue = 350),
-            slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=sculk_hang_glider", ordinal = 0))
-    )
-    private static int replaceSculkGliderMaxDamage(int maxDamage) {
-        return 1500;
-    }
-
-    @ModifyConstant(
-            method="<clinit>",
-            constant = @Constant(intValue = 350),
-            slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=azalea_hang_glider", ordinal = 0))
-    )
-    private static int replaceAzaleaGliderMaxDamage(int maxDamage) {
-        return 1500;
-    }
+//    @ModifyConstant(
+//        method="<clinit>",
+//        constant = @Constant(intValue = 350),
+//        slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=cherry_hang_glider", ordinal = 0))
+//    )
+//    private static int replaceCherryGliderMaxDamage(int maxDamage) {
+//        return 1500;
+//    }
+//
+//    @ModifyConstant(
+//            method="<clinit>",
+//            constant = @Constant(intValue = 350),
+//            slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=sculk_hang_glider", ordinal = 0))
+//    )
+//    private static int replaceSculkGliderMaxDamage(int maxDamage) {
+//        return 1500;
+//    }
+//
+//    @ModifyConstant(
+//            method="<clinit>",
+//            constant = @Constant(intValue = 350),
+//            slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=azalea_hang_glider", ordinal = 0))
+//    )
+//    private static int replaceAzaleaGliderMaxDamage(int maxDamage) {
+//        return 1500;
+//    }
 }
