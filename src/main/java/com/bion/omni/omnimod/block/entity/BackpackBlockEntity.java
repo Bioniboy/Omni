@@ -111,7 +111,7 @@ public class BackpackBlockEntity extends LootableContainerBlockEntity {
     protected Text getContainerName() {
         return switch (level){
             case 2 -> Text.translatable("container.small_backpack");
-            case 3 -> Text.translatable("container.medium_backpack");
+            case 3 -> Text.translatable("container.medium_backpack.json");
             case 4 -> Text.translatable("container.large_backpack");
             case 5 -> Text.translatable("container.massive_backpack");
             case 6 -> Text.translatable("container.giant_backpack");

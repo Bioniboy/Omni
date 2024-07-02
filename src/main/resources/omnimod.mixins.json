@@ -10,6 +10,7 @@
     "CancelSpectatorTeleport",
     "CauldronBehaviorMixin",
     "GliderModifications",
+    "ExperienceOrbEntityMixin",
     "ModEntityDataSaver",
     "NoOffInteraction",
     "PearlCooldownDisable",
