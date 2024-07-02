@@ -18,10 +18,15 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.PlayerAdvancementTracker;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.EnchantmentEffectComponentTypes;
 import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.component.type.FireworkExplosionComponent;
 import net.minecraft.component.type.NbtComponent;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentEffectContext;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,6 +38,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.predicate.item.EnchantmentPredicate;
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -43,6 +49,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.ItemScatterer;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.*;
 import net.minecraft.world.RaycastContext;
@@ -61,6 +68,7 @@ import org.spongepowered.asm.mixin.injection.modify.LocalVariableDiscriminator;
 import javax.naming.Context;
 import javax.swing.text.AbstractDocument;
 import java.util.*;
+import java.util.function.Predicate;
 
 
 @Mixin(ServerPlayerEntity.class)
@@ -677,6 +685,12 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 		if(backpackCooldown > 0){
 			backpackCooldown -= 1;
 		}
+
+//		Optional<EnchantmentEffectContext> optional = EnchantmentHelper.chooseEquipmentWith(EnchantmentEffectComponentTypes.REPAIR_WITH_XP, this, ItemStack::isDamaged);
+//		if (optional.isPresent()){
+//			ItemStack itemStack = optional.get().stack();
+//			itemStack.setDamage(itemStack.getDamage() - 1);
+//		}
 	}
 
 	@Inject(at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD, method = "copyFrom")

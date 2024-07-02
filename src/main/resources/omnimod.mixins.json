@@ -9,6 +9,7 @@
     "ArmorSlotMixin",
     "CancelSpectatorTeleport",
     "CauldronBehaviorMixin",
+    "ExperienceOrbEntityMixin",
     "ModEntityDataSaver",
     "NoOffInteraction",
     "PearlCooldownDisable",
