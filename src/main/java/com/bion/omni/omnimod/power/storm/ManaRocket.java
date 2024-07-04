@@ -12,7 +12,7 @@ public class ManaRocket extends ImpulsePower {
 
     @Override
     public String getName() {
-        return "Mana Rocket";
+        return "Zoom";
     }
 
     @Override
