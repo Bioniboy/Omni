@@ -33,10 +33,8 @@ public class AirShield extends ContinuousPower {
     @Override
     public Integer getInfluenceCost() {
         return switch (getLevel()) {
-            case 1:
-                yield 50;
-            case 2:
-                yield 70;
+            case 1, 2:
+                yield 30;
             default:
                 yield 0;
         };

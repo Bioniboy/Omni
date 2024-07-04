@@ -47,7 +47,7 @@ public class FallDamageResistance extends Power {
             case 1:
                 yield 50;
             case 2:
-                yield 90;
+                yield 30;
             default:
                 yield 0;
         };

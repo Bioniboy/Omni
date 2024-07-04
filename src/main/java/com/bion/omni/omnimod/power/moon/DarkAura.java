@@ -48,9 +48,9 @@ public class DarkAura extends ImpulsePower {
             case 1:
                 yield 50;
             case 2:
-                yield 60;
+                yield 30;
             case 3:
-                yield 80;
+                yield 30;
             default:
                 yield 0;
         };

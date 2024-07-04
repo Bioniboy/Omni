@@ -50,9 +50,9 @@ public class BlindnessWave extends ImpulsePower {
             case 1:
                 yield 50;
             case 2:
-                yield 70;
+                yield 20;
             case 3:
-                yield 80;
+                yield 20;
             default:
                 yield 0;
         };

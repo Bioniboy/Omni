@@ -32,7 +32,7 @@ public class WhatWasThat extends Power {
 
     @Override
     public Integer getInfluenceCost() {
-        return 30;
+        return 20;
     }
 
     @Override

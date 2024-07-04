@@ -32,7 +32,7 @@ public class GoBoom extends ImpulsePower {
 
     @Override
     public Integer getInfluenceCost() {
-        return 40;
+        return 30;
     }
 
     @Override

@@ -42,7 +42,7 @@ public class Yeet extends ImpulsePower {
             case 1:
                 yield 50;
             case 2:
-                yield 70;
+                yield 30;
             default:
                 yield 0;
         };

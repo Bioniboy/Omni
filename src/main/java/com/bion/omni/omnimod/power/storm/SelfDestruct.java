@@ -44,7 +44,7 @@ public class SelfDestruct extends ImpulsePower {
 
     @Override
     public Integer getInfluenceCost() {
-        return 50;
+        return 30;
     }
 
     @Override

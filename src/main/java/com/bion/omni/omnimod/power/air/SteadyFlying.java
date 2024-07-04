@@ -26,7 +26,7 @@ public class SteadyFlying extends ContinuousPower {
 
     @Override
     public Integer getInfluenceCost() {
-        return 70;
+        return 40;
     }
     @Override
     public String getAdvancementId() {
@@ -36,11 +36,6 @@ public class SteadyFlying extends ContinuousPower {
     @Override
     public Integer getMaxLevel() {
         return 2;
-    }
-
-    @Override
-    public String getPreRequisiteId() {
-        return "kineticResistance";
     }
 
     @Override

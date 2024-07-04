@@ -31,7 +31,7 @@ public class WhirlwindBurst extends ImpulsePower {
 
     @Override
     public Integer getInfluenceCost() {
-        return 30;
+        return 20;
     }
 
     @Override

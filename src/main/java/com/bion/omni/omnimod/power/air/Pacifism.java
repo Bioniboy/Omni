@@ -76,7 +76,7 @@ public class Pacifism extends ContinuousPower {
             case 1:
                 yield 70;
             case 2:
-                yield 90;
+                yield 50;
             default:
                 yield 0;
         };

@@ -36,7 +36,7 @@ public class AirWalk extends ContinuousPower {
 
     @Override
     public Integer getInfluenceCost() {
-        return 80;
+        return 40;
     }
     public void setTickCooldown(int cooldown) {
         tickCooldown = cooldown;

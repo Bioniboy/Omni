@@ -12,7 +12,6 @@ import java.util.Arrays;
 public class Air extends Element {
     public Air() {
         powers = new ArrayList<>(Arrays.asList(
-                new KineticResistance(1),
                 new SlowFall(1),
                 new SolidAir(1),
                 new SteadyFlying(1),
