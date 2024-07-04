@@ -8,6 +8,7 @@ import com.bion.omni.omnimod.item.tome.Tome;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -24,9 +25,8 @@ public class TomeGui extends BookGui {
         super(player, book);
     }
 
-    @Override
-    public void onClose() {
-        super.onClose();
+    public void onBookClose() {
+        OmniMod.LOGGER.info("Closed!");
         Tome playerTome = null;
         if (player.getMainHandStack().getItem() instanceof Tome tome) {
             playerTome = tome;
@@ -45,27 +45,18 @@ public class TomeGui extends BookGui {
         }
         if (!Objects.equals(wandCommand, "")) {
             playerTome.openWandGui(player, wandCommand);
+            OmniMod.LOGGER.info("Open wand gui!");
 
             setWand = false;
         }
     }
-    @Override
-    public void close(boolean screenHandlerIsClosed) {
-        this.reOpen = false;
 
-        if (!screenHandlerIsClosed && this.player.currentScreenHandler == this.screenHandler) {
-            this.player.closeHandledScreen();
-        }
-
-        this.onClose();
-
-    }
     @Override
     public void setPage(int page) {
         super.setPage(page);
         ((EntityDataInterface)player).getPersistentData().putInt("page", this.page);
         if (player.currentScreenHandler instanceof BookScreenHandler) {
-            this.player.playSound(SoundEvent.of(Identifier.of("minecraft:item.book.page_turn")), 0.3F, 1.0F);
+            this.player.playSound(SoundEvents.ITEM_BOOK_PAGE_TURN, 0.3F, 1.0F);
         }
 
     }
@@ -87,6 +78,7 @@ public class TomeGui extends BookGui {
             if (setWand) {
 
                 wandCommand = String.join(".", shortComponents);
+                onBookClose();
                 return true;
             }
             if (Arrays.asList(shortComponents).contains("close") || (Objects.equals(shortComponents[1], "activate") && !Arrays.asList(shortComponents).contains("reopen"))) {
@@ -104,7 +96,7 @@ public class TomeGui extends BookGui {
         } else if (Objects.equals(components[0], "upgradeRegen")) {
             tome.upgradeManaRegen(player);
         }
-
+        onBookClose();
         return true;
     }
     @Override

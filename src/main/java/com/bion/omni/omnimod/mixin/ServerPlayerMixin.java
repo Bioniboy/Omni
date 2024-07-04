@@ -492,7 +492,8 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 
 	@Override
 	public Integer omni$getInfluence() {
-		return getScoreboard().getScore(this, getScoreboard().getNullableObjective("Influence")).getScore();
+
+		return getScoreboard().getOrCreateScore(this, getScoreboard().getNullableObjective("Influence")).getScore();
 	}
 	@Override
 	public void omni$setInfluence(Integer amount) {

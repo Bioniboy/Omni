@@ -73,19 +73,15 @@ public class WandGui extends BookGui {
         };
         return keyList[0].substring(0, 1).toUpperCase() + keyList[0].substring(1).replaceAll("(\\p{Ll})(\\p{Lu})", "$1 $2") + " " + setting;
     }
+
     @Override
-    public void close(boolean screenHandlerIsClosed) {
-        super.close(screenHandlerIsClosed);
+    public boolean onCommand(String command) {
+        ((EntityDataInterface)player).getPersistentData().putString(command.substring(1), this.command.replace("/", ""));
         if (player.getMainHandStack().getItem() instanceof Tome tome) {
             tome.use(player.getWorld(), player, Hand.MAIN_HAND);
         } else if (player.getOffHandStack().getItem() instanceof Tome tome) {
             tome.use(player.getWorld(), player, Hand.OFF_HAND);
         }
-    }
-
-    @Override
-    public boolean onCommand(String command) {
-        ((EntityDataInterface)player).getPersistentData().putString(command.substring(1), this.command.replace("/", ""));
         return true;
     }
 
