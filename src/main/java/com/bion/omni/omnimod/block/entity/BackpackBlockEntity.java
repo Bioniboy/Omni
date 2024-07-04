@@ -170,12 +170,6 @@ public class BackpackBlockEntity extends LootableContainerBlockEntity {
         NbtCompound nbtCompound = new NbtCompound();
         nbtCompound.putInt("backpack_level", level);
         componentMapBuilder.add(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbtCompound));
-        OmniMod.LOGGER.info("Add Components");
-        for (int i = 0; i < 9 * level; i++) {
-            if(!inventory.get(i).isEmpty()){
-                OmniMod.LOGGER.info("I: " + i + " Item: " + inventory.get(i).getItem().getName());
-            }
-        }
     }
 
     @Override
@@ -185,12 +179,6 @@ public class BackpackBlockEntity extends LootableContainerBlockEntity {
         this.level = components.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt().getInt("backpack_level");
         this.inventory = DefaultedList.ofSize(9*level, ItemStack.EMPTY);
         components.getOrDefault(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).copyTo(this.getHeldStacks());
-        OmniMod.LOGGER.info("Read Components");
-        for (int i = 0; i < 9 * level; i++) {
-            if(!inventory.get(i).isEmpty()){
-                OmniMod.LOGGER.info("I: " + i + " Item: " + inventory.get(i).getItem().getName());
-            }
-        }
     }
     public DyedColorComponent getDyedColor(){
         return dyedColor;

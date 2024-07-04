@@ -75,9 +75,6 @@ public class BackpackItem extends PolymerBlockItem implements Equipment{
             openGUI((ServerPlayerEntity) player, stack);
             return true;
         }
-//        if(slot.id == 6 && !stack.getComponents().getOrDefault(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).stream().toList().isEmpty()){
-//            return true;
-//        }
          return super.onClicked(stack, otherStack, slot, clickType, player, cursorStackReference);
     }
 
