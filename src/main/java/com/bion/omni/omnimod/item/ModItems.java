@@ -3,6 +3,7 @@ package com.bion.omni.omnimod.item;
 
 
 import com.bion.omni.omnimod.block.ModBlocks;
+import com.bion.omni.omnimod.item.Food.SweetBerryPie;
 import com.bion.omni.omnimod.item.tech.Augmentation;
 import com.bion.omni.omnimod.item.tech.ItemCannon;
 import com.bion.omni.omnimod.item.tome.*;
@@ -12,6 +13,7 @@ import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import com.bion.omni.omnimod.OmniMod;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ContainerComponent;
+import net.minecraft.component.type.FoodComponent;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -51,7 +53,7 @@ public class ModItems {
     public static final Item LARGE_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
     public static final Item MASSIVE_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
     public static final Item GIANT_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
-
+    public static final Item SWEET_BERRY_PIE = new SweetBerryPie(new Item.Settings());
 
 
 
@@ -87,7 +89,7 @@ public class ModItems {
         registerItem("large_backpack_item", LARGE_BACKPACK_ITEM);
         registerItem("massive_backpack_item", MASSIVE_BACKPACK_ITEM);
         registerItem("giant_backpack_item", GIANT_BACKPACK_ITEM);
-
+        registerItem("sweet_berry_pie", SWEET_BERRY_PIE);
     }
     private static void registerItem(String path, Item item){
         Registry.register(Registries.ITEM, Identifier.of(OmniMod.MOD_ID, path), item);
