@@ -12,6 +12,7 @@ import eu.pb4.polymer.core.api.item.SimplePolymerItem;
 import com.bion.omni.omnimod.OmniMod;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ContainerComponent;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -45,12 +46,12 @@ public class ModItems {
     public static final Item ITEM_CANNON = new ItemCannon(new Item.Settings());
     public static final Item WRENCH = new Augmentation(new Item.Settings(), 850016);
     public static final Item BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
-    public static final Item TINY_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
-    public static final Item SMALL_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
-    public static final Item MEDIUM_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
-    public static final Item LARGE_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
-    public static final Item MASSIVE_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
-    public static final Item GIANT_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
+    public static final Item TINY_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1).component(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(BackpackItem.getCustomData(1))), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
+    public static final Item SMALL_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1).component(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(BackpackItem.getCustomData(2))), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
+    public static final Item MEDIUM_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1).component(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(BackpackItem.getCustomData(3))), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
+    public static final Item LARGE_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1).component(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(BackpackItem.getCustomData(4))), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
+    public static final Item MASSIVE_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1).component(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(BackpackItem.getCustomData(5))), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
+    public static final Item GIANT_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1).component(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(BackpackItem.getCustomData(6))), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
 
 
 

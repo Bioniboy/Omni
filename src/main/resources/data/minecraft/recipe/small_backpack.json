@@ -12,9 +12,6 @@
   ],
   "result": {
     "id": "omnimod:small_backpack_item",
-    "count": 1,
-    "components": {
-      "custom_data": {"backpack_level":  2}
-    }
+    "count": 1
   }
 }

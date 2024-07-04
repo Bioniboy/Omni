@@ -52,11 +52,16 @@ public class BackpackItem extends PolymerBlockItem implements Equipment{
         BackpackGui GUI = new BackpackGui(player, backpackItem, level, inventory);
         GUI.open();
     }
+    public static NbtCompound getCustomData(int level){
+        NbtCompound nbtCompound = new NbtCompound();
+        nbtCompound.putInt("backpack_level", level);
+        return nbtCompound;
+    }
 
     public static Text getBackpackName(int level) {
         return switch (level){
             case 2 -> Text.translatable("container.small_backpack");
-            case 3 -> Text.translatable("container.medium_backpack.json");
+            case 3 -> Text.translatable("container.medium_backpack");
             case 4 -> Text.translatable("container.large_backpack");
             case 5 -> Text.translatable("container.massive_backpack");
             case 6 -> Text.translatable("container.giant_backpack");
@@ -93,5 +98,10 @@ public class BackpackItem extends PolymerBlockItem implements Equipment{
     @Override
     public EquipmentSlot getSlotType() {
         return EquipmentSlot.CHEST;
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return super.getOrCreateTranslationKey();
     }
 }
