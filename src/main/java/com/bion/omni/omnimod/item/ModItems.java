@@ -53,7 +53,7 @@ public class ModItems {
     public static final Item LARGE_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
     public static final Item MASSIVE_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
     public static final Item GIANT_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
-    public static final Item SWEET_BERRY_PIE = new SweetBerryPie(new Item.Settings());
+    public static final Item SWEET_BERRY_PIE = new SweetBerryPie(new Item.Settings().component(DataComponentTypes.FOOD, new FoodComponent.Builder().nutrition(7).saturationModifier(0.3f).build()));
 
 
 
