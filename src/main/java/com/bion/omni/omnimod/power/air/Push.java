@@ -29,7 +29,7 @@ public class Push extends ImpulsePower {
 
     @Override
     public Integer getInfluenceCost() {
-        return 40;
+        return 20;
     }
 
     @Override

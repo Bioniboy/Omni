@@ -84,9 +84,9 @@ public class ShadowPortal extends ImpulsePower {
             case 1:
                 yield 50;
             case 2:
-                yield 60;
+                yield 30;
             case 3:
-                yield 80;
+                yield 30;
             default:
                 yield 0;
         };
@@ -122,32 +122,25 @@ public class ShadowPortal extends ImpulsePower {
     }
 
     @Override
+    public double getManaCost() {
+        return 30;
+    }
+
+    @Override
     public void activate2(ServerPlayerEntity user) {
         if (markPosition != null) {
-            int range = 0;
-            float volume = 0;
-            switch (getLevel()) {
-                case 1:
-                    range = 100;
-                    volume = 1.0F;
-                    break;
-                case 2:
-                    range = 200;
-                    volume = 0.5F;
-                    break;
-                case 3:
-                    range = 400;
-                    volume = 0.2F;
-            }
+            int range = switch (getLevel()) {
+                case 1 -> 1000;
+                case 2 -> 5000;
+                case 3 -> 30000000;
+                default -> 0;
+            };
             int distance = (int)(( user.getPos().distanceTo(markPosition)));
-            int manaCost = (distance / 10 + 1) * 3;
-            if (((Apprentice)user).omni$getMana() >= manaCost) {
+            if (((Apprentice)user).omni$getMana() >= getManaCost()) {
                 if (distance <= range) {
                     user.requestTeleport(markPosition.getX(), markPosition.getY(), markPosition.getZ());
-                    user.getWorld().playSound((Entity) null, user.getBlockPos(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, volume, 1.0F);
-                    user.getWorld().playSound((Entity) null, BlockPos.ofFloored(markPosition), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, volume, 1.0F);
                     markPosition = null;
-                    ((Apprentice)user).omni$changeMana(-manaCost);
+                    ((Apprentice)user).omni$changeMana(-getManaCost());
 //                    Mana.manaShow(user);
                 } else {
                     user.sendMessage(Text.literal("Out of range: " + distance + " > " + range).formatted(Formatting.DARK_BLUE));

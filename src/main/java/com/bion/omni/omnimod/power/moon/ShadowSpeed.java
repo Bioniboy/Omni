@@ -24,7 +24,7 @@ public class ShadowSpeed extends ContinuousPower {
             case 1:
                 yield 40;
             case 2:
-                yield 60;
+                yield 30;
             default:
                 yield 0;
         };

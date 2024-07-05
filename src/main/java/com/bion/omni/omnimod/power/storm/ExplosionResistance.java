@@ -37,9 +37,9 @@ public class ExplosionResistance extends Power {
             case 1:
                 yield 50;
             case 2:
-                yield 70;
+                yield 200;
             case 3:
-                yield 90;
+                yield 30;
             default:
                 yield 0;
         };

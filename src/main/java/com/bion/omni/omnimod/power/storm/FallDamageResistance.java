@@ -22,11 +22,6 @@ public class FallDamageResistance extends Power {
     }
 
     @Override
-    public String getPreRequisiteId() {
-        return "kineticResistance";
-    }
-
-    @Override
     public String getAdvancementId() {
         return getLevel() == 1 ? "fall_res" : "fall_res_2";
     }
@@ -47,7 +42,7 @@ public class FallDamageResistance extends Power {
             case 1:
                 yield 50;
             case 2:
-                yield 90;
+                yield 30;
             default:
                 yield 0;
         };

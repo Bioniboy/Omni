@@ -17,7 +17,6 @@ public class Storm extends Element {
                 new ExplosionResistance(1),
                 new CreeperDisguise(1),
                 new GoBoom(1),
-                new KineticResistance(1),
                 new FallDamageResistance(1),
                 new SelfDestruct(1),
                 new MakeItRain(1),

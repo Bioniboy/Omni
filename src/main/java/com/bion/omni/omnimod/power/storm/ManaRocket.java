@@ -12,7 +12,7 @@ public class ManaRocket extends ImpulsePower {
 
     @Override
     public String getName() {
-        return "Mana Rocket";
+        return "Zoom";
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ManaRocket extends ImpulsePower {
 
     @Override
     public boolean activate(ServerPlayerEntity user) {
-        if (user.isFallFlying() && ((user.getWorld().isRaining() && ((Apprentice)user).omni$getMana() >= 1) || super.activate(user))) {
+        if ((user.getWorld().isRaining() && ((Apprentice)user).omni$getMana() >= 1) || super.activate(user)) {
             if (user.getWorld().isRaining())
                 ((Apprentice)user).omni$changeMana(-1);
             Vec3d vec3d = user.getRotationVector();
