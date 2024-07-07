@@ -12,21 +12,22 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.jetbrains.annotations.Nullable;
 
-public class SweetBerryPie extends Item implements PolymerItem {
-    public SweetBerryPie(Settings settings) {
+public class Applesauce extends Item implements PolymerItem {
+    public Applesauce(Settings settings) {
         super(settings);
 
     }
+
     @Override
     public Item getPolymerItem(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
-        return Items.PUMPKIN_PIE;
+        return Items.HONEY_BOTTLE;
     }
-
     @Override
     public ItemStack getPolymerItemStack(ItemStack itemStack, TooltipType tooltipType, RegistryWrapper.WrapperLookup lookup, @Nullable ServerPlayerEntity player) {
 
         ItemStack item = PolymerItemUtils.createItemStack(itemStack, tooltipType, lookup, player);
-        item.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(29001));
+        item.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(29002));
         return item;
     }
+
 }

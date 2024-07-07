@@ -3,7 +3,7 @@ package com.bion.omni.omnimod.item;
 
 
 import com.bion.omni.omnimod.block.ModBlocks;
-import com.bion.omni.omnimod.item.Food.SweetBerryPie;
+import com.bion.omni.omnimod.item.Food.*;
 import com.bion.omni.omnimod.item.tech.Augmentation;
 import com.bion.omni.omnimod.item.tech.ItemCannon;
 import com.bion.omni.omnimod.item.tome.*;
@@ -55,8 +55,8 @@ public class ModItems {
     public static final Item MASSIVE_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1).component(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(BackpackItem.getCustomData(5))), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
     public static final Item GIANT_BACKPACK_ITEM = new BackpackItem(new Item.Settings().component(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).maxCount(1).component(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(BackpackItem.getCustomData(6))), Items.FIREWORK_STAR, ModBlocks.BACKPACK_BLOCK);
     public static final Item SWEET_BERRY_PIE = new SweetBerryPie(new Item.Settings().component(DataComponentTypes.FOOD, new FoodComponent.Builder().nutrition(7).saturationModifier(0.3f).build()));
-
-
+    public static final Item APPLESAUCE = new Applesauce(new Item.Settings().component(DataComponentTypes.FOOD,new FoodComponent.Builder().nutrition(5).saturationModifier(1.0f).alwaysEdible().usingConvertsTo(Items.GLASS_BOTTLE).build()));
+    public static final Item MUSHY_APPLE = new MushyApple(new Item.Settings());
 
     public static void registerItems() {
         Registry.register(Registries.ITEM, Identifier.of(OmniMod.MOD_ID, "omnium_ingot"), OMNIUM_INGOT);
@@ -91,6 +91,8 @@ public class ModItems {
         registerItem("massive_backpack_item", MASSIVE_BACKPACK_ITEM);
         registerItem("giant_backpack_item", GIANT_BACKPACK_ITEM);
         registerItem("sweet_berry_pie", SWEET_BERRY_PIE);
+        registerItem("applesauce", APPLESAUCE);
+        registerItem("mushy_apple", MUSHY_APPLE);
     }
     private static void registerItem(String path, Item item){
         Registry.register(Registries.ITEM, Identifier.of(OmniMod.MOD_ID, path), item);
