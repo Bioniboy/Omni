@@ -1,6 +1,6 @@
 package com.bion.omni.omnimod.item.tome;
 
-import com.bion.omni.omnimod.element.Sun;
+import com.bion.omni.omnimod.element.Earth;
 import eu.pb4.polymer.core.api.item.PolymerItemUtils;
 import com.bion.omni.omnimod.element.Element;
 import com.bion.omni.omnimod.element.Storm;
@@ -14,10 +14,10 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.jetbrains.annotations.Nullable;
 
-public class Soleonomicon extends Tome {
-    private final Element element = new Sun();
+public class Terranomicon extends Tome {
+    private final Element element = new Earth();
 
-    public Soleonomicon(Settings settings, Item polymerItem) {
+    public Terranomicon(Settings settings, Item polymerItem) {
         super(settings, polymerItem);
     }
 
@@ -39,7 +39,7 @@ public class Soleonomicon extends Tome {
 
     @Override
     public String getTitle() {
-        return "Soleonomicon";
+        return "Terranomicon";
     }
 
     @Override

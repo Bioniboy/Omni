@@ -68,7 +68,6 @@ public class Push extends ImpulsePower {
                     user.getServerWorld().spawnParticles(ParticleTypes.CLOUD, entity.getX(), entity.getY(), entity.getZ(), 10, 0.3, 0.3, 0.3, 0.1);
                 }
             }
-            return true;
         }
         return false;
     }

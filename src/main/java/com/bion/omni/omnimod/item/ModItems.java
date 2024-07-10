@@ -57,6 +57,7 @@ public class ModItems {
     public static final Item SWEET_BERRY_PIE = new SweetBerryPie(new Item.Settings().component(DataComponentTypes.FOOD, new FoodComponent.Builder().nutrition(7).saturationModifier(0.3f).build()));
     public static final Item APPLESAUCE = new Applesauce(new Item.Settings().component(DataComponentTypes.FOOD,new FoodComponent.Builder().nutrition(5).saturationModifier(1.0f).alwaysEdible().usingConvertsTo(Items.GLASS_BOTTLE).build()));
     public static final Item MUSHY_APPLE = new MushyApple(new Item.Settings());
+    public static final Item TERRANOMICON = new Terranomicon(new Item.Settings(),Items.BOOK);
 
     public static void registerItems() {
         Registry.register(Registries.ITEM, Identifier.of(OmniMod.MOD_ID, "omnium_ingot"), OMNIUM_INGOT);
@@ -93,6 +94,7 @@ public class ModItems {
         registerItem("sweet_berry_pie", SWEET_BERRY_PIE);
         registerItem("applesauce", APPLESAUCE);
         registerItem("mushy_apple", MUSHY_APPLE);
+        registerItem("terranomicon", TERRANOMICON);
     }
     private static void registerItem(String path, Item item){
         Registry.register(Registries.ITEM, Identifier.of(OmniMod.MOD_ID, path), item);

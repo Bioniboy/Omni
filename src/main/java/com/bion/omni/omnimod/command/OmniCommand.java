@@ -85,6 +85,12 @@ public class OmniCommand {
                         .then(CommandManager.literal("tech")
                                 .executes(context -> {choose(context.getSource().getPlayer(), "tech"); return 1;})
                         )
+                        .then(CommandManager.literal("earth")
+                                .executes(context -> {choose(context.getSource().getPlayer(), "earth"); return 1;})
+                        )
+                        .then(CommandManager.literal("sun")
+                                .executes(context -> {choose(context.getSource().getPlayer(), "sun"); return 1;})
+                        )
                 )
                 .then(CommandManager.literal("playtime")
                         .executes(OmniCommand::playtime)
@@ -238,6 +244,25 @@ public class OmniCommand {
                 starterPowerId = "divineRepo";
                 ((Apprentice)player).omni$addPower("wrench");
                 yield new Tech();
+
+            case "earth":
+                if (!player.getInventory().contains(ModItems.TERRANOMICON.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.TERRANOMICON));
+                }
+                if (!player.getInventory().contains(ModItems.WRENCH.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.WRENCH));
+                }
+                starterPowerId = "haste";
+                yield new Earth();
+            case "sun":
+                if (!player.getInventory().contains(ModItems.SOLEONOMICON.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.SOLEONOMICON));
+                }
+                if (!player.getInventory().contains(ModItems.WRENCH.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.WRENCH));
+                }
+                starterPowerId = "strength";
+                yield new Sun();
             default:
                 yield null;
         });
