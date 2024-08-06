@@ -246,11 +246,11 @@ public class OmniCommand {
                 yield new Tech();
 
             case "earth":
-                if (!player.getInventory().contains(ModItems.TERRANOMICON.getDefaultStack())) {
-                    player.giveItemStack(new ItemStack(ModItems.TERRANOMICON));
+                if (!player.getInventory().contains(ModItems.GEONOMICON.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.GEONOMICON));
                 }
-                if (!player.getInventory().contains(ModItems.WRENCH.getDefaultStack())) {
-                    player.giveItemStack(new ItemStack(ModItems.WRENCH));
+                if (!player.getInventory().contains(ModItems.EARTH_WAND.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.EARTH_WAND));
                 }
                 starterPowerId = "haste";
                 yield new Earth();
@@ -258,8 +258,8 @@ public class OmniCommand {
                 if (!player.getInventory().contains(ModItems.SOLEONOMICON.getDefaultStack())) {
                     player.giveItemStack(new ItemStack(ModItems.SOLEONOMICON));
                 }
-                if (!player.getInventory().contains(ModItems.WRENCH.getDefaultStack())) {
-                    player.giveItemStack(new ItemStack(ModItems.WRENCH));
+                if (!player.getInventory().contains(ModItems.SUN_WAND.getDefaultStack())) {
+                    player.giveItemStack(new ItemStack(ModItems.SUN_WAND));
                 }
                 starterPowerId = "strength";
                 yield new Sun();

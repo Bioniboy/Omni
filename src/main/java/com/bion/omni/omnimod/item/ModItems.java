@@ -41,6 +41,8 @@ public class ModItems {
     public static final Item FIRE_WAND = new FireWand(new Item.Settings(), Items.STICK);
     public static final Item WATER_WAND = new WaterWand(new Item.Settings(), Items.STICK);
     public static final Item MAGIC_WAND = new MagicWand(new Item.Settings(), Items.STICK);
+    public static final Item EARTH_WAND = new EarthWand(new Item.Settings(), Items.STICK);
+    public static final Item SUN_WAND = new SunWand(new Item.Settings(), Items.STICK);
     public static final Item BAD_TRAPDOOR = new PolymerBlockItem(ModBlocks.BAD_TRAPDOOR, new Item.Settings(), Items.BIRCH_TRAPDOOR);
     public static final Item INFLUENCE_TOKEN = new InfluenceToken(new Item.Settings());
     public static final Item SPEED_AUGMENTATION = new Augmentation(new Item.Settings(), 850013);
@@ -57,7 +59,7 @@ public class ModItems {
     public static final Item SWEET_BERRY_PIE = new SweetBerryPie(new Item.Settings().component(DataComponentTypes.FOOD, new FoodComponent.Builder().nutrition(7).saturationModifier(0.3f).build()));
     public static final Item APPLESAUCE = new Applesauce(new Item.Settings().component(DataComponentTypes.FOOD,new FoodComponent.Builder().nutrition(5).saturationModifier(1.0f).alwaysEdible().usingConvertsTo(Items.GLASS_BOTTLE).build()));
     public static final Item MUSHY_APPLE = new MushyApple(new Item.Settings());
-    public static final Item TERRANOMICON = new Terranomicon(new Item.Settings(),Items.BOOK);
+    public static final Item GEONOMICON = new Geonomicon(new Item.Settings(),Items.BOOK);
 
     public static void registerItems() {
         Registry.register(Registries.ITEM, Identifier.of(OmniMod.MOD_ID, "omnium_ingot"), OMNIUM_INGOT);
@@ -94,7 +96,9 @@ public class ModItems {
         registerItem("sweet_berry_pie", SWEET_BERRY_PIE);
         registerItem("applesauce", APPLESAUCE);
         registerItem("mushy_apple", MUSHY_APPLE);
-        registerItem("terranomicon", TERRANOMICON);
+        registerItem("geonomicon", GEONOMICON);
+        registerItem("earth_wand", EARTH_WAND);
+        registerItem("sun_wand", SUN_WAND);
     }
     private static void registerItem(String path, Item item){
         Registry.register(Registries.ITEM, Identifier.of(OmniMod.MOD_ID, path), item);

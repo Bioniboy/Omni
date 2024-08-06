@@ -12,6 +12,7 @@ public class Push extends ImpulsePower {
         super(level);
     }
 
+
     @Override
     public String getName() {
         return "Push " + getRomanNumeral(getLevel());
@@ -45,6 +46,7 @@ public class Push extends ImpulsePower {
     public String getAdvancementId() {
         return "push" + (getLevel() == 1 ? "" : "_" + getLevel());
     }
+
 
     @Override
     public boolean activate(ServerPlayerEntity user) {

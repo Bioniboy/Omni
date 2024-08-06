@@ -318,6 +318,8 @@ public abstract class ServerPlayerMixin extends PlayerEntity implements Apprenti
 				yield new Tech();
 			case "Earth":
 				yield new Earth();
+			case "Sun":
+				yield new Sun();
 			default:
 				OmniMod.LOGGER.error("Error: " + elementId + " element not defined" );
 				yield null;

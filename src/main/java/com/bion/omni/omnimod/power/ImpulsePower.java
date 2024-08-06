@@ -3,6 +3,7 @@ package com.bion.omni.omnimod.power;
 import com.bion.omni.omnimod.util.Apprentice;
 import com.bion.omni.omnimod.util.ConfigSymbol;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.Box;
 
 import java.util.ArrayList;
 
