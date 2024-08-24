@@ -28,7 +28,7 @@ public class BeaconBoost extends ContinuousPower {
     }
     @Override
     public String getPreRequisiteId() {
-        return "beam_me_up";//all lowercase with _
+        return "beamMeUp";
     }
 
     @Override

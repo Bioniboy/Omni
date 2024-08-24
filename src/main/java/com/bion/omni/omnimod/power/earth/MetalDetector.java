@@ -1,8 +1,12 @@
 package com.bion.omni.omnimod.power.earth;
 
-import com.bion.omni.omnimod.power.ImpulsePower;
+import com.bion.omni.omnimod.entity.ModEntities;
+import com.bion.omni.omnimod.entity.custom.MetalGlow;
+import com.bion.omni.omnimod.power.ContinuousPower;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.world.World;
 
-public class MetalDetector extends ImpulsePower {
+public class MetalDetector extends ContinuousPower {
     public MetalDetector(int level) {
         super(level);
     }
@@ -33,5 +37,20 @@ public class MetalDetector extends ImpulsePower {
     @Override
     public double getManaCost() {
         return 2;
+    }
+
+    @Override
+    public Boolean hasConfig() {
+        return true; }
+
+    @Override
+    public void use(ServerPlayerEntity user) {
+        super.use(user);
+        MetalGlow glow = ModEntities.METAL_GLOW.create(user.getServerWorld());
+        assert glow != null;
+        glow.setPosition(user.getPos());
+        glow.setGlowing(true);
+        World world = user.getWorld();
+        world.spawnEntity(glow);
     }
 }

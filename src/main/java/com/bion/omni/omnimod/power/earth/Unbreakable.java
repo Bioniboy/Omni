@@ -27,7 +27,7 @@ public class Unbreakable extends ContinuousPower {
     }
     @Override
     public String getPreRequisiteId() {
-        return "summon_iron_golem";
+        return "summonIronGolem";
     }
 
     @Override

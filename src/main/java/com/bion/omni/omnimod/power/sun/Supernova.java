@@ -27,7 +27,7 @@ public class Supernova extends ImpulsePower {
     }
     @Override
     public String getPreRequisiteId() {
-        return "pulse_nova";//all lowercase with _
+        return "pulseNova";
     }
 
     @Override

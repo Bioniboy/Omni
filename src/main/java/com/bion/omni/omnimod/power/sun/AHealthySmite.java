@@ -28,7 +28,7 @@ public class AHealthySmite extends ContinuousPower {
     @Override
     public String getPreRequisiteId() {
         return "purify";
-    }//all lowercase with _
+    }
 
     @Override
     public double getManaCost() {

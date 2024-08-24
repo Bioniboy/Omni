@@ -27,7 +27,7 @@ public class PulseNova extends ImpulsePower {
     }
     @Override
     public String getPreRequisiteId() {
-        return "strength";//all lowercase with _
+        return "strength";
     }
 
     @Override

@@ -27,7 +27,7 @@ public class SummonClayGolem extends ImpulsePower {
     }
     @Override
     public String getPreRequisiteId() {
-        return "metal_detector";
+        return "metalDetector";
     }
 
     @Override

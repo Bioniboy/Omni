@@ -27,7 +27,7 @@ public class SunRay extends ImpulsePower {
     }
     @Override
     public String getPreRequisiteId() {
-        return "solar_flare";//all lowercase with _
+        return "solarFlare";
     }
 
     @Override

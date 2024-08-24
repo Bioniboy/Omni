@@ -25,6 +25,7 @@ public class ModEntities {
     public static final EntityType<Pet> PET = EntityType.Builder.create(Pet::new, SpawnGroup.CREATURE).dimensions(0.75f, 0.75f).build();
     public static final EntityType<ManaBulletEntity> MANA_BULLET = EntityType.Builder.create(ManaBulletEntity::new, SpawnGroup.MISC).dimensions(0.5f, 0.5f).build();
     public static final EntityType<AccRockEntity> ACC_ROCK = EntityType.Builder.create(AccRockEntity::new, SpawnGroup.MISC).dimensions(5f, 5f).build();
+    public static final EntityType<MetalGlow> METAL_GLOW = EntityType.Builder.create(MetalGlow::new, SpawnGroup.MISC).dimensions(1f, 1f).build();
     public static final EntityType<MansionZombie> MANSION_ZOMBIE = EntityType.Builder.create(MansionZombie::new, SpawnGroup.MONSTER).dimensions(0.75f, 1.8f).build();
     public static void registerEntities() {
         Registry.register(Registries.ENTITY_TYPE, Identifier.of(OmniMod.MOD_ID, "player_body"), PLAYER_BODY);
@@ -37,10 +38,12 @@ public class ModEntities {
 
         Registry.register(Registries.ENTITY_TYPE, Identifier.of(OmniMod.MOD_ID, "acc_rock"), ACC_ROCK);
 
+        Registry.register(Registries.ENTITY_TYPE, Identifier.of(OmniMod.MOD_ID, "metal_glow"), METAL_GLOW);
+
         Registry.register(Registries.ENTITY_TYPE, Identifier.of(OmniMod.MOD_ID, "mansion_zombie"), MANSION_ZOMBIE);
         FabricDefaultAttributeRegistry.register(MANSION_ZOMBIE, ZombieEntity.createZombieAttributes());
 
-        PolymerEntityUtils.registerType(PLAYER_BODY, PET, MANA_BULLET, MANSION_ZOMBIE, ACC_ROCK);
+        PolymerEntityUtils.registerType(PLAYER_BODY, PET, MANA_BULLET, MANSION_ZOMBIE, ACC_ROCK, METAL_GLOW);
 
     }
 }
